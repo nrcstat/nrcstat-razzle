@@ -1,3 +1,15 @@
+
+
+# Notes on usage of repo
+- Use `npm`, not `yarn`
+
+
+
+
+
+
+
+
 # Get the razzle example running
 
 Steps:
