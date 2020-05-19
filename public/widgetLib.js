@@ -2,16 +2,17 @@
   const queue = []
   let loadQueued = false
   window.NrcStatWidgetLibrary = {
-    generateWidget: params => {
-      queue.push(params)
-      if (!loadQueued) {
-        setTimeout(loadAssets)
-        loadQueued = true
+    getInstance: () => ({
+      generateWidget: params => {
+        queue.push(params)
+        if (!loadQueued) {
+          setTimeout(loadAssets)
+          loadQueued = true
+        }
       }
-    }
+    })
   }
   const loadAssets = () => {
-    
     const queueSerialized = encodeURIComponent(JSON.stringify(queue))
     const assetsPath = `/render-widgets?queue=${queueSerialized}`
 
@@ -27,11 +28,10 @@
         data.scripts.forEach(script => {
           const scriptEl = document.createElement('script')
           scriptEl.src = script.src
-          scriptEl['dataChunk'] = script['data-chunk']
+          scriptEl.dataChunk = script['data-chunk']
           scriptEl.async = true
           document.querySelector('body').appendChild(scriptEl)
         })
-        
       })
 
     /*
@@ -47,7 +47,7 @@
     linkElement.type = 'text/css'
     */
 
-    //document.querySelector('body').appendChild(scriptElement)
-    //document.querySelector('body').appendChild(linkElement)
+    // document.querySelector('body').appendChild(scriptElement)
+    // document.querySelector('body').appendChild(linkElement)
   }
 })()
