@@ -10,7 +10,7 @@ if (isServer()) {
 
 function Donut() {
   const str = someBullshit()
-  return <div>I am a Donut chart widget {str}</div>
+  return <div>I am a Donut chart widgedwwefwt {str}</div>
 }
 
 export default Donut

@@ -1,7 +1,7 @@
 
 
 # Notes on usage of repo
-- Use `npm`, not `yarn`
+- Use `yarn`, not `npm`
 
 
 

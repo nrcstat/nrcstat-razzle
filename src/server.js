@@ -21,64 +21,52 @@ server
     setTimeout(() => {
       res.type('javascript').send('function yalla(){alert("test")}')
     }, 2000)
-    
+
   })
   */
- .get('/render-widgets/js', (req, res) => {
+  .get('/render-widgets', (req, res) => {
     const queue = JSON.parse(req.query.queue)
-    const enrichedQueue = preProcessWidgetQueue(queue)
-    console.log(enrichedQueue)
-    const extractor = extractAssets(enrichedQueue)
+    const enrichedQueue = queue.map(w => Object.assign(w, { type: determineWidgetType()(w.widgetId) }))
 
-    const js = extractor.getScriptTags()
-    const urlMatcher = /src="(.+)"/g
-    const jsChunksPaths = [...js.matchAll(urlMatcher)].map(([_, match]) => match).map(path => path.replace('http://localhost:3001', ''))
-    
-    const pathsResolved = jsChunksPaths.map(path => pathLib.resolve(`${__dirname}/public/${path}`))
-
-    console.log(pathsResolved)
-
-    const jsFilesContents = pathsResolved.map(path => fs.readFileSync(path, 'utf8')).join(`\n`)
-
-    const renderingCode = `
-    \n\n
-      window.nrcStatDrawWidgetQueue = ${JSON.stringify(enrichedQueue)}
-`
-    const result = transform(renderingCode, {
-      presets: ["@babel/preset-react"]//, "@babel/preset-env", "minify"]
+    const extractor = new ChunkExtractor({
+      statsFile: pathLib.resolve('build/loadable-stats.json'),
+      entrypoints: ['client']
     })
 
-    console.log(result.code)
-    
-    res.type('javascript').send(result.code + jsFilesContents)
+    renderToString(
+      <ChunkExtractorManager extractor={extractor}>
+        {enrichedQueue.map((props) =>
+          <Widget key={props.widgetId} {...props} />
+        )}
+      </ChunkExtractorManager>
+    )
+
+    const payload = {
+      __LOADABLE_REQUIRED_CHUNKS__: null,
+      widgetQueue: enrichedQueue,
+      scripts: []
+    }
+
+    const js = extractor.getScriptTags((attrs) => {
+      if (attrs) {
+        payload.scripts.push({
+          'data-chunk': attrs.chunk,
+          src: attrs.url
+        })
+      }
+      return attrs || {}
+    })
+    payload.__LOADABLE_REQUIRED_CHUNKS__ = JSON.parse(/<script.+>(.+)<\/script>/g.exec(js)[1])
+
+    extractor.getStyleTags((attrs) => {
+      console.log(attrs)
+      return attrs || {}
+    })
+
+    res.type('javascript').send(payload)
   })
-  .get('/render-widgets/css', (req, res) => {
-    const queue = JSON.parse(req.query.queue)
-    const extractor = extractAssets(queue)
 
-    extractor.getCssString().then(css => {
-      res.type('css').send(css)
-     })
-  })
-
-function preProcessWidgetQueue(queue) {
-  return queue.map(w => Object.assign(w, { type: determineWidgetType()(w.widgetId) }))
-}
-
-function extractAssets(widgetQueue) {
-  const extractor = new ChunkExtractor({
-    statsFile: pathLib.resolve('build/loadable-stats.json'),
-    entrypoints: ['client'],
-  })
-
-  renderToString(
-    <ChunkExtractorManager extractor={extractor}>
-      {widgetQueue.map((props) => 
-        <Widget key={props.widgetId} {...props} />
-      )}
-    </ChunkExtractorManager>,
-  )
-
+function extractAssets (widgetQueue) {
   return extractor
 }
 

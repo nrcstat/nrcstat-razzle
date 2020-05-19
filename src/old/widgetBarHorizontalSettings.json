@@ -1,0 +1,95 @@
+{
+  "colors": [
+    "#ff9e47",
+    "#9abcba",
+    "#dfc354",
+    "#d37947",
+    "#3b9eaa",
+    "#3c845d",
+    "#c3b071",
+    "#eae7dd",
+    "#d3d3d3",
+    "#ededed"
+  ],
+  "wrapper": {
+    "horSpacing": 10,
+    "margin": {
+      "top": 20,
+      "right": 20,
+      "bottom": 20,
+      "left": 20
+    }
+  },
+  "title": {
+    "fontFamily": "Roboto Condensed",
+    "fontWeight": "",
+    "fontColor": "#333",
+    "fontSize": "24px",
+    "style": "24px Roboto Condensed",
+    "lineSpacing": 0,
+    "magicLineHeightMultiplier": 0.75
+  },
+  "mainWrapper": {
+    "topMargin": 20
+  },
+  "main": {
+    "margin": {
+      "top": 0,
+      "right": 0,
+      "bottom": 0,
+      "left": 0
+    }
+  },
+  "labelBesidesBar": {
+    "leftMargin": 10,
+    "fontFamily": "Roboto Condensed",
+    "fontWeight": "bold",
+    "fontColor": "black",
+    "fontSize": "13px",
+    "style": "bold 13px Roboto Condensed",
+    "magicLabelYPositionMultiplier": 1.15
+  },
+  "chart": {
+    "ticks": 5,
+    "colMargin": 2,
+    "columnFillColor": "rgb(252,190,37)",
+    "columnNotHighlightedColor": "rgb(121,121,121)"
+  },
+  "subtitle": {
+    "fontFamily": "Roboto Condensed",
+    "fontWeight": "",
+    "fontColor": "black",
+    "fontSize": "18px",
+    "style": " 18px Roboto Condensed",
+    "lineSpacing": 2,
+    "topMargin": 10
+  },
+  "source": {
+    "fontFamily": "Roboto Condensed",
+    "fontWeight": "",
+    "fontColor": "grey",
+    "fontSize": "15px",
+    "style": "15px Roboto Condensed",
+    "topMargin": 30,
+    "lineSpacing": 0
+  },
+  "linkbox": {
+    "fontFamily": "Roboto Condensed",
+    "fontWeight": "bold",
+    "fontColor": "white",
+    "fontSize": "14px",
+    "style": "bold 14px Roboto Condensed",
+    "topMargin": 18,
+    "lineSpacing": 0,
+    "horPadding": 10,
+    "verPadding": 5,
+    "boxFillColor": "rgb(188,188,188)"
+  },
+  "social": {
+    "icons": ["facebook", "linkedin", "twitter"],
+    "iconDiameter": 32,
+    "horSpacing": 10,
+    "widthPlusLeftMargin": 150,
+    "leftMargin": 24
+  }
+}

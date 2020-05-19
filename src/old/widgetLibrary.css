@@ -1,0 +1,603 @@
+
+@media (max-width: 640px){
+    .nrcstat-table-widget .btn-download {
+        margin-top: 3px;
+    }
+}
+@media (min-width: 641px) {
+    .nrcstat-table-widget .btn-download {
+        margin-top: 1px;
+    }
+}
+
+
+.nrcstat-table-widget a.btn-download:visited {
+    color: #000;
+}
+.nrcstat-table-widget .btn-download {
+    margin-left: 10px;
+    text-decoration: none;
+    max-width: 344px;
+    color: #000;
+    background-color: #dcdcdc;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #b1b1b1;
+    padding: 5px 10px;
+    display: inline-block;
+    font-size: 10pt;
+    font-family: "Roboto Condensed";
+}
+.nrcstat-table-widget .btn-download:hover {
+    padding: 4px 9px;
+    border: 2px solid #154881;
+}
+
+
+
+
+
+
+
+
+
+.nrcstat-table-widget a.dt-button {
+    margin-left: 10px;
+    text-decoration: none;
+    max-width: 344px;
+    color: #000;
+    background-color: #dcdcdc;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #b1b1b1;
+    padding: 5px 10px;
+    display: inline-block;
+    font-size: 10pt;
+    font-family: "Roboto Condensed";
+}
+.nrcstat-table-widget a.dt-button:hover {
+    padding: 4px 9px;
+    border: 2px solid #154881;
+}
+
+
+
+
+
+
+
+
+
+
+.nrcstat-widget-tooltip {
+    text-decoration: underline;
+    color: #337ab7;
+    cursor: pointer;
+}
+
+.tooltipster-content {
+    font: 10pt "Roboto Condensed";
+
+    padding: 1em 1em 1em 1em;
+    overflow: hidden;
+
+}
+
+.nrcstat-table-widget .download-button {
+    cursor: pointer;
+}
+.nrcstat-table-widget .table-tooltip {
+    cursor: pointer;
+    color: #337ab7;
+}
+.nrcstat-table-widget .table-annotation-tooltip {
+    cursor: pointer;
+    color: #337ab7;
+}
+
+.nrcstat-table-widget h4 {
+    font-family: "Roboto Condensed";
+    text-transform: uppercase;
+}
+.dataTable thead th {
+    font-family: "Roboto Condensed";
+    text-align: left;
+}
+.dataTable tbody td {
+    font-family: "Roboto Condensed";
+    font-weight: 200;
+}
+.nrcstat-table-widget-annotations {
+    /* this combination makes up "Roboto Light". See this page for details: https://fonts.google.com/?selection.family=Roboto+Condensed|Roboto:100i,300,400 */
+    font-family: "Roboto Condensed";
+    font-weight: 200;
+}
+
+
+
+
+@media (max-width: 640px){
+    .nrcstat-table-widget .controls-wrapper {
+        float: left;
+        display: inline-block;
+        width: 100%;
+    }
+}
+@media (min-width: 641px) {
+    .nrcstat-table-widget .controls-wrapper {
+        float: left;
+        display: inline-block;
+    }
+}
+
+
+.nrcstat-table-widget .dataTables_length, .nrcstat-table-widget .dataTables_filter,
+.nrcstat-table-widget .dataTables_paginate, .nrcstat-table-widget .dataTables_info,
+.nrcstat-table-widget .nrcstat-selector-continent, .nrcstat-table-widget .nrcstat-selector-country {
+    font-family: "Roboto";
+    font-weight: 200;
+}
+
+.nrcstat-table-widget .nrcstat-selector-continent, .nrcstat-table-widget .nrcstat-selector-country {
+    padding-top: 3px; margin-bottom: 5px; height: 30px; display: inline-block; margin-right: 10px;
+}
+
+@media (max-width: 640px){
+    .nrcstat-table-widget .nrcstat-selector-continent, .nrcstat-table-widget .nrcstat-selector-country {
+        float: none;
+        text-align: center;
+        width: 100%;
+        margin-bottom: 0;
+    }
+}
+@media (min-width: 641px) {
+    .nrcstat-table-widget .nrcstat-selector-continent, .nrcstat-table-widget .nrcstat-selector-country {
+        float: left;
+    }
+}
+
+/* .nrcstat-table-widget .dataTables_info, .nrcstat-table-widget .dataTables_filter,  */
+
+
+
+.nrcstat .grid .tick {
+    stroke: lightgrey;
+    opacity: 0.7;
+}
+
+.nrcstat .grid path {
+    stroke-width: 0;
+}
+
+.nrcstat .domain {
+    display: none;
+}
+
+.nrcstat .y-axis .tick text {
+    font-family: Roboto Condensed;
+    font-size: 14px;
+}
+
+/* TOOLTIP */
+.nrcstat-d3-tip, .nrcstat-donut-d3-tip {
+    text-align: center;
+    line-height: 1;
+    font-weight: bold;
+    padding: 12px;
+    background: rgba(121, 121, 121, 0.8);
+    color: #fff;
+    border-radius: 2px;
+    margin-bottom: 10px;
+}
+
+/* Creates a small triangle extender, NORTH of the tooltip */
+.nrcstat-d3-tip:after, .nrcstat-donut-d3-tip:after {
+    box-sizing: border-box;
+    display: inline;
+    font-size: 10px;
+    width: 100%;
+    line-height: 1;
+    color: rgb(121, 121, 121);
+    content: "\25BC";
+    position: absolute;
+    text-align: right;
+}
+
+
+/* Creates a small triangle extender, SOUTH of the tooltip */
+.nrcstat-d3-tip:after, .nrcstat-donut-d3-tip:after {
+    box-sizing: border-box;
+    display: inline;
+    font-size: 10px;
+    width: 100%;
+    line-height: 1;
+    color: rgb(121, 121, 121);
+    content: "\25BC";
+    position: absolute;
+    text-align: center;
+}
+
+/* Style northward tooltips differently */
+.nrcstat-d3-tip.n:after, .nrcstat-donut-d3-tip.n:after {
+    margin: -1px 0 0 0;
+    top: 100%;
+    left: 0;
+}
+
+.nrcstat-d3-tip .year, .nrcstat-donut-d3-tip .year {
+    font-size: 14px;
+    font-family: Roboto Condensed;
+}
+
+.nrcstat-d3-tip .ruler, .nrcstat-donut-d3-tip .ruler {
+    margin: 5px auto;
+    max-width: 50px;
+    font-size: 12px;
+    font-family: Roboto Condensed;
+}
+
+.nrcstat-d3-tip .number, .nrcstat-donut-d3-tip .number {
+    font-size: 20px;
+    font-family: Roboto Condensed;
+}
+
+/* END OF TOOLTIP CSS */
+
+.nrcstat .svg {
+    width: 25px;
+    height: 25px;
+    margin-left: 3px;
+    padding: 2px;
+}
+
+.nrcstat .leaflet-popup-content-wrapper {
+    width: auto;
+}
+
+.nrcstat a.leaflet-draw-draw-rectangle {
+    display: none;
+}
+
+.nrcstat a.leaflet-draw-draw-circle {
+    display: none;
+}
+
+.nrcstat a.leaflet-draw-edit-edit {
+    display: none;
+}
+
+.nrcstat .leaflet-div-icon {
+    background: none;
+    border: none;
+}
+
+.nrcstat .svg-class svg {
+    fill: red;
+}
+
+.nrcstat .mapbox-improve-map {
+    display: none;
+}
+
+.nrcstat .leaflet-label {
+    margin-left: 15px;
+    margin-top: 11px;
+    height: 28px;
+    background: rgba(235, 235, 235, 0.81);
+}
+
+.nrcstat .leaflet-container.leaflet-clickable {
+    fill: red;
+}
+
+.nrcstat .leaflet-popup-content {
+    padding: 3px !important;
+}
+
+.nrcstat .mapbox-improve-map {
+    display: none;
+}
+
+.nrcstat .leaflet-popup-close-button {
+    display: none !important;
+}
+
+.nrcstat .leaflet-label:before {
+    border-right: 8px solid black;
+    border-right-color: inherit;
+    left: -9px;
+}
+
+.nrcstat .menu-ui {
+    background: #00AFEC;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 1;
+    border-radius: 3px;
+    width: 150px;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    font-family: roboto;
+}
+
+.nrcstat .menu-ui a {
+    font-size: 13px;
+    color: #FFF;
+    display: block;
+    margin: 0;
+    padding: 0;
+    padding: 5px 10px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    text-align: center;
+    font-family: roboto;
+}
+
+.nrcstat .menu-ui a:first-child {
+    border-radius: 3px 3px 0 0;
+}
+
+.nrcstat .menu-ui a:last-child {
+    border: none;
+    border-radius: 0 0 3px 3px;
+}
+
+.nrcstat .menu-ui a.active {
+    background: #D03F3F;
+    color: #FFF;
+}
+
+.nrcstat .custom-popup .leaflet-popup-content-wrapper {
+    display: inline-block;
+    min-width: 140px;
+    background: #fff;
+    color: #fff;
+    font-size: 16px;
+    line-height: 24px;
+    font-family: roboto;
+}
+
+.nrcstat .custom-popup .leaflet-popup-content-wrapper a {
+    color: rgba(49, 65, 65, 0.5);
+}
+
+.nrcstat .custom-popup .leaflet-popup-tip-container {
+    width: 30px;
+    height: 25px;
+}
+
+.nrcstat .custom-popup .leaflet-popup-tip {
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 15px solid #fff;
+    font-family: roboto;
+}
+
+.nrcstat h4 {
+    text-align: center;
+    font-size: 12px !important;
+    color: red;
+    font-family: Roboto Condensed;
+}
+
+.nrcstat p {
+    color: black;
+    text-align: center;
+    max-width: 225px;
+    font-family: Roboto Condensed;
+    margin-top: 11px;
+}
+
+.nrcstat img {
+    width: 25px;
+    height: 25px;
+    float: left;
+    display: inline;
+}
+
+.nrcstat hr {
+    width: 70%;
+    color: black;
+    border-width: 2px;
+    height: 3px;
+    margin-bottom: 6px;
+    margin-top: -7px;
+    border: 0;
+    border-top: 1px solid #eee;
+}
+
+.nrcstat img {
+    vertical-align: middle;
+    border: 0;
+}
+
+.nrcstat .forp p {
+    color: white;
+    font-size: 13px;
+    font-family: Roboto Condensed;
+}
+
+.nrcstat .leaflet-popup-close-button + .leaflet-popup-content-wrapper .leaflet-popup-content {
+    padding: 0px;
+}
+
+.nrcstat .leaflet-right {
+    margin-right: 74%;
+}
+
+.nrcstat .leaflet-bar .leaflet-control-zoom-in {
+    display: none;
+}
+
+.nrcstat .leaflet-bar .leaflet-control-zoom-out {
+    display: none;
+}
+
+.nrcstat-toolTip {
+    position: absolute;
+    display: none;
+    width: auto;
+    height: auto;
+    background: none repeat scroll 0 0 white;
+    border: 0 none;
+    border-radius: 8px 8px 8px 8px;
+    box-shadow: -3px 3px 15px #888888;
+    color: black;
+    font: 12px sans-serif;
+    padding: 5px;
+    text-align: center;
+    font-family: Roboto Condensed;
+}
+
+.nrcstat .infoBox {
+    z-index: 1;
+    right: 20px;
+    position: absolute;
+    background-color: #fec110;
+    top: 20px;
+    max-width: 400px;
+}
+
+/* NRCSTAT IMPROVEMENT */
+
+.nrcstat .marker-label {
+    background-color: rgba(235, 235, 235, 0.81);
+    margin-left: 15px;
+    margin-top: 11px;
+    height: 26px;
+    border-style: solid;
+    font-weight: normal;
+    border-width: 1px;
+    font-size: 14px;
+    font-family: Roboto Condensed;
+}
+.nrcstat .marker-cursor {
+    cursor: pointer;
+}
+.nrcstat .marker-border-color-ff7602 {
+    border-color: #ff7602;
+}
+.nrcstat .marker-border-color-ce5c43 {
+    border-color: #ce5c43;
+}
+.nrcstat .marker-border-color-black {
+    border-color: black;
+}
+.nrcstat .marker-border-color-72c7e7 {
+    border-color: #72c7e7;
+}
+
+
+
+/*** MAPBOX GL JS ***/
+
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+.mapboxgl-popup {
+    max-width: 200px;
+}
+.icon-logoNRC {
+    background-image: url(https://lib.nrcdata.no/assets/img/svgIcons/logoNRC.svg);
+}
+.icon-logoNORCAP {
+    background-image: url(https://lib.nrcdata.no/assets/img/svgIcons/logoNORCAP.svg);
+}
+.icon-marker{
+    background-image: url(https://lib.nrcdata.no/assets/img/svgIcons/marker.svg);
+}
+.icon-noun_47128_Callout {
+    background-image: url(https://lib.nrcdata.no/assets/img/svgIcons/noun_47128_Callout.svg);
+}
+.icon-noun_47094_Warning {
+    background-image: url(https://lib.nrcdata.no/assets/img/svgIcons/noun_47094_Warning.svg);
+}
+.icon-noun_4210_CampManagement {
+    background-image: url(https://lib.nrcdata.no/assets/img/svgIcons/noun_4210_CampManagement.svg);
+}
+.icon-noun_4212_Education {
+    background-image: url(https://lib.nrcdata.no/assets/img/svgIcons/noun_4212_Education.svg);
+}
+.icon-noun_4214_FoodSecurity {
+    background-image: url(https://lib.nrcdata.no/assets/img/svgIcons/noun_4214_FoodSecurity.svg);
+}
+.icon-noun_4219_SHELTER {
+    background-image: url(https://lib.nrcdata.no/assets/img/svgIcons/noun_4219_SHELTER.svg);
+}
+.icon-noun_4220_WASH {
+    background-image: url(https://lib.nrcdata.no/assets/img/svgIcons/noun_4220_WASH.svg);
+}
+.icon-noun_4226_ICLA {
+    background-image: url(https://lib.nrcdata.no/assets/img/svgIcons/noun_4226_ICLA.svg);
+}
+.left-arrow {
+    display: inline-block;
+    position: relative;
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgb(200, 200, 200);
+    padding: 5px 15px;
+    margin-left: 45px;
+    border-radius: 4px;
+}
+.left-arrow:after {
+    content: '';
+    display: block;
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    margin-top: -10px;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-right: 10px solid rgb(200, 200, 200);
+    border-bottom: 10px solid transparent;
+    border-left: 10px solid transparent;
+}
+
+.icon {
+    background-repeat: no-repeat;
+    background-size: 30px 30px;
+}
+
+.icon-without-label {
+    width: 30px;
+    height: 30px;
+}
+
+.mapboxgl-popup {
+    width: 157px;
+}
+.mapboxgl-popup-content{
+    padding: 6px;
+}
+.mapboxgl-popup-content h1 {
+    font-size: 16px;
+    color:#616161;
+    line-height: 20px;
+    margin: 0 0 10px;
+}
+.mapboxgl-popup-content hr {
+    width: 70%;
+    color: black;
+    border-width: 2px;
+    height: 3px;
+    margin-bottom: 6px;
+    margin-top: -7px;
+    border: 0;
+    border-top: 1px solid #eee;
+}
+.mapboxgl-popup-content p {
+    color: black;
+    text-align: center;
+    max-width: 225px;
+    font-family: Roboto Condensed;
+    margin-top: 11px;
+    font-size: 15px;
+    line-height: 20px;
+    margin: 0 0 5px;
+}
+
+
+
+
+
