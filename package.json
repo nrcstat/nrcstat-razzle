@@ -23,7 +23,7 @@
     "express": "^4.16.2",
     "i18next": "^19.4.4",
     "i18next-locize-backend": "^4.0.7",
-    "jquery": "3.4.1",
+    "jquery": "3.5.0",
     "lodash": "^4.17.15",
     "mapbox-gl": "^1.9.1",
     "normalize.css": "^8.0.1",
