@@ -80,7 +80,7 @@ server
     const js = extractor.getScriptTags((attrs) => {
       if (attrs) {
         const scriptUrl = attrs.url
-          .replace(/^((http|https):\/\/localhost:3000)/g, '')
+          .replace(/^((http|https):\/\/localhost:3000)/g, process.env.RAZZLE_URL)
         payload.scripts.push({
           'data-chunk': attrs.chunk,
           src: scriptUrl
