@@ -13,6 +13,7 @@ import {
 } from 'lodash'
 import BezierEasing from 'bezier-easing'
 import * as $ from 'jquery'
+import { useTranslation } from 'react-i18next'
 
 import {
   formatDataNumber,
@@ -21,7 +22,7 @@ import {
   isMobileDevice
 } from '@/old/widgetHelpers'
 
-import './styles.scss'
+import './GlobalMap.scss'
 
 import { isServer } from '@/util/utils'
 import loadable from '@loadable/component'
@@ -42,7 +43,7 @@ import gazaGeoJson from './assets/json//gaza.json'
 import middleResolutionCountriesGeoJson from './assets/json/ne_110m_admin_0_countries.json'
 import centroidsRaw from './assets/json/geo_entities_updated_manually.json'
 import COUNTRIES from './assets/json/radial_bar_map_countries_to_display.json'
-import { API_URL, LIB_URL } from '../../constants'
+import { API_URL, LIB_URL } from '../../config'
 middleResolutionCountriesGeoJson.features.push(gazaGeoJson.features[0])
 
 const req = require.context('./assets/pre-rendered-radial-bar-charts', false)
@@ -130,7 +131,10 @@ const START_ZOOM = MIN_ZOOM
 const MIN_COUNTRY_NAME_SIZE = 8
 const MAX_COUNTRY_NAME_SIZE = 26
 
-const easing = BezierEasing(1, 0, 0.64, 0.76)
+const easing = BezierEasing(0.34, 0.58, 0.62, 1.11)
+// const easing = BezierEasing(0.34, 0.58, 0.64, 0.76)
+
+const animationEvent = 'webkitAnimationEnd oanimationend msAnimationEnd animationend'
 
 // Only show centroids for which we have data from api.nrcdata.no (i.e. centroid's country is in COUNTRIES)
 const centroids = centroidsRaw
@@ -169,498 +173,6 @@ function getCountryStat (countryIso2Code, dataPoint) {
   const data = stats.filter(d => d.dataPoint === dataPoint)
   if (data && data.length > 0) return data[0]
   return null
-}
-
-function drawWidgetGlobalDisplacementRadialBarChartMap (
-  widgetObject,
-  widgetData,
-  targetSelector
-) {
-  console.log(targetSelector)
-  $(targetSelector).empty()
-  $(targetSelector).addClass(
-    'nrcstat-static-global-displacement-radial-bar-chart-map'
-  )
-  $(targetSelector).css('position', 'relative')
-  $(targetSelector).css('overflow', 'hidden')
-
-  isFullScreen = false
-
-  $(targetSelector).append(`
-      <button class="map-open-button" type="button">Utforsk kart</button>
-      <button class="map-close-button" style="display: none" type="button">Avslutt utforskning</button> 
-      <div class="map-share"></div>
-      <div id="mainmap-goes-here" style="width: 100%; height: 100%;"><div class="overlay"></div><div class="nrcstat-country-dashboard-map-legend"></div></div>
-    `)
-
-  if (isMobileDevice()) {
-    $(targetSelector)
-      .find('#mainmap-goes-here')
-      .css({
-        position: 'absolute',
-        height: window.innerHeight,
-        width: window.innerWidth
-      })
-  }
-
-  // highlight open button when clicked outside of it
-  var animationEvent =
-      'webkitAnimationEnd oanimationend msAnimationEnd animationend'
-  $(targetSelector)
-    .find('.overlay')
-    .mousedown(function () {
-      $(targetSelector)
-        .find('.map-open-button')
-        .addClass('highlight-map-open-button')
-      $(targetSelector)
-        .find('.map-open-button')
-        .one(animationEvent, function (event) {
-          $(this).removeClass('highlight-map-open-button')
-        })
-    })
-
-  $(targetSelector)
-    .find('.map-open-button')
-    .click(function () {
-      setActiveMode(targetSelector, map)
-      isCountryInfoPopupOrPopoverActive = false
-    })
-
-  $(targetSelector)
-    .find('.map-close-button')
-    .click(function () {
-      setPassiveMode(targetSelector, map)
-      isCountryInfoPopupOrPopoverActive = false
-    })
-
-  addLegend(targetSelector)
-
-  addShareMenu(targetSelector)
-
-  loadStats()
-
-  mapboxgl.accessToken =
-      'pk.eyJ1IjoibnJjbWFwcyIsImEiOiJjaW5hNTM4MXMwMDB4d2tseWZhbmFxdWphIn0._w6LWU9OWnXak36BkzopcQ'
-  var map = new mapboxgl.Map({
-    container: 'mainmap-goes-here',
-    center: initialCenter,
-    zoom: START_ZOOM,
-    style: 'mapbox://styles/nrcmaps/cjx1qihkq00r81ctczmmai9ps',
-    minZoom: MIN_ZOOM,
-    maxZoom: MAX_ZOOM
-  })
-  map.setZoom(initialZoom)
-
-  // disable map rotation
-  map.dragRotate.disable()
-  map.touchZoomRotate.disableRotation()
-
-  // change position of mapbox logo
-  $(targetSelector)
-    .find('.mapboxgl-ctrl-bottom-left')
-    .removeClass('mapboxgl-ctrl-bottom-left')
-    .addClass('mapboxgl-ctrl-bottom-right')
-
-  map.on('load', function () {
-    map.addSource('countries', {
-      type: 'geojson',
-      data: middleResolutionCountriesGeoJson
-    })
-
-    const sharedLayerProperties = {
-      type: 'fill',
-      source: 'countries',
-      paint: {
-        'fill-opacity': 1
-      },
-      filter: ['==', 'iso_a2', '']
-    }
-
-    map.addLayer(
-      Object.assign(sharedLayerProperties, {
-        id: 'countries-highlighted',
-        paint: { 'fill-color': 'rgba(212,212,212,0.68)' }
-      })
-    )
-    map.addLayer(
-      Object.assign(sharedLayerProperties, {
-        id: 'countries-highlighted-nrc',
-        paint: { 'fill-color': 'rgba(255,119,0,0.36)' }
-      })
-    )
-    map.addLayer(
-      Object.assign(sharedLayerProperties, {
-        id: 'countries-highlighted-blue',
-        paint: { 'fill-color': 'rgba(212,212,212,0.84)' }
-      })
-    )
-
-    function countryMouseMoveOverHandler (e) {
-      const hoverCountryIso2 = e.features[0].properties.iso_a2
-
-      if (
-        countryInfo__hasData(hoverCountryIso2) ||
-          e.features[0].properties.name == 'Kosovo'
-      ) {
-        $(targetSelector)
-          .find('.mapboxgl-canvas-container')
-          .css('cursor', 'default')
-      }
-
-      map.setFilter('countries-highlighted-nrc', [
-        '==',
-        'iso_a2',
-        _.includes(nrcCountryIso2, hoverCountryIso2) ? hoverCountryIso2 : ''
-      ])
-      map.setFilter('countries-highlighted-blue', [
-        '==',
-        'iso_a2',
-        _.includes(blueCountryIso2, hoverCountryIso2) ? hoverCountryIso2 : ''
-      ])
-      const nrcAndBlueIso2 = nrcCountryIso2.concat(blueCountryIso2)
-      map.setFilter('countries-highlighted', [
-        '==',
-        'iso_a2',
-        !_.includes(nrcAndBlueIso2) ? hoverCountryIso2 : ''
-      ])
-    }
-
-    // disable hover on mobile device otherwise country stays highlighted once popover is closed
-    if (!isMobileDevice()) {
-      map.on('mousemove', 'countries', countryMouseMoveOverHandler)
-      map.on('mouseover', 'countries', countryMouseMoveOverHandler)
-    }
-
-    map.on('click', 'countries', function (event) {
-      hideTooltip()
-      var selectedCountry = event.features[0].properties
-
-      if (mobileLegendActive || mobileShareMenuActive) {
-        $(targetSelector)
-          .find('.legend-container')
-          .css('display', 'none')
-        $(targetSelector)
-          .find('#legend-button')
-          .removeClass('legend-button-closed legend-button-open')
-          .addClass('legend-button-closed')
-        setLegendState(targetSelector)
-        $(targetSelector)
-          .find('.share-menu-container')
-          .css('display', 'none')
-        setShareMenuState(targetSelector)
-        isCountryInfoPopupOrPopoverActive = false
-      } else {
-        // insert Kosovo country code (has "name" but no "iso_a2" in natural earth data)
-        if (selectedCountry.name == 'Kosovo') {
-          selectedCountry.iso_a2 = 'KO'
-        }
-
-        // countries without iso2 code in naturalearth data have value -99 instead
-        if (countryInfo__hasData(selectedCountry.iso_a2)) {
-          if (isMobileDevice() && selectedCountry.iso_a2 != -99) {
-            isCountryInfoPopupOrPopoverActive = true
-            countryInfo__showPopover(targetSelector, event)
-          } else if (selectedCountry.iso_a2 != -99) {
-            isCountryInfoPopupOrPopoverActive = true
-            countryInfo__showPopup(event, map)
-          }
-        }
-      }
-    })
-
-    // event listener for closing legend and share menu by clicking on the non-country (e.g. sea)
-    map.on('click', function (event) {
-      hideTooltip()
-      if (mobileLegendActive || mobileShareMenuActive) {
-        $(targetSelector)
-          .find('.legend-container')
-          .css('display', 'none')
-        $(targetSelector)
-          .find('#legend-button')
-          .removeClass('legend-button-closed legend-button-open')
-          .addClass('legend-button-closed')
-        setLegendState(targetSelector)
-        $(targetSelector)
-          .find('.share-menu-container')
-          .css('display', 'none')
-        setShareMenuState(targetSelector)
-        isCountryInfoPopupOrPopoverActive = false
-      }
-    })
-
-    map.on('mouseleave', 'countries-highlighted', function () {
-      $(targetSelector)
-        .find('.mapboxgl-canvas-container')
-        .css('cursor', 'grab')
-      $(targetSelector)
-        .find('.mapboxgl-canvas-container')
-        .css('cursor', '-webkit-grab')
-      $(targetSelector)
-        .find('.mapboxgl-canvas-container')
-        .css('cursor', '-moz-grab')
-
-      map.setFilter('countries-highlighted', ['==', 'iso_a2', ''])
-      map.setFilter('countries-highlighted-blue', ['==', 'iso_a2', ''])
-      map.setFilter('countries-highlighted-nrc', ['==', 'iso_a2', ''])
-    })
-
-    map.on('dragstart', function () {
-      if (
-        $(targetSelector)
-          .find('.mapboxgl-canvas-container')
-          .css('cursor') != 'default'
-      ) {
-        $(targetSelector)
-          .find('.mapboxgl-canvas-container')
-          .css('cursor', 'grabbing')
-        $(targetSelector)
-          .find('.mapboxgl-canvas-container')
-          .css('cursor', '-webkit-grabbing')
-        $(targetSelector)
-          .find('.mapboxgl-canvas-container')
-          .css('cursor', '-moz-grabbing')
-      }
-    })
-
-    map.on('dragend', function (event) {
-      if (
-        $(targetSelector)
-          .find('.mapboxgl-canvas-container')
-          .css('cursor') != 'default'
-      ) {
-        $(targetSelector)
-          .find('.mapboxgl-canvas-container')
-          .css('cursor', 'grab')
-        $(targetSelector)
-          .find('.mapboxgl-canvas-container')
-          .css('cursor', '-webkit-grab')
-        $(targetSelector)
-          .find('.mapboxgl-canvas-container')
-          .css('cursor', '-moz-grab')
-      }
-    })
-
-    function getMaxSet3FigureFromData (iso) {
-      const maxFigure = Math.max(
-        ...[
-          getCountryStat(iso, 'totalRefugeesFromX').data,
-          getCountryStat(iso, 'refugeesInXFromOtherCountriesInYear').data,
-          getCountryStat(iso, 'idpsInXInYear').data
-        ]
-      )
-      return maxFigure
-    }
-
-    const geojson = {
-      type: 'FeatureCollection',
-      features: centroids.map(centroid => {
-        const [sizeFactor, sizeClass] = calculateSizeFactor(
-          getMaxSet3FigureFromData(centroid.iso)
-        )
-        console.log(sizeClass)
-        console.log(getMaxSet3FigureFromData(centroid.iso))
-        return {
-          type: 'Feature',
-          properties: {
-            countryLabel: norwegianCountryNames[centroid.iso].toUpperCase(),
-            countryShortLabel: centroid.iso,
-            iso: centroid.iso,
-            sizeFactor: sizeFactor,
-            sizeClass: sizeClass,
-            message: `${centroid.idmc_full_name} ${centroid.iso}`,
-            iconSize: [30, 30]
-          },
-          geometry: {
-            type: 'Point',
-            coordinates: [...centroid.centroid].reverse()
-          }
-        }
-      })
-    }
-
-    const elements = []
-
-    function resizeChartsByZoom () {
-      const baseSize = 280
-      const zoom = map.getZoom()
-      const zoomNormalized = (zoom - MIN_ZOOM) / (MAX_ZOOM - MIN_ZOOM)
-      const factor = easing(zoomNormalized)
-      const dimension = 30 + baseSize * factor
-      const fontSize =
-          MIN_COUNTRY_NAME_SIZE +
-          factor * (MAX_COUNTRY_NAME_SIZE - MIN_COUNTRY_NAME_SIZE)
-      const yOffsetSmall = -((dimension * 0.48) / 2 / fontSize)
-      const yOffsetMedium = -((dimension * 0.57) / 2 / fontSize)
-      const yOffsetLarge = -((dimension * 0.70) / 2 / fontSize)
-      map.setLayoutProperty('country-labels-small', 'text-offset', [
-        0.1,
-        yOffsetSmall
-      ])
-      map.setLayoutProperty('country-labels-medium', 'text-offset', [
-        0.1,
-        yOffsetMedium
-      ])
-      map.setLayoutProperty('country-labels-large', 'text-offset', [
-        0.1,
-        yOffsetLarge
-      ]);
-      ['small', 'medium', 'large'].forEach(sizeClass => {
-        map.setLayoutProperty(`country-labels-${sizeClass}`, 'text-field', [
-          'get',
-          zoom > 3 ? 'countryLabel' : 'countryShortLabel'
-        ])
-        map.setLayoutProperty(
-            `country-labels-${sizeClass}`,
-            'text-size',
-            fontSize
-        )
-      })
-      elements.forEach(el => {
-        const sizeFactor = el.dataset.sizeFactor
-        const adjustedDimension = dimension * sizeFactor
-        el.style.width = adjustedDimension + 'px'
-        el.style.height = adjustedDimension + 'px'
-      })
-    }
-
-    map.on('zoom', throttle(resizeChartsByZoom, 10))
-    map.addSource('country-labels-src', {
-      type: 'geojson',
-      data: geojson
-    })
-
-    map.addLayer({
-      id: 'country-labels-small',
-      type: 'symbol',
-      source: 'country-labels-src',
-      layout: {
-        'text-field': ['get', 'countryLabel'],
-        'text-font': ['Helvetica Regular'],
-        'text-max-width': 50,
-        'text-line-height': 1
-      },
-      filter: ['==', 'sizeClass', 'small']
-    })
-    map.addLayer({
-      id: 'country-labels-medium',
-      type: 'symbol',
-      source: 'country-labels-src',
-      layout: {
-        'text-field': ['get', 'countryLabel'],
-        'text-font': ['Helvetica Regular'],
-        'text-max-width': 50,
-        'text-line-height': 1
-      },
-      filter: ['==', 'sizeClass', 'medium']
-    })
-    map.addLayer({
-      id: 'country-labels-large',
-      type: 'symbol',
-      source: 'country-labels-src',
-      layout: {
-        'text-field': ['get', 'countryLabel'],
-        'text-font': ['Helvetica Regular'],
-        'text-max-width': 50,
-        'text-line-height': 1
-      },
-      filter: ['==', 'sizeClass', 'large']
-    })
-
-    const hoverPopup = $(`
-      <div class="global-displacement-radial-bar-chart-tooltip">
-        <div class="top">Totalt</div>
-        <div class="data"></div>
-      </div>`)
-    $('body').append(hoverPopup)
-    const showTooltip = countryCode => e => {
-      if (map.getZoom() < 3) return
-      if (isCountryInfoPopupOrPopoverActive) return
-      const dataHtml = [
-        {
-          color: 'rgba(114,199,231,0.72)',
-          data: getCountryStat(countryCode, 'idpsInXInYear').data
-        },
-        {
-          color: 'rgba(255,121,0,0.72)',
-          data: getCountryStat(countryCode, 'totalRefugeesFromX').data
-        },
-        {
-          color: 'rgba(253,200,47,0.72)',
-          data: getCountryStat(
-            countryCode,
-            'refugeesInXFromOtherCountriesInYear'
-          ).data
-        }
-      ]
-        .sort((a, b) => b.data - a.data)
-        .map(d => {
-          return { ...d, data: formatDataNumber(d.data, 'nb_NO') }
-        })
-        .map(
-          d =>
-              `<div class="line"><div class="dot" style="background-color: ${
-                d.color
-              }"></div>${d.data}</div></div>`
-        )
-        .join('\n')
-      hoverPopup.children('.data').html(dataHtml)
-
-      const newCss = {
-        display: 'block',
-        left:
-            e.pageX + hoverPopup[0].clientWidth + 10 < document.body.clientWidth
-              ? e.pageX + 10 + 'px'
-              : document.body.clientWidth + 5 - hoverPopup[0].clientWidth + 'px',
-        top:
-            e.pageY + hoverPopup[0].clientHeight + 10 < document.body.clientHeight
-              ? e.pageY + 10 + 'px'
-              : document.body.clientHeight +
-                5 -
-                hoverPopup[0].clientHeight +
-                'px'
-      }
-      hoverPopup.css(newCss)
-    }
-    function hideTooltip (e) {
-      hoverPopup.css({ display: 'none' })
-    }
-
-    geojson.features.forEach(function (marker) {
-      var el = document.createElement('div')
-      const iso = marker.properties.iso
-      el.style.backgroundImage = `url(${radialBarChartsMap[iso]})`
-      el.style.backgroundSize = 'cover'
-      el.style.overflow = 'hidden'
-
-      if (!isMobileDevice()) {
-        el.addEventListener('mouseenter', showTooltip(marker.properties.iso))
-        el.addEventListener('mousemove', showTooltip(marker.properties.iso))
-        el.addEventListener('mouseout', hideTooltip)
-      }
-
-      el.dataset.sizeFactor = marker.properties.sizeFactor
-
-      elements.push(el)
-
-      const centroidFromLeonardoData = centroidsRaw.filter(
-        centroid => centroid.iso === iso
-      )
-      if (centroidFromLeonardoData.length > 0) {
-        const leonardoCentroid = centroidFromLeonardoData[0]
-        /* const boundingBox = leonardoCentroid;
-          const [west, south, east, north] = boundingBox;
-          const midX = (west + east) / 2;
-          const midY = (north + south) / 2;
-
-          new mapboxgl.Marker(el).setLngLat([midY, midX]).addTo(map);
-          */
-        new mapboxgl.Marker(el)
-          .setLngLat([...leonardoCentroid.centroid].reverse())
-          .addTo(map)
-      }
-    })
-    resizeChartsByZoom()
-  })
 }
 
 function countryInfo__hasData (iso2) {
@@ -731,105 +243,8 @@ function animateFullScreen (elm, map, callbackCb) {
   }
 }
 
-function setActiveMode (targetSelector, map) {
-  $(targetSelector)
-    .find('.overlay')
-    .addClass('disappear')
-  $(targetSelector)
-    .find('.map-open-button')
-    .css('display', 'none')
-  $(targetSelector)
-    .find('.map-open-button')
-    .removeClass('highlight-map-open-button')
-
-  const activateMap = () => {
-    var animationEvent =
-        'webkitAnimationEnd oanimationend msAnimationEnd animationend'
-    $(targetSelector)
-      .find('.overlay')
-      .one(animationEvent, function (event) {
-        $(targetSelector)
-          .find('.overlay')
-          .removeClass('disappear')
-        $(targetSelector)
-          .find('.overlay')
-          .css('display', 'none')
-
-        mapNavigationControl = new mapboxgl.NavigationControl({
-          showCompass: false
-        })
-
-        map.addControl(mapNavigationControl, 'bottom-right')
-
-        $(targetSelector)
-          .find('.map-close-button')
-          .css('display', 'block')
-      })
-  }
-
-  if (isMobileDevice()) {
-    animateFullScreen(targetSelector, map, activateMap)
-  } else {
-    activateMap()
-  }
-}
-
-function setPassiveMode (targetSelector, map) {
-  // check if popup exist otherwise remove function returns error
-  if (countryInfo__mapboxPopup != undefined) {
-    countryInfo__mapboxPopup.remove()
-  }
-
-  $(targetSelector)
-    .find('.map-close-button')
-    .css('display', 'none')
-  $(targetSelector)
-    .find('.share-menu-container')
-    .css('display', 'none')
-  setShareMenuState(targetSelector)
-  $(targetSelector)
-    .find('.legend-container')
-    .css('display', 'none')
-  $(targetSelector)
-    .find('#legend-button')
-    .removeClass('legend-button-closed legend-button-open')
-    .addClass('legend-button-closed')
-  setLegendState(targetSelector)
-  $(targetSelector)
-    .find('.overlay')
-    .css('display', 'block')
-  $(targetSelector)
-    .find('.overlay')
-    .removeClass('disappear')
-    .addClass('appear')
-
-  const deactivateMap = () => {
-    var animationEvent =
-        'webkitAnimationEnd oanimationend msAnimationEnd animationend'
-    $(targetSelector)
-      .find('.overlay')
-      .one(animationEvent, function (event) {
-        map.flyTo({ center: initialCenter, zoom: initialZoom })
-        $(targetSelector)
-          .find('.overlay')
-          .removeClass('appear')
-        $(targetSelector)
-          .find('.map-open-button')
-          .css('display', 'block')
-
-        map.removeControl(mapNavigationControl)
-      })
-  }
-
-  if (isMobileDevice()) {
-    animateFullScreen(targetSelector, map, deactivateMap)
-  } else {
-    deactivateMap()
-  }
-}
-
 function addLegend (targetSelector) {
-  const legend = $(targetSelector).find('.nrcstat-country-dashboard-map-legend')
+  const legend = $(targetSelector).find('.nrcstat__mainmap__legend')
 
   if (isMobileDevice()) {
     addLegendMobile(legend)
@@ -873,8 +288,8 @@ const fullLegend = `
           </tr>
         </table>
         
-        <p><span class="source">Kilde: UNHCR, IDMC </span></p>
-        <p style="margin: 10px 0 -6px -1px;"><span class="credit">Utviklet av <a href="htttps://www.binarylights.com" target="_blank">Binary Lights</a>.</span></p>
+        <p><span class="source">Kilde: UNHCR, IDMC</span></p>
+        <p style="margin: 10px 0 -6px -1px;"><span class="credit">Utviklet av Binary Lights.</span></p>
       `
 
 function addLegendMobile (legend) {
@@ -902,26 +317,6 @@ function addLegendTabletDesktop (legend) {
   $(legend)
     .find('.legend-container-desktop')
     .append($(fullLegend))
-}
-
-function setLegendState (targetSelector) {
-  if (
-    $(targetSelector)
-      .find('#legend-button')
-      .hasClass('legend-button-closed')
-  ) { mobileLegendActive = false } else if (
-    $(targetSelector)
-      .find('#legend-button')
-      .hasClass('legend-button-open')
-  ) { mobileLegendActive = true }
-}
-
-function setShareMenuState (targetSelector) {
-  if (
-    $(targetSelector)
-      .find('.share-menu-container')
-      .css('display') != 'none'
-  ) { mobileShareMenuActive = true } else mobileShareMenuActive = false
 }
 
 function addShareMenu (targetSelector) {
@@ -1047,9 +442,8 @@ function Loader () {
 }
 
 function GlobalMap ({ mapboxgl }) {
-  console.log('GlobalMap here')
-  console.log('mapbox gl be like:')
-  console.log(mapboxgl)
+  const { t } = useTranslation()
+
   const containerElementRef = useRef(null)
   const mapboxElementRef = useRef(null)
   const onReady = ref => {
@@ -1071,7 +465,7 @@ function GlobalMap ({ mapboxgl }) {
 
     isFullScreen = false
 
-    const targetSelector = '#nrcstat-mainmap-container'
+    const targetSelector = '.nrcstat__mainmap__container'
 
     function calculateSizeFactor (figure) {
       if (figure < 100000) return [0.75, 'small']
@@ -1131,6 +525,119 @@ function GlobalMap ({ mapboxgl }) {
         closePopover()
         isCountryInfoPopupOrPopoverActive = false
       })
+    }
+
+    function setActiveMode (targetSelector, map) {
+      $(targetSelector)
+        .find('.nrcstat__mainmap__overlay')
+        .addClass('disappear')
+      $(targetSelector)
+        .find('.nrcstat__mainmap__open-button')
+        .css('display', 'none')
+      $(targetSelector)
+        .find('.nrcstat__mainmap__open-button')
+        .removeClass('highlight-map-open-button')
+
+      const activateMap = () => {
+        $(targetSelector)
+          .find('.nrcstat__mainmap__overlay')
+          .one(animationEvent, function (event) {
+            $(targetSelector)
+              .find('.nrcstat__mainmap__overlay')
+              .removeClass('disappear')
+            $(targetSelector)
+              .find('.nrcstat__mainmap__overlay')
+              .css('display', 'none')
+
+            mapNavigationControl = new mapboxgl.NavigationControl({
+              showCompass: false
+            })
+
+            map.addControl(mapNavigationControl, 'bottom-right')
+
+            $(targetSelector)
+              .find('.nrcstat__mainmap__close-button')
+              .css('display', 'block')
+          })
+      }
+
+      if (isMobileDevice()) {
+        animateFullScreen(targetSelector, map, activateMap)
+      } else {
+        activateMap()
+      }
+    }
+
+    function setPassiveMode (targetSelector, map) {
+      // check if popup exist otherwise remove function returns error
+      if (countryInfo__mapboxPopup != undefined) {
+        countryInfo__mapboxPopup.remove()
+      }
+
+      $(targetSelector)
+        .find('.nrcstat__mainmap__close-button')
+        .css('display', 'none')
+      $(targetSelector)
+        .find('.share-menu-container')
+        .css('display', 'none')
+      setShareMenuState(targetSelector)
+      $(targetSelector)
+        .find('.legend-container')
+        .css('display', 'none')
+      $(targetSelector)
+        .find('#legend-button')
+        .removeClass('legend-button-closed legend-button-open')
+        .addClass('legend-button-closed')
+      setLegendState(targetSelector)
+      $(targetSelector)
+        .find('.nrcstat__mainmap__overlay')
+        .css('display', 'block')
+      $(targetSelector)
+        .find('.nrcstat__mainmap__overlay')
+        .removeClass('disappear')
+        .addClass('appear')
+
+      const deactivateMap = () => {
+        $(targetSelector)
+          .find('.nrcstat__mainmap__overlay')
+          .one(animationEvent, function (event) {
+            map.flyTo({ center: initialCenter, zoom: START_ZOOM })
+            $(targetSelector)
+              .find('.nrcstat__mainmap__overlay')
+              .removeClass('appear')
+            $(targetSelector)
+              .find('.nrcstat__mainmap__open-button')
+              .css('display', 'block')
+
+            map.removeControl(mapNavigationControl)
+          })
+      }
+
+      if (isMobileDevice()) {
+        animateFullScreen(targetSelector, map, deactivateMap)
+      } else {
+        deactivateMap()
+      }
+    }
+
+    function setLegendState (targetSelector) {
+      if (
+        $(targetSelector)
+          .find('#legend-button')
+          .hasClass('legend-button-closed')
+      ) { mobileLegendActive = false } else if (
+        $(targetSelector)
+          .find('#legend-button')
+          .hasClass('legend-button-open')
+      ) { mobileLegendActive = true }
+    }
+
+    function setShareMenuState (targetSelector) {
+      if (
+        $(targetSelector)
+          .find('.share-menu-container')
+          .css('display') != 'none'
+      ) { mobileShareMenuActive = true } else mobileShareMenuActive = false
     }
 
     function closePopover () {
@@ -1264,27 +771,27 @@ function GlobalMap ({ mapboxgl }) {
     }
 
     $(targetSelector)
-      .find('.overlay')
+      .find('.nrcstat__mainmap__overlay')
       .mousedown(function () {
         $(targetSelector)
-          .find('.map-open-button')
+          .find('.nrcstat__mainmap__open-button')
           .addClass('highlight-map-open-button')
         $(targetSelector)
-          .find('.map-open-button')
+          .find('.nrcstat__mainmap__open-button')
           .one(animationEvent, function (event) {
             $(this).removeClass('highlight-map-open-button')
           })
       })
 
     $(targetSelector)
-      .find('.map-open-button')
+      .find('.nrcstat__mainmap__open-button')
       .click(function () {
         setActiveMode(targetSelector, map)
         isCountryInfoPopupOrPopoverActive = false
       })
 
     $(targetSelector)
-      .find('.map-close-button')
+      .find('.nrcstat__mainmap__close-button')
       .click(function () {
         setPassiveMode(targetSelector, map)
         isCountryInfoPopupOrPopoverActive = false
@@ -1628,9 +1135,56 @@ function GlobalMap ({ mapboxgl }) {
         <div class="data"></div>
       </div>`)
       $('body').append(hoverPopup)
-      const showTooltip = countryCode => e => {
+      const showTooltip = marker => e => {
         if (map.getZoom() < 3) return
         if (isCountryInfoPopupOrPopoverActive) return
+        const countryCode = marker.properties.iso
+        // console.log(e, marker);
+
+        /*
+          targetElHeight = clientHeight
+          targetCenterY = clientHeight / 2
+          mouseDistanceFromCenter = e.offsetY / 2s
+        */
+        const targetElWidth = e.target.clientWidth
+        const targetElHeight = e.target.clientHeight
+        const targetCenterX = targetElWidth / 2
+        const targetCenterY = targetElHeight / 2
+        const mouseX = e.offsetX
+        const mouseY = e.offsetY
+        const mouseHorizontalDistanceFromCenter = Math.abs(
+          targetCenterX - mouseX
+        )
+        const mouseVerticalDistanceFromCenter = Math.abs(targetCenterY - mouseY)
+        let horizontalDistanceThreshold
+        let verticalDistanceThreshold
+        switch (marker.properties.sizeClass) {
+          case 'small':
+            horizontalDistanceThreshold = 65
+            verticalDistanceThreshold = 65
+            break
+
+          case 'medium':
+            horizontalDistanceThreshold = 75
+            verticalDistanceThreshold = 75
+            break
+
+          default:
+          case 'large':
+            horizontalDistanceThreshold = 95
+            verticalDistanceThreshold = 95
+            break
+        }
+
+        if (
+          mouseHorizontalDistanceFromCenter > horizontalDistanceThreshold ||
+          mouseVerticalDistanceFromCenter > verticalDistanceThreshold
+        ) {
+          return hideTooltip()
+        }
+
+        hoverPopup.children('.top').html(`<p class="top-header">${norwegianCountryNames[countryCode]}</p><h3>Totalt</h3>`)
+
         const dataHtml = [
           {
             color: 'rgba(114,199,231,0.72)',
@@ -1681,6 +1235,7 @@ function GlobalMap ({ mapboxgl }) {
         hoverPopup.css({ display: 'none' })
       }
 
+      // TODO: this is likely to be a bottleneck
       geojson.features.forEach(function (marker) {
         var el = document.createElement('div')
         const iso = marker.properties.iso
@@ -1689,8 +1244,8 @@ function GlobalMap ({ mapboxgl }) {
         el.style.overflow = 'hidden'
 
         if (!isMobileDevice()) {
-          el.addEventListener('mouseenter', showTooltip(marker.properties.iso))
-          el.addEventListener('mousemove', showTooltip(marker.properties.iso))
+          el.addEventListener('mouseenter', showTooltip(marker))
+          el.addEventListener('mousemove', showTooltip(marker))
           el.addEventListener('mouseout', hideTooltip)
         }
 
@@ -1719,12 +1274,12 @@ function GlobalMap ({ mapboxgl }) {
     })
   }
   return (
-    <div id='nrcstat-mainmap-container' ref={containerElementRef}>
-      <button className='map-open-button' type='button'>Utforsk kart</button>
-      <button className='map-close-button' style={{ display: 'none' }} type='button'>Avslutt utforskning</button>
-      <div className='map-share' />
+    <div className='nrcstat__mainmap__container' ref={containerElementRef}>
+      <button className='nrcstat__mainmap__open-button' type='button'>{window.localeTranslation['Widget.Static.GlobalRadialBarChartDisplacementMap']['button.startMapExploration']}</button>
+      <button className='nrcstat__mainmap__close-button' style={{ display: 'none' }} type='button'>{window.localeTranslation['Widget.Static.GlobalRadialBarChartDisplacementMap']['button.endMapExploration']}</button>
+      <div className='nrcstat__map__share-btn' />
       <div
-        className='nrcstat-static-global-displacement-radial-bar-chart-map'
+        className='nrcstat__globalmap__mapbox'
         ref={onReady}
         style={{
           position: 'relative',
@@ -1733,8 +1288,8 @@ function GlobalMap ({ mapboxgl }) {
           height: '100%'
         }}
       >
-        <div className='overlay' />
-        <div className='nrcstat-country-dashboard-map-legend' />
+        <div className='nrcstat__mainmap__overlay' />
+        <div className='nrcstat__mainmap__legend' />
       </div>
     </div>
   )

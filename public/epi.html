@@ -10,6 +10,13 @@
 </head>
 
 <body>
+
+  <style>
+    #abc222 {
+      height: 500px;
+    }
+  </style>
+
   <div id="abc222"></div>
   <div id="abc111"></div>
   <script>
@@ -19,9 +26,9 @@
     //   widgetId: "donut"
     // });
 
-    NrcStatWidgetLibrary.generateWidget({
+    NrcStatWidgetLibrary.getInstance().generateWidget({
       targetSelector: "#abc222",
-      widgetId: "global-displacement-radial-bar-chart-map-2019-0.1"
+      widgetId: "en-GB-global-displacement-radial-bar-chart-map-2019-0.1"
     });
   </script>
 </body>

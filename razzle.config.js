@@ -43,6 +43,10 @@ module.exports = {
 
     console.log(JSON.stringify(appConfig))
 
+    // Applying this to be able to attach the VsCode debugger to the server process.
+    // Tip sourced from:https://github.com/jaredpalmer/razzle/issues/546
+    config.devtool = dev ? 'eval-source-map' : 'none'
+
     return appConfig
   },
 

@@ -7,10 +7,15 @@ import { renderToString } from 'react-dom/server'
 import { ServerLocation } from '@reach/router'
 import { ChunkExtractor, ChunkExtractorManager } from '@loadable/server'
 import { transform } from '@babel/core'
+import { mapValues } from 'lodash'
 import App from './App'
 import { determineWidgetType } from './lib/determine-widget-type'
 
 import Widget from './Widget/Widget'
+
+/// import i18n service to initialize it
+import { i18n } from './server-only/locale-service.js'
+import { mapNestedObjectToPathKeyedObject } from './util/mapNestedObjectToPathKeyedObject'
 
 const server = express()
 server
@@ -26,7 +31,7 @@ server
   */
   .get('/render-widgets', (req, res) => {
     const queue = JSON.parse(req.query.queue)
-    const enrichedQueue = queue.map(w => Object.assign(w, { type: determineWidgetType()(w.widgetId) }))
+    const enrichedQueue = queue.map(w => Object.assign(w, { ...determineWidgetType()(w.widgetId) }))
 
     const extractor = new ChunkExtractor({
       statsFile: pathLib.resolve('build/loadable-stats.json'),
@@ -41,7 +46,13 @@ server
       </ChunkExtractorManager>
     )
 
+    const languageLocaleData = mapValues(
+      i18n.getDataByLanguage(enrichedQueue[0].locale),
+      namespace => mapNestedObjectToPathKeyedObject(namespace)
+    )
+
     const payload = {
+      localeTranslation: { [enrichedQueue[0].locale]: languageLocaleData, ...languageLocaleData },
       __LOADABLE_REQUIRED_CHUNKS__: null,
       widgetQueue: enrichedQueue,
       scripts: []
@@ -65,9 +76,5 @@ server
 
     res.type('javascript').send(payload)
   })
-
-function extractAssets (widgetQueue) {
-  return extractor
-}
 
 export default server

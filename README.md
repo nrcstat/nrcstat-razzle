@@ -1,5 +1,9 @@
 
 
+
+# Usage Notes
+- Start server by running `yarn start`. This launches razzle, which in turn manages two webpack processes, one for the server, one for the client.
+
 # Notes on usage of repo
 - Use `yarn`, not `npm`
 

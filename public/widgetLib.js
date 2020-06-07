@@ -19,6 +19,7 @@
     fetch(assetsPath)
       .then(resp => resp.json())
       .then(data => {
+        window.localeTranslation = data.localeTranslation
         window.nrcStatDrawWidgetQueue = data.widgetQueue
         const loadableInfoScriptEl = document.createElement('script')
         loadableInfoScriptEl.id = '__LOADABLE_REQUIRED_CHUNKS__'
