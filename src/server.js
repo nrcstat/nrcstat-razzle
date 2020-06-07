@@ -80,11 +80,11 @@ server
 
     const js = extractor.getScriptTags((attrs) => {
       if (attrs) {
-        let scriptUrl = attrs.url
+        const scriptUrl = attrs.url
         console.log(process.env.NODE_ENV)
         if (process.env.NODE_ENV === 'production') {
-          scriptUrl = scriptUrl.replace(/^((http|https):\/\/localhost:\d+)/g, '')
-          scriptUrl = process.env.RAZZLE_URL + scriptUrl
+          // scriptUrl = scriptUrl.replace(/^((http|https):\/\/localhost:\d+)/g, '')
+          // scriptUrl = process.env.RAZZLE_URL + scriptUrl
         }
 
         payload.scripts.push({
@@ -99,11 +99,11 @@ server
     const css = extractor.getStyleTags((attrs) => {
       console.log(attrs)
       if (attrs) {
-        let linkUrl = attrs.url
+        const linkUrl = attrs.url
         console.log(process.env.NODE_ENV)
         if (process.env.NODE_ENV === 'production') {
-          linkUrl = linkUrl.replace(/^((http|https):\/\/localhost:\d+)/g, '')
-          linkUrl = process.env.RAZZLE_URL + linkUrl
+          // linkUrl = linkUrl.replace(/^((http|https):\/\/localhost:\d+)/g, '')
+          // linkUrl = process.env.RAZZLE_URL + linkUrl
         }
 
         payload.links.push(linkUrl)
