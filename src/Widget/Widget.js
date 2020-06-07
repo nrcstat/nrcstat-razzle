@@ -1,8 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import classes from './index.css'
+import './Widget.scss'
 import { isServer } from '../util/utils'
 import loadable from '@loadable/component'
+import { buildFixedLocaleContext } from '../services/i18n'
 
 /*
 import GlobalMap from './GlobalMap/GlobalMap'
@@ -16,21 +17,29 @@ const Donut = loadable(() => import(/* webpackChunkName: "Donut" */ './Donut/Don
 const Pie = loadable(() => import(/* webpackChunkName: "Pie" */ './Pie/Pie'))
 
 const widgetMap = {
-  'GlobalMap': GlobalMap,
-  'Line': Line,
-  'Donut': Donut,
-  'Pie': Pie,
+  GlobalMap: GlobalMap,
+  Line: Line,
+  Donut: Donut,
+  Pie: Pie
 }
 
-function Widget({ widgetId, type, definition, data, localeDictionary }) {
-  console.log("Widget is run")
+export const WidgetParamsContext = React.createContext()
+
+function Widget (props) {
+  const { type, locale } = props
+  console.log('Widget is run')
   console.log(type)
   const SpecificWidget = widgetMap[type]
+  const FixedLocaleContext = buildFixedLocaleContext(locale)
   return (
-    <div className={classes.red}>
-      I am widget
-      <SpecificWidget type={type} />
-    </div>
+    <FixedLocaleContext>
+      <WidgetParamsContext.Provider value={props}>
+        -<div className='nrcstat__rootwidget'>
+          I am widget
+          <SpecificWidget />
+         </div>
+      </WidgetParamsContext.Provider>
+    </FixedLocaleContext>
   )
 }
 

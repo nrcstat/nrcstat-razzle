@@ -1,9 +1,7 @@
-@import '@/colors.scss';
+@import '@/style/common.scss';
 @import url("https://api.tiles.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.css");
 
-
-
-.nrcstat-map-country-info-popover-wrapper {
+.nrcstat-radialchartmap-country-info-popover-wrapper {
 
   position: fixed;
   top: 0;
@@ -76,21 +74,22 @@
 }
 
 .mapboxgl-popup {
-  z-index: 99;
+  z-index: 16000;
 }
 
-.nrcstat-static-mainmap {
+.nrcstat__mainmap__container {
 
   position: relative;
+  height: 100%;
 
-  #map {
+  .nrcstat__globalmap__mapbox {
     position: absolute;
     top: 0;
     bottom: 0;
     width: 100%;
   }
 
-  .overlay{
+  .nrcstat__mainmap__overlay {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -151,7 +150,7 @@
 
 
 
-  .map-open-button{
+  .nrcstat__mainmap__open-button {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -165,11 +164,11 @@
     font-weight: normal;
     font-family: "Roboto Condensed";
     text-transform: uppercase;
-    z-index: 11;
-  }
+    z-index: 16000;
 
-  .map-open-button:hover{
-    background-color: #FF7602;
+    &:hover {
+      background-color: #FF7602;
+    }
   }
 
   .highlight-map-open-button{
@@ -207,7 +206,7 @@
   }
 
 
-  .map-close-button{
+  .nrcstat__mainmap__close-button {
     position: absolute;
     bottom: 5%;
     left: 50%;
@@ -221,12 +220,11 @@
     font-weight: normal;
     font-family: "Roboto Condensed";
     text-transform: uppercase;
-    z-index: 11;
-  }
+    z-index: 16000;
 
-
-  .map-close-button:hover{
-    background-color: #FF7602;
+    &hover {
+      background-color: #FF7602;
+    }
   }
 
   .map-share {
@@ -287,7 +285,7 @@
 
   .mapboxgl-popup-content p {
     max-width: none;
-    text-align: left;
+    text-align: center;
   }
 
   .mapboxgl-popup-close-button{
@@ -308,6 +306,7 @@
     padding: 0px 20px;
     font-family: "Roboto Condensed";
     z-index:100;
+    text-align: center;
 
     table {
       font-size: 1.25em;
@@ -367,39 +366,57 @@
     }
   }
 
-  .legend{
+  .nrcstat__mainmap__legend {
+    
     font-size: 12pt;
     padding: 10px;
-    font-family: "Roboto Condensed";
+    font-family: 'Roboto Condensed';
     position: absolute;
     top: 10px;
     left: 10px;
     overflow: auto;
-    z-index: 1;
+    z-index: 16000;
     width: 265px;
     box-sizing: content-box;
     overflow: hidden;
 
-    table td{
+    table td {
       vertical-align: top;
       padding: 3px;
     }
 
-    p{
+    p {
       margin: 5px 0px -10px -7px;
     }
 
-    .orange-dot, .gray-dot {
+    .orange-dot,
+    .gray-dot,
+    .refugeesFrom-dot,
+    .refugeesTo-dot,
+    .idps-dot {
       height: 20px;
       width: 20px;
       border-radius: 50%;
       display: inline-block;
       vertical-align: top;
     }
-    .orange-dot { background-color: $nrcOrange; }
-    .gray-dot { background-color: #d4d4d4; }
+    .orange-dot {
+      background-color: $nrcOrange;
+    }
+    .gray-dot {
+      background-color: #d4d4d4;
+    }
+    .refugeesFrom-dot {
+      background-color: $dataPointColour__refugeesFrom;
+    }
+    .refugeesTo-dot {
+      background-color: $dataPointColour__refugeesTo;
+    }
+    .idps-dot {
+      background-color: $dataPointColour__idps;
+    }
 
-    .legend-text{
+    .legend-text {
       vertical-align: middle;
       line-height: 135%;
       margin: 5px 8px;
@@ -409,19 +426,88 @@
 
     .source {
       position: relative;
-      left: 5px;
-      bottom: 5px;
       font-size: smaller;
+      left: 5px;
+      margin: 0;
+      padding: 0;
     }
 
-    #legend-container{
-      border: 1px solid black;
+    .credit {
+      position: relative;
+      font-size: 10px;
+      color: grey;
+      padding: 0;
+    }
+
+    #legend-container {
+      border: 1px solid #ededed;
+      border-radius: 3px;
       background: #fff;
       overflow: auto;
-      padding: 5px;
+      padding: 10px 10px;
       overflow: hidden;
     }
   }
+
+  @media only screen and (max-width: 450px) {
+    .legend {
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 5px;
+    }
+  }
+
+  .legend-button-container {
+    background: #fff;
+    border: 1px solid black;
+    z-index: 1;
+    display: inline-block;
+    margin-bottom: -1px;
+  }
+
+  #legend-button {
+    padding: 7px 7px 7px 4px;
+    display: inline-block;
+  }
+
+  .legend-button-open {
+    -ms-transform: rotate(90deg); /* IE 9 */
+    -webkit-transform: rotate(90deg); /* Safari */
+    transform: rotate(90deg);
+  }
+
+  .legend-label {
+    margin-left: 0.5em;
+    display: inline-block;
+  }
+
+  .disable-selection {
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer */
+    -khtml-user-select: none; /* KHTML browsers (e.g. Konqueror) */
+    -webkit-user-select: none; /* Chrome, Safari, and Opera */
+    -webkit-touch-callout: none; /* Disable Android and iOS callouts*/
+  }
+
+  .statistics-table-row {
+    height: 5em;
+  }
+
+  .statistics-label img {
+    margin-right: 1.1em;
+    width: 45px;
+  }
+
+  .statistics-number {
+    white-space: nowrap;
+    line-height: 1.7em;
+  }
+
+    
+
+
+
 
   @media only screen and (max-width: 450px){
     .legend{
@@ -469,3 +555,51 @@
 
 }
 
+.global-displacement-radial-bar-chart-tooltip {
+  font-family: "Roboto Condensed";
+  position: absolute;
+  white-space: nowrap;
+  display: none;
+  background-color: white;
+  padding: 0 0 0.5em 0;
+  z-index: 20000;
+  color: black;
+  border: 1px solid black;
+  border-radius: 7px;
+  max-width: 12em;
+  overflow: auto;
+
+  .top {
+    width: 100%;
+    padding: 0.6em 0;
+    background-color: lightgrey;
+    text-align: center;
+    border-radius: 7px 7px 0 0;
+
+    p.top-header {
+      margin: 0;
+      font-size: 1.1em;
+      text-transform: uppercase;
+      white-space: normal !important;
+    }
+
+    h3 {
+      margin: 0.2em 0 0 0;
+      font-size: 1.0em;
+    }
+  }
+
+  .line {
+    margin: .7em 1em;
+  }
+
+  .dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 7px;
+    position: relative;
+    top: 5px;
+  }
+}
