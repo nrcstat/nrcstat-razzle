@@ -256,7 +256,7 @@ function GlobalMap ({ mapboxgl }) {
         .find('#legend-button')
         .attr('class', 'legend-button-closed')
       $(targetSelector)
-        .find('.legend-container')
+        .find('.nrcstat__mainmap__legend')
         .css('display', 'none')
       setLegendState(targetSelector)
       $(targetSelector)
@@ -271,7 +271,7 @@ function GlobalMap ({ mapboxgl }) {
           
           <div class="country-statistics">
                <p class="title">${countryName}</p>
-               <p class="population">FOLKETALL: ${population} millioner</p>
+               <p class="population">${t('countryInfoPopup.population', { populationInMillions: population })}</p>
                <p class="statistics">${statsTable}</p>
                
                ${countryLink}
@@ -284,7 +284,7 @@ function GlobalMap ({ mapboxgl }) {
       $(
         '.nrcstat-radialchartmap-country-info-popover-wrapper .close-popover'
       ).click(() => {
-        closePopover()
+        $('.nrcstat-radialchartmap-country-info-popover-wrapper').remove()
         isCountryInfoPopupOrPopoverActive = false
       })
     }
@@ -452,10 +452,6 @@ function GlobalMap ({ mapboxgl }) {
           .find('.share-menu-container')
           .css('display') != 'none'
       ) { mobileShareMenuActive = true } else mobileShareMenuActive = false
-    }
-
-    function closePopover () {
-      $('.nrcstat-radialchartmap-country-info-popover-wrapper').remove()
     }
 
     function countryInfo__showPopup (event, map) {
@@ -893,8 +889,9 @@ function GlobalMap ({ mapboxgl }) {
       map.on('click', 'countries', function (event) {
         hideTooltip()
         var selectedCountry = event.features[0].properties
+        console.log(selectedCountry, 'clicked')
 
-        if (mobileLegendActive || mobileShareMenuActive) {
+        if (mobileLegendActive) {
           $(targetSelector)
             .find('.legend-container')
             .css('display', 'none')
