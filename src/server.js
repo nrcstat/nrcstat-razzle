@@ -25,6 +25,9 @@ const dataPreLoaders = {
 }
 
 const server = express()
+
+server.use(cors())
+
 server
   .disable('x-powered-by')
   .use(express.static(process.env.RAZZLE_PUBLIC_DIR))
