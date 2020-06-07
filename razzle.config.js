@@ -35,6 +35,11 @@ module.exports = {
           name: dev
         }
       })
+
+      if (process.env.NODE_ENV === 'production') {
+        console.log(process.env.RAZZLE_URL)
+        appConfig.output.publicPath = process.env.RAZZLE_URL + '/'
+      }
     }
 
     // Applying this to be able to attach the VsCode debugger to the server process.
