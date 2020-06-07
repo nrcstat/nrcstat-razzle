@@ -37,7 +37,7 @@ function Widget (props) {
         -<div className='nrcstat__rootwidget'>
           I am widget
           <SpecificWidget />
-         </div>
+        </div>
       </WidgetParamsContext.Provider>
     </FixedLocaleContext>
   )

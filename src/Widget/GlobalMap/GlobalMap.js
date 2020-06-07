@@ -24,6 +24,8 @@ import {
 
 import './GlobalMap.scss'
 
+import { loadWidgetData } from './loadWidgetData.js'
+
 import { isServer } from '@/util/utils'
 import loadable from '@loadable/component'
 
@@ -43,7 +45,6 @@ import gazaGeoJson from './assets/json//gaza.json'
 import middleResolutionCountriesGeoJson from './assets/json/ne_110m_admin_0_countries.json'
 import centroidsRaw from './assets/json/geo_entities_updated_manually.json'
 import COUNTRIES from './assets/json/radial_bar_map_countries_to_display.json'
-import { API_URL, LIB_URL } from '../../config'
 import { FixedLocaleContext } from '../../services/i18n'
 import { WidgetParamsContext } from '../Widget'
 middleResolutionCountriesGeoJson.features.push(gazaGeoJson.features[0])
@@ -62,7 +63,6 @@ const radialBarChartsMap = chain(
   .mapValues('file')
   .value()
 
-const QUERY = { where: { year: 2018 } }
 let countryStatsCache = null
 let isFullScreen
 const nrcCountryIso2 = [
@@ -147,20 +147,6 @@ const centroids = centroidsRaw
       .includes(centroid.iso)
   )
 
-function loadStats () {
-  const url = `${API_URL}/datas?filter=${encodeURIComponent(JSON.stringify(QUERY))}`
-  $.getJSON(url)
-    .then(function (data) {
-      countryStatsCache = data
-    })
-    .catch(function (err) {
-      console.log(
-        'error occurred during loading country stats data from loopback:'
-      )
-      console.log(err)
-    })
-}
-
 function getCountryStats (countryIso2Code) {
   if (typeof countryStatsCache) {
     return countryStatsCache.filter(c => c.countryCode === countryIso2Code)
@@ -203,7 +189,7 @@ function Loader () {
 
 function GlobalMap ({ mapboxgl }) {
   const { getNsFixedT } = useContext(FixedLocaleContext)
-  const { periodYear } = useContext(WidgetParamsContext)
+  const { periodYear, preloadedWidgetData } = useContext(WidgetParamsContext)
   const t = getNsFixedT(['Widget.Static.GlobalRadialBarChartDisplacementMap', 'GeographicalNames'])
 
   const containerElementRef = useRef(null)
@@ -793,7 +779,20 @@ function GlobalMap ({ mapboxgl }) {
 
     addShareMenu(targetSelector)
 
-    loadStats()
+    if (preloadedWidgetData) {
+      countryStatsCache = preloadedWidgetData
+    } else {
+      loadWidgetData()
+        .then(function (data) {
+          countryStatsCache = data
+        })
+        .catch(function (err) {
+          console.log(
+            'error occurred during loading country stats data from loopback:'
+          )
+          console.log(err)
+        })
+    }
 
     mapboxElementRef.current = ref
     mapboxgl.accessToken = 'pk.eyJ1IjoibnJjbWFwcyIsImEiOiJjaW5hNTM4MXMwMDB4d2tseWZhbmFxdWphIn0._w6LWU9OWnXak36BkzopcQ'

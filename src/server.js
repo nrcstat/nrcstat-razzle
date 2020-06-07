@@ -13,9 +13,15 @@ import { determineWidgetType } from './lib/determine-widget-type'
 
 import Widget from './Widget/Widget'
 
+import { loadWidgetData as loadGlobalMapData } from './Widget/GlobalMap/loadWidgetData.js'
+
 /// import i18n service to initialize it
 import { i18n } from './server-only/locale-service.js'
 import { mapNestedObjectToPathKeyedObject } from './util/mapNestedObjectToPathKeyedObject'
+
+const dataPreLoaders = {
+  GlobalMap: loadGlobalMapData
+}
 
 const server = express()
 server
@@ -29,9 +35,18 @@ server
 
   })
   */
-  .get('/render-widgets', (req, res) => {
-    const queue = JSON.parse(req.query.queue)
-    const enrichedQueue = queue.map(w => Object.assign(w, { ...determineWidgetType()(w.widgetId) }))
+  .get('/render-widgets', async (req, res) => {
+    const rawQueue = JSON.parse(req.query.queue)
+    const enrichedQueue = rawQueue.map(w => Object.assign(w, { ...determineWidgetType()(w.widgetId) }))
+    // TODO: replace this with a Promise.all() method to load all data in parallel
+    for (let i = 0; i < enrichedQueue.length; i++) {
+      const widget = enrichedQueue[i]
+      const dataLoader = dataPreLoaders[widget.type]
+      if (dataLoader) {
+        const data = await dataLoader(2018)
+        widget.preloadedWidgetData = data
+      }
+    }
 
     const extractor = new ChunkExtractor({
       statsFile: pathLib.resolve('build/loadable-stats.json'),
