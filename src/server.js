@@ -83,7 +83,7 @@ server
           .replace(/^((http|https):\/\/localhost:3000)/g, '')
         payload.scripts.push({
           'data-chunk': attrs.chunk,
-          src: attrs.url
+          src: scriptUrl
         })
       }
       return attrs || {}
