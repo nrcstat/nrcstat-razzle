@@ -83,7 +83,8 @@ server
         let scriptUrl = attrs.url
         console.log(process.env.NODE_ENV)
         if (process.env.NODE_ENV === 'production') {
-          scriptUrl = scriptUrl.replace(/^((http|https):\/\/localhost:\d+)/g, process.env.RAZZLE_URL)
+          scriptUrl = scriptUrl.replace(/^((http|https):\/\/localhost:\d+)/g, '')
+          scriptUrl = process.env.RAZZLE_URL + scriptUrl
         }
 
         payload.scripts.push({
@@ -101,7 +102,8 @@ server
         let linkUrl = attrs.url
         console.log(process.env.NODE_ENV)
         if (process.env.NODE_ENV === 'production') {
-          linkUrl = linkUrl.replace(/^((http|https):\/\/localhost:\d+)/g, process.env.RAZZLE_URL)
+          linkUrl = linkUrl.replace(/^((http|https):\/\/localhost:\d+)/g, '')
+          linkUrl = process.env.RAZZLE_URL + linkUrl
         }
 
         payload.links.push(linkUrl)
