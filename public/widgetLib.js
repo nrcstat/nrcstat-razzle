@@ -21,6 +21,7 @@
       .then(data => {
         window.localeTranslation = data.localeTranslation
         window.nrcStatDrawWidgetQueue = data.widgetQueue
+
         const loadableInfoScriptEl = document.createElement('script')
         loadableInfoScriptEl.id = '__LOADABLE_REQUIRED_CHUNKS__'
         loadableInfoScriptEl.type = 'application/json'
@@ -32,6 +33,13 @@
           scriptEl.dataChunk = script['data-chunk']
           scriptEl.async = true
           document.querySelector('body').appendChild(scriptEl)
+        })
+
+        data.links.forEach(link => {
+          const linkEl = document.createElement('link')
+          linkEl.href = link
+          linkEl.rel = 'stylesheet'
+          document.querySelector('body').appendChild(linkEl)
         })
       })
 

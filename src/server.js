@@ -74,13 +74,18 @@ server
       localeTranslation: { [enrichedQueue[0].locale]: languageLocaleData, ...languageLocaleData },
       __LOADABLE_REQUIRED_CHUNKS__: null,
       widgetQueue: enrichedQueue,
-      scripts: []
+      scripts: [],
+      links: []
     }
 
     const js = extractor.getScriptTags((attrs) => {
       if (attrs) {
-        const scriptUrl = attrs.url
-          .replace(/^((http|https):\/\/localhost:3000)/g, process.env.RAZZLE_URL)
+        let scriptUrl = attrs.url
+        console.log(process.env.NODE_ENV)
+        if (process.env.NODE_ENV === 'production') {
+          scriptUrl = scriptUrl.replace(/^((http|https):\/\/localhost:\d+)/g, process.env.RAZZLE_URL)
+        }
+
         payload.scripts.push({
           'data-chunk': attrs.chunk,
           src: scriptUrl
@@ -92,6 +97,15 @@ server
 
     extractor.getStyleTags((attrs) => {
       console.log(attrs)
+      if (attrs) {
+        let linkUrl = attrs.url
+        console.log(process.env.NODE_ENV)
+        if (process.env.NODE_ENV === 'production') {
+          linkUrl = linkUrl.replace(/^((http|https):\/\/localhost:\d+)/g, process.env.RAZZLE_URL)
+        }
+
+        payload.links.push(linkUrl)
+      }
       return attrs || {}
     })
 

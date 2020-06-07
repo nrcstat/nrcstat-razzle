@@ -11,10 +11,6 @@ module.exports = {
     appConfig.resolve.alias = appConfig.resolve.alias || {}
     appConfig.resolve.alias['@'] = path.resolve(__dirname, 'src')
 
-    console.log('********************************')
-    console.log(target)
-    console.log('********************************')
-
     if (target === 'web') {
       const filename = path.resolve(__dirname, 'build')
 
@@ -40,8 +36,6 @@ module.exports = {
         }
       })
     }
-
-    console.log(JSON.stringify(appConfig))
 
     // Applying this to be able to attach the VsCode debugger to the server process.
     // Tip sourced from:https://github.com/jaredpalmer/razzle/issues/546
