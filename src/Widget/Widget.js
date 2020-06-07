@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import './Widget.scss'
 import { isServer } from '../util/utils'
 import loadable from '@loadable/component'
+import { buildFixedLocaleContext } from '../services/i18n'
 
 /*
 import GlobalMap from './GlobalMap/GlobalMap'
@@ -22,15 +23,23 @@ const widgetMap = {
   Pie: Pie
 }
 
-function Widget ({ widgetId, type, definition, data, locale }) {
+export const WidgetParamsContext = React.createContext()
+
+function Widget (props) {
+  const { type, locale } = props
   console.log('Widget is run')
   console.log(type)
   const SpecificWidget = widgetMap[type]
+  const FixedLocaleContext = buildFixedLocaleContext(locale)
   return (
-    <div className='nrcstat__rootwidget'>
-      I am widget
-      <SpecificWidget type={type} />
-    </div>
+    <FixedLocaleContext>
+      <WidgetParamsContext.Provider value={props}>
+        -<div className='nrcstat__rootwidget'>
+          I am widget
+          <SpecificWidget />
+         </div>
+      </WidgetParamsContext.Provider>
+    </FixedLocaleContext>
   )
 }
 

@@ -27,4 +27,8 @@ async function initializeI18n () {
 }
 initializeI18n()
 
+// This is a bruteforce way of forcing locale data to
+// be refreshed and reloaed from Locize
+// setInterval(initializeI18n, 10 * 1000)
+
 export const i18n = i18next

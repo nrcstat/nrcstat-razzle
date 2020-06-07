@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useContext } from 'react'
 import {
   includes,
   find,
@@ -44,6 +44,8 @@ import middleResolutionCountriesGeoJson from './assets/json/ne_110m_admin_0_coun
 import centroidsRaw from './assets/json/geo_entities_updated_manually.json'
 import COUNTRIES from './assets/json/radial_bar_map_countries_to_display.json'
 import { API_URL, LIB_URL } from '../../config'
+import { FixedLocaleContext } from '../../services/i18n'
+import { WidgetParamsContext } from '../Widget'
 middleResolutionCountriesGeoJson.features.push(gazaGeoJson.features[0])
 
 const req = require.context('./assets/pre-rendered-radial-bar-charts', false)
@@ -183,248 +185,6 @@ function countryInfo__hasData (iso2) {
 
 // #region Map legend
 
-function animateFullScreen (elm, map, callbackCb) {
-  const target = $(elm)
-
-  if (!isFullScreen) {
-    beforeFullScreenNrcPageHeaderZIndex = $('header.page-header').css(
-      'z-index'
-    )
-    $('header.page-header').css('z-index', 0)
-
-    beforeFullScreenBodyOverflowProp = $('body').css('overflow')
-    $('body').css('overflow', 'hidden')
-
-    const windowWidth = window.innerWidth
-    const windowHeight = window.innerHeight
-
-    const { top: topOffset, left: leftOffset } = target.offset()
-    const scrollTop = $(document).scrollTop()
-
-    let nonComputedStyles = target.attr('style').split(';')
-    nonComputedStyles = nonComputedStyles.map(style => style.split(':'))
-    const nonComputedStyleByName = name => {
-      return undefined
-      const style = _.find(nonComputedStyles, style => style[0] === name)
-      if (style) return style[1]
-      else return undefined
-    }
-
-    beforeFullScreenCssProps = {
-      top: nonComputedStyleByName('top') || target.css('top'),
-      left: nonComputedStyleByName('left') || target.css('left'),
-      width: nonComputedStyleByName('width') || target.css('width'),
-      height: nonComputedStyleByName('height') || target.css('height')
-    }
-    const newProps = {
-      top: `${-Math.floor(topOffset - scrollTop)}px`,
-      left: `-${leftOffset}px`,
-      width: `${windowWidth}px`,
-      height: `${windowHeight}px`
-    }
-    target.animate(newProps, toggleFullScreenAnimationDuration, () => {
-      isFullScreen = true
-      callbackCb()
-    })
-  } else {
-    $('body').css('overflow', beforeFullScreenBodyOverflowProp)
-
-    $('header.page-header').css('z-index', beforeFullScreenNrcPageHeaderZIndex)
-    target.animate(
-      beforeFullScreenCssProps,
-      toggleFullScreenAnimationDuration,
-      () => {
-        isFullScreen = false
-        // const cssAttr = _.map(beforeFullScreenCssProps, (v, k) => `${k}: ${v}`).join(";") + ";"
-        // target.attr('style', cssAttr)
-        callbackCb()
-      }
-    )
-  }
-}
-
-function addLegend (targetSelector) {
-  const legend = $(targetSelector).find('.nrcstat__mainmap__legend')
-
-  if (isMobileDevice()) {
-    addLegendMobile(legend)
-  } else {
-    addLegendTabletDesktop(legend)
-  }
-
-  $(targetSelector)
-    .find('.legend-button-container')
-    .click(function () {
-      $(targetSelector)
-        .find('.share-menu-container')
-        .css('display', 'none')
-      setShareMenuState(targetSelector)
-      $(targetSelector)
-        .find('.legend-container')
-        .toggle()
-      $(targetSelector)
-        .find('#legend-button')
-        .toggleClass('legend-button-closed')
-      $(targetSelector)
-        .find('#legend-button')
-        .toggleClass('legend-button-open')
-      setLegendState(targetSelector)
-    })
-}
-
-const fullLegend = `
-        <table>
-          <tr>
-              <td><span class="refugeesFrom-dot"></span></td>
-              <td class="legend-text">Totalt antall flyktninger fra landet</td>
-          </tr>
-          <tr>
-              <td><span class="refugeesTo-dot"></span></td>
-              <td class="legend-text">Totalt antall flyktninger til landet</td>
-          </tr>
-          <tr>
-              <td><span class="idps-dot"></span></td>
-              <td class="legend-text">Totalt antall internt fordrevne i landet</td>
-          </tr>
-        </table>
-        
-        <p><span class="source">Kilde: UNHCR, IDMC</span></p>
-        <p style="margin: 10px 0 -6px -1px;"><span class="credit">Utviklet av Binary Lights.</span></p>
-      `
-
-function addLegendMobile (legend) {
-  $(legend).append(
-      `<div class="legend-button-container">
-              <a class="disable-selection">
-                <div class="legend-label">&#9432;</div>
-                <div id="legend-button"  class="legend-button-closed">
-                  <span style="color: #FF7602;">&gt;</span><span style="color: #d4d4d4;">&gt;</span>
-                </div>
-              </a>
-            </div>
-            <div id="legend-container" class="legend-container" style="display: none;"></div>
-            `
-  )
-  $(legend)
-    .find('.legend-container')
-    .append($(fullLegend))
-}
-
-function addLegendTabletDesktop (legend) {
-  $(legend).append(
-    '<div id="legend-container" class="legend-container-desktop"></div>'
-  )
-  $(legend)
-    .find('.legend-container-desktop')
-    .append($(fullLegend))
-}
-
-function addShareMenu (targetSelector) {
-  const shareMenu = $(targetSelector).find('.map-share')
-
-  shareMenu.append(`
-          <div class="share-button-container">
-              <div class="map-share-button"><img class="share-icon"></div>
-          </div>
-          <div class="share-menu-container"></div>
-      `)
-
-  const fbUrl = facebookHandler(targetSelector)
-  const liUrl = linkedinHandler(targetSelector)
-  const twUrl = twitterHandler(targetSelector)
-
-  const fullShareMenu = `      
-        <table>
-          <tr>
-              <td class="handler facebook-link share-logo disable-selection"><a href="${fbUrl}" target="_blank"><img class="facebook-icon" src="" /></a></td>
-              <td class="handler facebook-link disable-selection"><a href="${fbUrl}" target="_blank"> Facebook</a></td>
-          </tr>
-          <tr>
-              <td class="handler linkedin-link share-logo disable-selection"><a href="${liUrl}" target="_blank"><img class="linkedin-icon" src="" /></a></td>
-              <td class="handler linkedin-link disable-selection"><a href="${liUrl}" target="_blank"> Linkedin</a></td>
-          </tr>
-          <tr>
-              <td class="handler twitter-link share-logo disable-selection"><a href="${twUrl}" target="_blank"><img class="twitter-icon" src="" /></a></td>
-              <td class="handler twitter-link disable-selection"><a href="${twUrl}" target="_blank"> Twitter</a></td>
-          </tr>
-        </table>
-        
-      `
-
-  shareMenu.find('.share-menu-container').append($(fullShareMenu))
-
-  $('.facebook-icon').attr('src', facebookIcon)
-  $('.linkedin-icon').attr('src', linkedinIcon)
-  $('.twitter-icon').attr('src', twitterIcon)
-  $('.share-icon').attr('src', shareIcon)
-
-  shareMenu.find('.share-menu-container').css('display', 'none')
-
-  shareMenu.find('.share-button-container').mousedown(function () {
-    shareMenu.find('.share-menu-container').toggle()
-    $(targetSelector)
-      .find('.legend-container')
-      .css('display', 'none')
-    $(targetSelector)
-      .find('#legend-button')
-      .removeClass('legend-button-closed legend-button-open')
-      .addClass('legend-button-closed')
-    setShareMenuState(targetSelector)
-    setLegendState(targetSelector)
-
-    if (countryInfo__mapboxPopup != undefined) {
-      countryInfo__mapboxPopup.remove()
-    }
-  })
-
-  shareMenu
-    .find('.facebook-link')
-    .on('click', () => facebookHandler(targetSelector))
-  shareMenu
-    .find('.linkedin-link')
-    .on('click', () => linkedinHandler(targetSelector))
-  shareMenu
-    .find('.twitter-link')
-    .on('click', () => twitterHandler(targetSelector))
-}
-
-function facebookHandler (targetElementAttrId) {
-  var originalWidgetUrlToShare = window.location.href.split('#')[0]
-  if (targetElementAttrId) originalWidgetUrlToShare += targetElementAttrId
-  var href =
-      'https://api.nrcdata.no/api/widgets/global-displacement-radial-bar-chart-2019/render/false?orgWUrl=' +
-      encodeURIComponent(originalWidgetUrlToShare)
-  var url =
-      'https://www.facebook.com/dialog/share?' +
-      'app_id=1769614713251596' +
-      '&display=popup' +
-      '&href=' +
-      encodeURIComponent(href)
-
-  return url
-}
-
-function linkedinHandler (targetElementAttrId) {
-  var originalWidgetUrlToShare = window.location.href.split('#')[0]
-  if (targetElementAttrId) originalWidgetUrlToShare += targetElementAttrId
-  var href =
-      'https://api.nrcdata.no/api/widgets/global-displacement-radial-bar-chart-2019/render/false?orgWUrl=' +
-      encodeURIComponent(originalWidgetUrlToShare)
-  var url =
-      'http://www.linkedin.com/shareArticle?' + 'url=' + href + '&mini=true'
-  return url
-}
-
-function twitterHandler (targetElementAttrId) {
-  var originalWidgetUrlToShare = window.location.href.split('#')[0]
-  if (targetElementAttrId) originalWidgetUrlToShare += targetElementAttrId
-  var href =
-      'https://api.nrcdata.no/api/widgets/global-displacement-radial-bar-chart-2019/render/false?orgWUrl=' +
-      encodeURIComponent(originalWidgetUrlToShare)
-  var url = 'https://twitter.com/intent/tweet?' + 'text=' + href
-  return url
-}
-
 const Mapboxgl = loadable.lib(() => import('mapbox-gl/dist/mapbox-gl.js'), { ssr: false })
 
 if (isServer()) {
@@ -442,7 +202,9 @@ function Loader () {
 }
 
 function GlobalMap ({ mapboxgl }) {
-  const { t } = useTranslation()
+  const { getNsFixedT } = useContext(FixedLocaleContext)
+  const { periodYear } = useContext(WidgetParamsContext)
+  const t = getNsFixedT(['Widget.Static.GlobalRadialBarChartDisplacementMap', 'GeographicalNames'])
 
   const containerElementRef = useRef(null)
   const mapboxElementRef = useRef(null)
@@ -459,7 +221,7 @@ function GlobalMap ({ mapboxgl }) {
     var mobileShareMenuActive = false
     let isCountryInfoPopupOrPopoverActive = false
 
-    const beforeFullScreenCssProps = {}
+    let beforeFullScreenCssProps = {}
     let beforeFullScreenBodyOverflowProp
     let beforeFullScreenNrcPageHeaderZIndex
 
@@ -477,7 +239,7 @@ function GlobalMap ({ mapboxgl }) {
 
     function countryInfo__showPopover (targetSelector, event) {
       var selectedCountryIso2 = event.features[0].properties.iso_a2
-      const norwegianCountryName = norwegianCountryNames[selectedCountryIso2]
+      const countryName = t(`NRC.Web.StaticTextDictionary.Contries.${selectedCountryIso2}`)
 
       const population = getCountryStat(selectedCountryIso2, 'population').data
 
@@ -485,7 +247,7 @@ function GlobalMap ({ mapboxgl }) {
 
       const countryUrl = countryLinks[selectedCountryIso2]
       const countryLink = countryUrl
-        ? `<p class="country-link"><a href="https://www.flyktninghjelpen.no/${countryUrl}" target="_blank">LES MER OM ${norwegianCountryName.toUpperCase()} HER</a></p>`
+        ? `<p class="country-link"><a href="https://www.flyktninghjelpen.no/${countryUrl}" target="_blank">${t('countryInfoPopup.readMoreAboutCountryLink', { countryName: countryName })}</a></p>`
         : ''
 
       // close menu when popover opens
@@ -508,7 +270,7 @@ function GlobalMap ({ mapboxgl }) {
           <span class="close-popover disable-selection"><img class="close-popup-img" src=" "></span>
           
           <div class="country-statistics">
-               <p class="title">${norwegianCountryName}</p>
+               <p class="title">${countryName}</p>
                <p class="population">FOLKETALL: ${population} millioner</p>
                <p class="statistics">${statsTable}</p>
                
@@ -620,6 +382,58 @@ function GlobalMap ({ mapboxgl }) {
       }
     }
 
+    function animateFullScreen (elm, map, callbackCb) {
+      const target = $(elm)
+
+      if (!isFullScreen) {
+        beforeFullScreenNrcPageHeaderZIndex = $('header.page-header').css(
+          'z-index'
+        )
+        $('header.page-header').css('z-index', 0)
+
+        beforeFullScreenBodyOverflowProp = $('body').css('overflow')
+        $('body').css('overflow', 'hidden')
+
+        const windowWidth = window.innerWidth
+        const windowHeight = window.innerHeight
+
+        const { top: topOffset, left: leftOffset } = target.offset()
+        const scrollTop = $(document).scrollTop()
+
+        beforeFullScreenCssProps = {
+          top: target.css('top'),
+          left: target.css('left'),
+          width: target.css('width'),
+          height: target.css('height')
+        }
+        const newProps = {
+          top: `${-Math.floor(topOffset - scrollTop)}px`,
+          left: `-${leftOffset}px`,
+          width: `${windowWidth}px`,
+          height: `${windowHeight}px`
+        }
+        target.animate(newProps, toggleFullScreenAnimationDuration, () => {
+          isFullScreen = true
+          map.resize()
+          callbackCb()
+        })
+      } else {
+        $('body').css('overflow', beforeFullScreenBodyOverflowProp)
+
+        $('header.page-header').css('z-index', beforeFullScreenNrcPageHeaderZIndex)
+        target.animate(
+          beforeFullScreenCssProps,
+          toggleFullScreenAnimationDuration,
+          () => {
+            isFullScreen = false
+            // const cssAttr = _.map(beforeFullScreenCssProps, (v, k) => `${k}: ${v}`).join(";") + ";"
+            // target.attr('style', cssAttr)
+            callbackCb()
+          }
+        )
+      }
+    }
+
     function setLegendState (targetSelector) {
       if (
         $(targetSelector)
@@ -646,8 +460,8 @@ function GlobalMap ({ mapboxgl }) {
 
     function countryInfo__showPopup (event, map) {
       var selectedCountryIso2 = event.features[0].properties.iso_a2
-      const norwegianCountryName = norwegianCountryNames[selectedCountryIso2]
-      var fullCountryName = '<h1>' + norwegianCountryName + '</h1>'
+      const countryName = t(`NRC.Web.StaticTextDictionary.Contries.${selectedCountryIso2}`)
+      var fullCountryName = '<h1>' + countryName + '</h1>'
       var loader = '<div class="loader"></div>'
 
       countryInfo__mapboxPopup = new mapboxgl.Popup({
@@ -664,11 +478,11 @@ function GlobalMap ({ mapboxgl }) {
 
       const countryUrl = countryLinks[selectedCountryIso2]
       const countryLink = countryUrl
-        ? `<p class="country-link"><a href="https://www.flyktninghjelpen.no/${countryUrl}" target="_blank">LES MER OM ${norwegianCountryName.toUpperCase()} HER</a></p>`
+        ? `<p class="country-link"><a href="https://www.flyktninghjelpen.no/${countryUrl}" target="_blank">${t('countryInfoPopup.readMoreAboutCountryLink', { countryName })}</a></p>`
         : ''
 
       const population = getCountryStat(selectedCountryIso2, 'population').data
-      const populationHtml = `<p class="population">FOLKETALL: ${population} millioner</p>`
+      const populationHtml = `<p class="population">${t('countryInfoPopup.population', { populationInMillions: population })}</p>`
 
       countryInfo__mapboxPopup.setHTML(
         '<div class="popup-container">' +
@@ -693,11 +507,11 @@ function GlobalMap ({ mapboxgl }) {
           dataPoints: [
             {
               dataPointKey: 'totalRefugeesFromX',
-              dataPointName: 'Totalt antall flyktninger fra'
+              dataPointName: t('countryInfoPopup.totalNumberRefugeesFrom')
             },
             {
               dataPointKey: 'newRefugeesFromXInYear',
-              dataPointName: 'Nye i 2018'
+              dataPointName: t('countryInfoPopup.newInYearX', { year: periodYear })
             }
           ]
         },
@@ -706,11 +520,11 @@ function GlobalMap ({ mapboxgl }) {
           dataPoints: [
             {
               dataPointKey: 'refugeesInXFromOtherCountriesInYear',
-              dataPointName: 'Totalt antall flyktninger til'
+              dataPointName: t('countryInfoPopup.totalNumberRefugeesTo')
             },
             {
               dataPointKey: 'newRefugeesInXFromOtherCountriesInYear',
-              dataPointName: 'Nye i 2018'
+              dataPointName: t('countryInfoPopup.newInYearX', { year: periodYear })
             }
           ]
         },
@@ -719,11 +533,11 @@ function GlobalMap ({ mapboxgl }) {
           dataPoints: [
             {
               dataPointKey: 'idpsInXInYear',
-              dataPointName: 'Totalt antall internt fordrevne'
+              dataPointName: t('countryInfoPopup.totalNumberIdps')
             },
             {
               dataPointKey: 'newIdpsInXInYear',
-              dataPointName: 'Nye i 2018'
+              dataPointName: t('countryInfoPopup.newInYearX', { year: periodYear })
             }
           ]
         }
@@ -796,6 +610,188 @@ function GlobalMap ({ mapboxgl }) {
         setPassiveMode(targetSelector, map)
         isCountryInfoPopupOrPopoverActive = false
       })
+
+    function addLegend (targetSelector) {
+      const legend = $(targetSelector).find('.nrcstat__mainmap__legend')
+
+      if (isMobileDevice()) {
+        addLegendMobile(legend)
+      } else {
+        addLegendTabletDesktop(legend)
+      }
+
+      $(targetSelector)
+        .find('.legend-button-container')
+        .click(function () {
+          $(targetSelector)
+            .find('.share-menu-container')
+            .css('display', 'none')
+          setShareMenuState(targetSelector)
+          $(targetSelector)
+            .find('.legend-container')
+            .toggle()
+          $(targetSelector)
+            .find('#legend-button')
+            .toggleClass('legend-button-closed')
+          $(targetSelector)
+            .find('#legend-button')
+            .toggleClass('legend-button-open')
+          setLegendState(targetSelector)
+        })
+    }
+
+    const fullLegend = `
+        <table>
+          <tr>
+              <td><span class="refugeesFrom-dot"></span></td>
+              <td class="legend-text">${t('legend.totalNumberRefugeesFromCountry')}</td>
+          </tr>
+          <tr>
+              <td><span class="refugeesTo-dot"></span></td>
+              <td class="legend-text">${t('legend.totalNumberRefugeesToCountry')}</td>
+          </tr>
+          <tr>
+              <td><span class="idps-dot"></span></td>
+              <td class="legend-text">${t('legend.totalNumberIdpsInCountry')}</td>
+          </tr>
+        </table>
+        
+        <p><span class="source">${t('legend.source')}</span></p>
+        <p style="margin: 10px 0 -6px -1px;"><span class="credit">${t('legend.developedByBinaryLights')}</span></p>
+      `
+
+    function addLegendMobile (legend) {
+      $(legend).append(
+      `<div class="legend-button-container">
+              <a class="disable-selection">
+                <div class="legend-label">&#9432;</div>
+                <div id="legend-button"  class="legend-button-closed">
+                  <span style="color: #FF7602;">&gt;</span><span style="color: #d4d4d4;">&gt;</span>
+                </div>
+              </a>
+            </div>
+            <div id="legend-container" class="legend-container" style="display: none;"></div>
+            `
+      )
+      $(legend)
+        .find('.legend-container')
+        .append($(fullLegend))
+    }
+
+    function addLegendTabletDesktop (legend) {
+      $(legend).append(
+        '<div id="legend-container" class="legend-container-desktop"></div>'
+      )
+      $(legend)
+        .find('.legend-container-desktop')
+        .append($(fullLegend))
+    }
+
+    function addShareMenu (targetSelector) {
+      const shareMenu = $(targetSelector).find('.map-share')
+
+      shareMenu.append(`
+          <div class="share-button-container">
+              <div class="map-share-button"><img class="share-icon"></div>
+          </div>
+          <div class="share-menu-container"></div>
+      `)
+
+      const fbUrl = facebookHandler(targetSelector)
+      const liUrl = linkedinHandler(targetSelector)
+      const twUrl = twitterHandler(targetSelector)
+
+      const fullShareMenu = `      
+        <table>
+          <tr>
+              <td class="handler facebook-link share-logo disable-selection"><a href="${fbUrl}" target="_blank"><img class="facebook-icon" src="" /></a></td>
+              <td class="handler facebook-link disable-selection"><a href="${fbUrl}" target="_blank"> Facebook</a></td>
+          </tr>
+          <tr>
+              <td class="handler linkedin-link share-logo disable-selection"><a href="${liUrl}" target="_blank"><img class="linkedin-icon" src="" /></a></td>
+              <td class="handler linkedin-link disable-selection"><a href="${liUrl}" target="_blank"> Linkedin</a></td>
+          </tr>
+          <tr>
+              <td class="handler twitter-link share-logo disable-selection"><a href="${twUrl}" target="_blank"><img class="twitter-icon" src="" /></a></td>
+              <td class="handler twitter-link disable-selection"><a href="${twUrl}" target="_blank"> Twitter</a></td>
+          </tr>
+        </table>
+        
+      `
+
+      shareMenu.find('.share-menu-container').append($(fullShareMenu))
+
+      $('.facebook-icon').attr('src', facebookIcon)
+      $('.linkedin-icon').attr('src', linkedinIcon)
+      $('.twitter-icon').attr('src', twitterIcon)
+      $('.share-icon').attr('src', shareIcon)
+
+      shareMenu.find('.share-menu-container').css('display', 'none')
+
+      shareMenu.find('.share-button-container').mousedown(function () {
+        shareMenu.find('.share-menu-container').toggle()
+        $(targetSelector)
+          .find('.legend-container')
+          .css('display', 'none')
+        $(targetSelector)
+          .find('#legend-button')
+          .removeClass('legend-button-closed legend-button-open')
+          .addClass('legend-button-closed')
+        setShareMenuState(targetSelector)
+        setLegendState(targetSelector)
+
+        if (countryInfo__mapboxPopup != undefined) {
+          countryInfo__mapboxPopup.remove()
+        }
+      })
+
+      shareMenu
+        .find('.facebook-link')
+        .on('click', () => facebookHandler(targetSelector))
+      shareMenu
+        .find('.linkedin-link')
+        .on('click', () => linkedinHandler(targetSelector))
+      shareMenu
+        .find('.twitter-link')
+        .on('click', () => twitterHandler(targetSelector))
+    }
+
+    function facebookHandler (targetElementAttrId) {
+      var originalWidgetUrlToShare = window.location.href.split('#')[0]
+      if (targetElementAttrId) originalWidgetUrlToShare += targetElementAttrId
+      var href =
+      'https://api.nrcdata.no/api/widgets/global-displacement-radial-bar-chart-2019/render/false?orgWUrl=' +
+      encodeURIComponent(originalWidgetUrlToShare)
+      var url =
+      'https://www.facebook.com/dialog/share?' +
+      'app_id=1769614713251596' +
+      '&display=popup' +
+      '&href=' +
+      encodeURIComponent(href)
+
+      return url
+    }
+
+    function linkedinHandler (targetElementAttrId) {
+      var originalWidgetUrlToShare = window.location.href.split('#')[0]
+      if (targetElementAttrId) originalWidgetUrlToShare += targetElementAttrId
+      var href =
+      'https://api.nrcdata.no/api/widgets/global-displacement-radial-bar-chart-2019/render/false?orgWUrl=' +
+      encodeURIComponent(originalWidgetUrlToShare)
+      var url =
+      'http://www.linkedin.com/shareArticle?' + 'url=' + href + '&mini=true'
+      return url
+    }
+
+    function twitterHandler (targetElementAttrId) {
+      var originalWidgetUrlToShare = window.location.href.split('#')[0]
+      if (targetElementAttrId) originalWidgetUrlToShare += targetElementAttrId
+      var href =
+      'https://api.nrcdata.no/api/widgets/global-displacement-radial-bar-chart-2019/render/false?orgWUrl=' +
+      encodeURIComponent(originalWidgetUrlToShare)
+      var url = 'https://twitter.com/intent/tweet?' + 'text=' + href
+      return url
+    }
 
     addLegend(targetSelector)
 
@@ -1020,8 +1016,6 @@ function GlobalMap ({ mapboxgl }) {
           const [sizeFactor, sizeClass] = calculateSizeFactor(
             getMaxSet3FigureFromData(centroid.iso)
           )
-          console.log(sizeClass)
-          console.log(getMaxSet3FigureFromData(centroid.iso))
           return {
             type: 'Feature',
             properties: {
@@ -1131,7 +1125,7 @@ function GlobalMap ({ mapboxgl }) {
 
       const hoverPopup = $(`
       <div class="global-displacement-radial-bar-chart-tooltip">
-        <div class="top">Totalt</div>
+        <div class="top">${t('hoverBox.totally')}</div>
         <div class="data"></div>
       </div>`)
       $('body').append(hoverPopup)
@@ -1183,7 +1177,7 @@ function GlobalMap ({ mapboxgl }) {
           return hideTooltip()
         }
 
-        hoverPopup.children('.top').html(`<p class="top-header">${norwegianCountryNames[countryCode]}</p><h3>Totalt</h3>`)
+        hoverPopup.children('.top').html(`<p class="top-header">${norwegianCountryNames[countryCode]}</p><h3>${t()}</h3>`)
 
         const dataHtml = [
           {
@@ -1275,8 +1269,8 @@ function GlobalMap ({ mapboxgl }) {
   }
   return (
     <div className='nrcstat__mainmap__container' ref={containerElementRef}>
-      <button className='nrcstat__mainmap__open-button' type='button'>{window.localeTranslation['Widget.Static.GlobalRadialBarChartDisplacementMap']['button.startMapExploration']}</button>
-      <button className='nrcstat__mainmap__close-button' style={{ display: 'none' }} type='button'>{window.localeTranslation['Widget.Static.GlobalRadialBarChartDisplacementMap']['button.endMapExploration']}</button>
+      <button className='nrcstat__mainmap__open-button' type='button'>{t('button.startMapExploration')}</button>
+      <button className='nrcstat__mainmap__close-button' style={{ display: 'none' }} type='button'>{t('button.endMapExploration')}</button>
       <div className='nrcstat__map__share-btn' />
       <div
         className='nrcstat__globalmap__mapbox'
