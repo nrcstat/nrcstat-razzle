@@ -133,8 +133,9 @@ const START_ZOOM = MIN_ZOOM
 const MIN_COUNTRY_NAME_SIZE = 8
 const MAX_COUNTRY_NAME_SIZE = 26
 
-const easing = BezierEasing(0.34, 0.58, 0.62, 1.11)
+// const easing = BezierEasing(0.34, 0.58, 0.62, 1.11)
 // const easing = BezierEasing(0.34, 0.58, 0.64, 0.76)
+const easing = BezierEasing(1, 0, 0.64, 0.76)
 
 const animationEvent = 'webkitAnimationEnd oanimationend msAnimationEnd animationend'
 
