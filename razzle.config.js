@@ -37,7 +37,6 @@ module.exports = {
       })
 
       if (process.env.NODE_ENV === 'production') {
-        console.log(process.env.RAZZLE_URL)
         appConfig.output.publicPath = process.env.RAZZLE_URL + '/'
       }
     }

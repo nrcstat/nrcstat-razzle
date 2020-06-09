@@ -20,8 +20,11 @@ import { loadWidgetData as loadGlobalMapData } from './Widget/GlobalMap/loadWidg
 import { i18n } from './server-only/locale-service.js'
 import { mapNestedObjectToPathKeyedObject } from './util/mapNestedObjectToPathKeyedObject'
 
+import tableTypeToTableWidgetMap from './Widget/StaticTable/table-type-to-table-widget-map.js'
+
 const dataPreLoaders = {
-  GlobalMap: loadGlobalMapData
+  GlobalMap: loadGlobalMapData,
+  StaticTable: (widget) => tableTypeToTableWidgetMap[widget.tableType].loadWidgetData(widget)
 }
 
 const server = express()
@@ -31,14 +34,6 @@ server.use(cors())
 server
   .disable('x-powered-by')
   .use(express.static(process.env.RAZZLE_PUBLIC_DIR))
-  /*
-  .get('/widgetLib.js', (req, res) => {
-    setTimeout(() => {
-      res.type('javascript').send('function yalla(){alert("test")}')
-    }, 2000)
-
-  })
-  */
   .get('/render-widgets', async (req, res) => {
     const rawQueue = JSON.parse(req.query.queue)
     const enrichedQueue = rawQueue.map(w => Object.assign(w, { ...determineWidgetType()(w.widgetId) }))
@@ -47,7 +42,7 @@ server
       const widget = enrichedQueue[i]
       const dataLoader = dataPreLoaders[widget.type]
       if (dataLoader) {
-        const data = await dataLoader(2018)
+        const data = await dataLoader(widget)
         widget.preloadedWidgetData = data
       }
     }
@@ -81,12 +76,6 @@ server
     const js = extractor.getScriptTags((attrs) => {
       if (attrs) {
         const scriptUrl = attrs.url
-        console.log(process.env.NODE_ENV)
-        if (process.env.NODE_ENV === 'production') {
-          // scriptUrl = scriptUrl.replace(/^((http|https):\/\/localhost:\d+)/g, '')
-          // scriptUrl = process.env.RAZZLE_URL + scriptUrl
-        }
-
         payload.scripts.push({
           'data-chunk': attrs.chunk,
           src: scriptUrl
@@ -100,12 +89,6 @@ server
       console.log(attrs)
       if (attrs) {
         const linkUrl = attrs.url
-        console.log(process.env.NODE_ENV)
-        if (process.env.NODE_ENV === 'production') {
-          // linkUrl = linkUrl.replace(/^((http|https):\/\/localhost:\d+)/g, '')
-          // linkUrl = process.env.RAZZLE_URL + linkUrl
-        }
-
         payload.links.push(linkUrl)
       }
       return attrs || {}

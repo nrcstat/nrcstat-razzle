@@ -1,23 +1,22 @@
-const countryAnnotations = require('../countryAnnotations2018.json')
-const async = require('async')
-import {thousandsFormatter, percentFormatter} from '../../helpers/tableWidgetFormatters'
-import {API_URL, LIB_URL} from '../../baseConfig'
+import { thousandsFormatter, percentFormatter } from '@/util/tableWidgetFormatters.js'
+import { API_URL, LIB_URL } from '@/config.js'
 
 import json from '../../../old/assets/datatables_language.json'
+const countryAnnotations = require('../countryAnnotations2018.json')
+const async = require('async')
 console.log(json)
 
 const $ = require('jquery')
 
 export default function (tableTitle, placeColumnLabel, dataPointColumnLabel, populationRatioColumnLabel,
-                           footerAnnotations, queryObject, dataProcessingFunction,
-                           dataPointColumnFormatter = thousandsFormatter,
-                           ratioColumnFormatter = percentFormatter,
-                           orderingEnabled = true) {
-//module.exports = function (title, dataColumnName, dataProcessingFunction, queryObject, foooterAnnotations, placeColumnName = "Land", orderingEnabled = true, dataColumnFormatter = thousandsFormatter) {
-  if (typeof footerAnnotations == "string") footerAnnotations = [ footerAnnotations ]
+  footerAnnotations, queryObject, dataProcessingFunction,
+  dataPointColumnFormatter = thousandsFormatter,
+  ratioColumnFormatter = percentFormatter,
+  orderingEnabled = true) {
+// module.exports = function (title, dataColumnName, dataProcessingFunction, queryObject, foooterAnnotations, placeColumnName = "Land", orderingEnabled = true, dataColumnFormatter = thousandsFormatter) {
+  if (typeof footerAnnotations === 'string') footerAnnotations = [footerAnnotations]
 
   return function (widgetObject, widgetData, targetSelector) {
-
     const wObject = widgetObject
     const wData = widgetData
     const wConfig = widgetObject.config
@@ -37,12 +36,12 @@ export default function (tableTitle, placeColumnLabel, dataPointColumnLabel, pop
     let allAnnotations
 
     async.waterfall([
-      function setContainerWidth(cb) {
-        $(targetSelector).css("max-width", "600px")
+      function setContainerWidth (cb) {
+        $(targetSelector).css('max-width', '600px')
         cb()
       },
 
-      function loadData(cb) {
+      function loadData (cb) {
         var urlQ = encodeURIComponent(JSON.stringify(queryObject))
         $.get(`${API_URL}/datas?filter=${urlQ}`, function (data) {
           data = dataProcessingFunction(data)
@@ -93,11 +92,11 @@ export default function (tableTitle, placeColumnLabel, dataPointColumnLabel, pop
         cb(null)
       },
       */
-      function setTmpl(cb) {
+      function setTmpl (cb) {
         let annotations = ''
-        /*allAnnotations.forEach(annot => {
+        /* allAnnotations.forEach(annot => {
           annotations += `<p style="font-size: small;"><sup>${annot.number})</sup>&nbsp;${annot.annotation}</p>`
-        })*/
+        }) */
         footerAnnotations.forEach(annot => {
           annotations += `<p style="font-size: small;">${annot}</p>`
         })
@@ -119,14 +118,14 @@ export default function (tableTitle, placeColumnLabel, dataPointColumnLabel, pop
         widgetEl.appendTo($(targetSelector))
         cb()
       },
-      function setupTable(cb) {
+      function setupTable (cb) {
         ft = $(`#datatable${id}`).DataTable({
           columns: [
             {
-              data: "place",
+              data: 'place',
               render: (data, type, row) => {
-                if (type == "display") {
-                  let txt = data
+                if (type == 'display') {
+                  const txt = data
                   /*
                   row.annotations.forEach(annot => {
                     txt += `&nbsp;<span class="nrcstat-widget-tooltip" title="${annot.annotation}"><sup>${annot.number})</sup></span>`
@@ -139,22 +138,22 @@ export default function (tableTitle, placeColumnLabel, dataPointColumnLabel, pop
               }
             },
             {
-              data: "data",
+              data: 'data',
               render: (data, type, row) => {
-                if (type == "display") return dataPointColumnFormatter(data)
+                if (type == 'display') return dataPointColumnFormatter(data)
                 else return data
               }
             },
             {
-              data: "ratio",
+              data: 'ratio',
               render: (data, type, row) => {
-                if (type == "display") return ratioColumnFormatter(data)
+                if (type == 'display') return ratioColumnFormatter(data)
                 else return data
               }
             }
           ],
           language: {
-            url: `https://wlib.staging.nrcdata.no/datatables_language.json`
+            url: 'https://wlib.staging.nrcdata.no/datatables_language.json'
           },
           responsive: true,
           searching: true,
@@ -164,29 +163,28 @@ export default function (tableTitle, placeColumnLabel, dataPointColumnLabel, pop
           colReorder: true,
           fixedHeader: true
         })
-        ft.on("draw.dt", () => initTooltipster())
-        ft.on("responsive-display", () => initTooltipster())
+        ft.on('draw.dt', () => initTooltipster())
+        ft.on('responsive-display', () => initTooltipster())
         ft.rows.add(tableData).draw(false)
         if (orderingEnabled) {
-          ft.order([ 2, "desc" ]).draw()
+          ft.order([2, 'desc']).draw()
         }
         cb()
       },
-      function setupTooltips(cb) {
+      function setupTooltips (cb) {
         initTooltipster()
         cb(null)
-      },
+      }
 
     ])
 
-    function initTooltipster() {
+    function initTooltipster () {
       target.find('.nrcstat-widget-tooltip').tooltipster({
         interactive: true,
         delay: 100,
-        animation: "fade",
+        animation: 'fade',
         maxWidth: 300
       })
     }
-
   }
 }

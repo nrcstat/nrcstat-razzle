@@ -40,10 +40,6 @@ if (isClient()) {
 
       resources: window.localeTranslation
     })
-  console.log(window.localeTranslation)
-  const fixedT = i18n.getFixedT('nb-NO')
-  const example = fixedT('Widget.Static.GlobalRadialBarChartDisplacementMap:button.startMapExploration')
-  console.log(example)
 }
 
 export const FixedLocaleContext = React.createContext()

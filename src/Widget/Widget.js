@@ -15,27 +15,26 @@ const GlobalMap = loadable(() => import(/* webpackChunkName: "GlobalMap" */ './G
 const Line = loadable(() => import(/* webpackChunkName: "Line" */ './Line/Line'))
 const Donut = loadable(() => import(/* webpackChunkName: "Donut" */ './Donut/Donut'))
 const Pie = loadable(() => import(/* webpackChunkName: "Pie" */ './Pie/Pie'))
+const StaticTable = loadable(() => import(/* webpackChunkName: "Pie" */ './StaticTable/StaticTable'))
 
 const widgetMap = {
   GlobalMap: GlobalMap,
   Line: Line,
   Donut: Donut,
-  Pie: Pie
+  Pie: Pie,
+  StaticTable: StaticTable
 }
 
 export const WidgetParamsContext = React.createContext()
 
 function Widget (props) {
   const { type, locale } = props
-  console.log('Widget is run')
-  console.log(type)
   const SpecificWidget = widgetMap[type]
   const FixedLocaleContext = buildFixedLocaleContext(locale)
   return (
     <FixedLocaleContext>
       <WidgetParamsContext.Provider value={props}>
-        -<div className='nrcstat__rootwidget'>
-          I am widget
+        <div className='nrcstat__rootwidget'>
           <SpecificWidget />
         </div>
       </WidgetParamsContext.Provider>
@@ -44,9 +43,3 @@ function Widget (props) {
 }
 
 export default Widget
-
-const fetchData = () => new Promise((resolve, reject) => {
-  setTimeout(() => {
-    resolve()
-  }, 500)
-})

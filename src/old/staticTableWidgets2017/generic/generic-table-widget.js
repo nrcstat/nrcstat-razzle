@@ -1,16 +1,15 @@
+import { thousandsFormatter } from '@/util/tableWidgetFormatters.js'
+import { API_URL, LIB_URL } from '@/config.js'
 const countryAnnotations = require('../../assets/countryAnnotations.json')
 const async = require('async')
-import {thousandsFormatter} from '../../helpers/tableWidgetFormatters'
-import {API_URL, LIB_URL} from '../../baseConfig'
 
 const $ = require('jquery')
 
-export default function (title, dataColumnName, dataProcessingFunction, queryObject, foooterAnnotations, placeColumnName = "Land", orderingEnabled = true, dataColumnFormatter = thousandsFormatter) {
-  if (typeof regionCodeNRC == "string") regionCodeNRC = [ regionCodeNRC ]
-  if (typeof foooterAnnotations == "string") foooterAnnotations = [ foooterAnnotations ]
+export default function (title, dataColumnName, dataProcessingFunction, queryObject, foooterAnnotations, placeColumnName = 'Land', orderingEnabled = true, dataColumnFormatter = thousandsFormatter) {
+  if (typeof regionCodeNRC === 'string') regionCodeNRC = [regionCodeNRC]
+  if (typeof foooterAnnotations === 'string') foooterAnnotations = [foooterAnnotations]
 
   return function (widgetObject, widgetData, targetSelector) {
-
     const wObject = widgetObject
     const wData = widgetData
     const wConfig = widgetObject.config
@@ -30,12 +29,12 @@ export default function (title, dataColumnName, dataProcessingFunction, queryObj
     let allAnnotations
 
     async.waterfall([
-      function setContainerWidth(cb) {
-        $(targetSelector).css("max-width", "600px")
+      function setContainerWidth (cb) {
+        $(targetSelector).css('max-width', '600px')
         cb()
       },
 
-      function loadData(cb) {
+      function loadData (cb) {
         var urlQ = encodeURIComponent(JSON.stringify(queryObject))
         $.get(`${API_URL}/datas?filter=${urlQ}`, function (data) {
           data = dataProcessingFunction(data)
@@ -86,11 +85,11 @@ export default function (title, dataColumnName, dataProcessingFunction, queryObj
         cb(null)
       },
       */
-      function setTmpl(cb) {
+      function setTmpl (cb) {
         let annotations = ''
-        /*allAnnotations.forEach(annot => {
+        /* allAnnotations.forEach(annot => {
           annotations += `<p style="font-size: small;"><sup>${annot.number})</sup>&nbsp;${annot.annotation}</p>`
-        })*/
+        }) */
         foooterAnnotations.forEach(annot => {
           annotations += `<p style="font-size: small;">${annot}</p>`
         })
@@ -111,14 +110,14 @@ export default function (title, dataColumnName, dataProcessingFunction, queryObj
         widgetEl.appendTo($(targetSelector))
         cb()
       },
-      function setupTable(cb) {
+      function setupTable (cb) {
         ft = $(`#datatable${id}`).DataTable({
           columns: [
             {
-              data: "place",
+              data: 'place',
               render: (data, type, row) => {
-                if (type == "display") {
-                  let txt = data
+                if (type == 'display') {
+                  const txt = data
                   /*
                   row.annotations.forEach(annot => {
                     txt += `&nbsp;<span class="nrcstat-widget-tooltip" title="${annot.annotation}"><sup>${annot.number})</sup></span>`
@@ -131,9 +130,9 @@ export default function (title, dataColumnName, dataProcessingFunction, queryObj
               }
             },
             {
-              data: "data",
+              data: 'data',
               render: (data, type, row) => {
-                if (type == "display") return dataColumnFormatter(data)
+                if (type == 'display') return dataColumnFormatter(data)
                 else return data
               }
             }
@@ -149,29 +148,28 @@ export default function (title, dataColumnName, dataProcessingFunction, queryObj
           colReorder: true,
           fixedHeader: true
         })
-        ft.on("draw.dt", () => initTooltipster())
-        ft.on("responsive-display", () => initTooltipster())
+        ft.on('draw.dt', () => initTooltipster())
+        ft.on('responsive-display', () => initTooltipster())
         ft.rows.add(tableData).draw(false)
-        if (orderingEnabled){
-          ft.order([ 1, "desc" ]).draw()
+        if (orderingEnabled) {
+          ft.order([1, 'desc']).draw()
         }
         cb()
       },
-      function setupTooltips(cb) {
+      function setupTooltips (cb) {
         initTooltipster()
         cb(null)
-      },
+      }
 
     ])
 
-    function initTooltipster() {
+    function initTooltipster () {
       target.find('.nrcstat-widget-tooltip').tooltipster({
         interactive: true,
         delay: 100,
-        animation: "fade",
+        animation: 'fade',
         maxWidth: 300
       })
     }
-
   }
 }

@@ -10,7 +10,7 @@ if (isServer()) {
   fetch = window.fetch
 }
 
-export function loadWidgetData (periodYear) {
+export function loadWidgetData ({ periodYear }) {
   const query = { where: { year: periodYear } }
   const url = `${API_URL}/datas?filter=${encodeURIComponent(JSON.stringify(query))}`
   return fetch(url)

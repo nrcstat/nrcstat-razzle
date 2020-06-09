@@ -174,12 +174,6 @@ function countryInfo__hasData (iso2) {
 
 const Mapboxgl = loadable.lib(() => import('mapbox-gl/dist/mapbox-gl.js'), { ssr: false })
 
-if (isServer()) {
-  console.log("i'm GlobalMap and i'm server")
-} else {
-  console.log("i'm GlobalMap and i'm client")
-}
-
 function Loader () {
   return (
     <Mapboxgl>
@@ -190,7 +184,8 @@ function Loader () {
 
 function GlobalMap ({ mapboxgl }) {
   const { getNsFixedT } = useContext(FixedLocaleContext)
-  const { periodYear, preloadedWidgetData } = useContext(WidgetParamsContext)
+  const widgetParams = useContext(WidgetParamsContext)
+  const { periodYear, preloadedWidgetData } = widgetParams
   const t = getNsFixedT(['Widget.Static.GlobalRadialBarChartDisplacementMap', 'GeographicalNames'])
 
   const containerElementRef = useRef(null)
@@ -783,7 +778,7 @@ function GlobalMap ({ mapboxgl }) {
     if (preloadedWidgetData) {
       countryStatsCache = preloadedWidgetData
     } else {
-      loadWidgetData()
+      loadWidgetData(widgetParams)
         .then(function (data) {
           countryStatsCache = data
         })

@@ -1,32 +1,30 @@
+import { populationNumberFormatter, percentFormatter, thousandsFormatter } from '@/util/tableWidgetFormatters.js'
+import { API_URL, LIB_URL } from '@/config.js'
+import { map, groupBy, find, findIndex, includes, each } from 'lodash'
 const continentColorMap = require('../assets/continentColorMap.json')
 const continentCodeNameMap = require('../assets/continentCodeNameMapNorwegian.json')
 const countryCodeNameMap = require('../assets/countryCodeNameMapNorwegian.json')
 const countryAnnotations = require('../assets/countryAnnotations.json')
 const async = require('async')
-import {populationNumberFormatter, percentFormatter, thousandsFormatter} from '../helpers/tableWidgetFormatters'
-import {API_URL, LIB_URL} from '../baseConfig'
 
 const $ = require('jquery')
-import { map, groupBy, find, findIndex, includes, each } from 'lodash'
 
-const tableTitle = "HOVEDTABELL - MENNESKER PÅ FLUKT VERDEN OVER"
+const tableTitle = 'HOVEDTABELL - MENNESKER PÅ FLUKT VERDEN OVER'
 
-const tableDataPoints = [ "totalRefugeesFromX", "refugeesInXFromOtherCountriesInYear", "idpsInXInYear",
-  "newRefugeesFromXInYear", "newRefugeesInXFromOtherCountriesInYear", "newIdpsInXInYear", "population",
-  "percentageWomenFleeingToCountry", "percentageChildrenFleeingToCountry" ]
+const tableDataPoints = ['totalRefugeesFromX', 'refugeesInXFromOtherCountriesInYear', 'idpsInXInYear',
+  'newRefugeesFromXInYear', 'newRefugeesInXFromOtherCountriesInYear', 'newIdpsInXInYear', 'population',
+  'percentageWomenFleeingToCountry', 'percentageChildrenFleeingToCountry']
 
 const footerAnnotations = [
-  "En strek indikerer at verdien er enten null eller ikke tilgjengelig.",
-  "FOLKETALL - Kilde: United Nations Population Fund. Tall for 2017.",
-  "NYE FLYKTNINGER TIL OG FRA - Nye flyktninger viser til personer som ble innvilget beskyttelse i 2017. I Europa og andre land med et fungerende asylsystem blir man anerkjent som flyktning når asylsøknaden er innvilget. Dette skjer ofte året etter asylankomsten. I mange utviklingsland blir de fleste anerkjent som flyktning umiddelbart ved ankomst på «prima facie» grunnlag uten en individuell asylprosess. I nye flyktninger til inkluderes også antall kvoteflyktninger landet har tatt imot i 2017.",
-  "TOTALT ANTALL MENNESKER FLYKTET TIL og TOTALT ANTALL MENNESKER FLYKTET FRA - Totalt antall mennesker som er på flukt ved utgangen av året, uavhengig av når man flyktet. Tallene inkluderer personer i en flyktningliknende situasjon, selv om deres flyktningstatus ikke formelt er avklart, samt asylsøkere som enda ikke har fått sin søknad endelig behandlet. Tallene for industriland er basert på antall asylsøkere som har fått opphold de siste ti årene. Kvoteflyktninger som industriland har tatt imot er ikke inkludert siden disse flyktningene har fått en varig løsning på sin flyktningsituasjon. De fleste flyktninger til utviklingsland regnes med i statistikken fram til de kan returnere. Kilder: FNs høykommissær for flyktninger (UNHCR) og FNs hjelpeorganisasjon for palestinske flyktninger (UNRWA).",
-  "ANDEL KVINNER OG BARN - Det er ikke tilgjengelig informasjon fra alle land, og hvis andelen er særdeles lav (under 50%) er det ikke sikkert tallet er representativt for hele befolkningen. Kilde: FNs høykommissær for flyktninger (UNHCR).",
-  "INTERNT FORDREVNE OG NYE INTERNT FORDREVNE - Kilde: Flyktninghjelpens senter for internt fordrevne (IDMC). For forklaring på de ulike anslagene, samt primærkilder, se www.internal-displacement.org. Tallene er fra inngangen til 2018 og omfatter bare mennesker som er fordrevet på grunn av krig og konflikt, og ikke mennesker som er rammet av naturkatastrofer.",
+  'En strek indikerer at verdien er enten null eller ikke tilgjengelig.',
+  'FOLKETALL - Kilde: United Nations Population Fund. Tall for 2017.',
+  'NYE FLYKTNINGER TIL OG FRA - Nye flyktninger viser til personer som ble innvilget beskyttelse i 2017. I Europa og andre land med et fungerende asylsystem blir man anerkjent som flyktning når asylsøknaden er innvilget. Dette skjer ofte året etter asylankomsten. I mange utviklingsland blir de fleste anerkjent som flyktning umiddelbart ved ankomst på «prima facie» grunnlag uten en individuell asylprosess. I nye flyktninger til inkluderes også antall kvoteflyktninger landet har tatt imot i 2017.',
+  'TOTALT ANTALL MENNESKER FLYKTET TIL og TOTALT ANTALL MENNESKER FLYKTET FRA - Totalt antall mennesker som er på flukt ved utgangen av året, uavhengig av når man flyktet. Tallene inkluderer personer i en flyktningliknende situasjon, selv om deres flyktningstatus ikke formelt er avklart, samt asylsøkere som enda ikke har fått sin søknad endelig behandlet. Tallene for industriland er basert på antall asylsøkere som har fått opphold de siste ti årene. Kvoteflyktninger som industriland har tatt imot er ikke inkludert siden disse flyktningene har fått en varig løsning på sin flyktningsituasjon. De fleste flyktninger til utviklingsland regnes med i statistikken fram til de kan returnere. Kilder: FNs høykommissær for flyktninger (UNHCR) og FNs hjelpeorganisasjon for palestinske flyktninger (UNRWA).',
+  'ANDEL KVINNER OG BARN - Det er ikke tilgjengelig informasjon fra alle land, og hvis andelen er særdeles lav (under 50%) er det ikke sikkert tallet er representativt for hele befolkningen. Kilde: FNs høykommissær for flyktninger (UNHCR).',
+  'INTERNT FORDREVNE OG NYE INTERNT FORDREVNE - Kilde: Flyktninghjelpens senter for internt fordrevne (IDMC). For forklaring på de ulike anslagene, samt primærkilder, se www.internal-displacement.org. Tallene er fra inngangen til 2018 og omfatter bare mennesker som er fordrevet på grunn av krig og konflikt, og ikke mennesker som er rammet av naturkatastrofer.'
 ]
 
-
 export default function (widgetObject, widgetData, targetSelector) {
-
   const wObject = widgetObject
   const wData = widgetData
   const wConfig = widgetObject.config
@@ -45,8 +43,8 @@ export default function (widgetObject, widgetData, targetSelector) {
   let currentData
   let ft
   let allAnnotations
-  let allAnnotationsTxt = ""
-  let allAnnotationsHtml = ""
+  let allAnnotationsTxt = ''
+  let allAnnotationsHtml = ''
 
   let continentSelector
   let countrySelector
@@ -56,42 +54,37 @@ export default function (widgetObject, widgetData, targetSelector) {
   let currentCountryCode
 
   async.waterfall([
-    function setContainerWidth(cb) {
-      //$(targetSelector).css("max-width", "600px")
+    function setContainerWidth (cb) {
+      // $(targetSelector).css("max-width", "600px")
       cb()
     },
 
-    function loadData(cb) {
-
+    function loadData (cb) {
       var q = {
-        "where": { "year": 2017, continentCode: { nin: [ "WORLD" ] } }
+        where: { year: 2017, continentCode: { nin: ['WORLD'] } }
       }
       var urlQ = encodeURIComponent(JSON.stringify(q))
 
       $.get(`${API_URL}/datas?filter=${urlQ}`, function (data) {
-
         data = map(data, d => {
           if (!d.data) d.data = 0
           return d
         })
-        data = groupBy(data, "countryCode")
+        data = groupBy(data, 'countryCode')
         data = map(data, (datas, countryCode) => {
-          let country = {
-            continentCode: datas[ 0 ].continentCode,
+          const country = {
+            continentCode: datas[0].continentCode,
             countryCode: countryCode
           }
           tableDataPoints.forEach(dp => {
             const dataPoint = find(datas, data => data.dataPoint == dp)
-            if (dataPoint && dataPoint.data)
-              country[ dp ] = dataPoint.data
-            else
-              country[ dp ] = 0
+            if (dataPoint && dataPoint.data) { country[dp] = dataPoint.data } else { country[dp] = 0 }
           })
           return country
         })
         data = map(data, d => {
-          d.continent = continentCodeNameMap[ d.continentCode ]
-          d.country = countryCodeNameMap[ d.countryCode ]
+          d.continent = continentCodeNameMap[d.continentCode]
+          d.country = countryCodeNameMap[d.countryCode]
           return d
         })
         tableData = data
@@ -99,17 +92,16 @@ export default function (widgetObject, widgetData, targetSelector) {
         cb(null)
       })
     },
-    function configureAnnotations(cb) {
+    function configureAnnotations (cb) {
       tableData = tableData.map(country => {
         const countryCode = country.countryCode
 
         // Check if there is an annotation for this country. If so, add to the country object and annotations
         let annotationIndex = 0
-        let annotations = []
+        const annotations = []
         do {
           annotationIndex = findIndex(countryAnnotations, annot => includes(annot.countryCode, countryCode), annotationIndex + 1)
-          if (annotationIndex !== -1)
-            annotations.push(countryAnnotations[ annotationIndex ].annotation)
+          if (annotationIndex !== -1) { annotations.push(countryAnnotations[annotationIndex].annotation) }
         } while (annotationIndex !== -1)
 
         country.annotations = annotations
@@ -119,13 +111,13 @@ export default function (widgetObject, widgetData, targetSelector) {
 
       allAnnotations =
           _(tableData)
-              .map(row => row.annotations)
-              .flatten()
-              .uniq()
-              .map((v, i) => {
-                return { number: i + 1, annotation: v }
-              })
-              .value()
+            .map(row => row.annotations)
+            .flatten()
+            .uniq()
+            .map((v, i) => {
+              return { number: i + 1, annotation: v }
+            })
+            .value()
 
       tableData = tableData.map(country => {
         country.annotations = country.annotations.map(annot => {
@@ -140,15 +132,14 @@ export default function (widgetObject, widgetData, targetSelector) {
 
       cb(null)
     },
-    function setTmpl(cb) {
-
+    function setTmpl (cb) {
       allAnnotations.forEach(annot => {
         allAnnotationsTxt += `${annot.number}) ${annot.annotation}\n`
-        allAnnotationsHtml += `<p style="font-size: small;"><sup>${annot.number})</sup>&nbsp;${annot.annotation}</p>` + "\n"
+        allAnnotationsHtml += `<p style="font-size: small;"><sup>${annot.number})</sup>&nbsp;${annot.annotation}</p>` + '\n'
       })
       footerAnnotations.forEach(annot => {
         allAnnotationsTxt += `${annot}\n`
-        allAnnotationsHtml += `<p style="font-size: small;">${annot}</p>` + "\n"
+        allAnnotationsHtml += `<p style="font-size: small;">${annot}</p>` + '\n'
       })
 
       tmpl = `
@@ -193,7 +184,6 @@ export default function (widgetObject, widgetData, targetSelector) {
       <div class="nrcstat-table-widget-annotations">${allAnnotationsHtml}</div>
       `
 
-
       widgetEl = $(tmpl)
       widgetEl.appendTo($(targetSelector))
 
@@ -203,19 +193,19 @@ export default function (widgetObject, widgetData, targetSelector) {
       cb()
     },
 
-    function setupTable(cb) {
+    function setupTable (cb) {
       ft = $(`#datatable${id}`).DataTable({
 
         columns: [
           // Column 0: continent (Verdensdel)
           {
-            data: "continent",
+            data: 'continent'
           },
           // Column 1: country (Land)
           {
-            data: "country",
+            data: 'country',
             render: (data, type, row) => {
-              if (type == "display") {
+              if (type == 'display') {
                 let txt = data
                 row.annotations.forEach(annot => {
                   txt += `&nbsp;<span class="nrcstat-widget-tooltip" title="${annot.annotation}"><sup>${annot.number})</sup></span>`
@@ -228,65 +218,65 @@ export default function (widgetObject, widgetData, targetSelector) {
           },
           // Column 2: totalRefugeesFromX (Totalt flyktninger fra)
           {
-            title: `<span class="nrcstat-widget-tooltip" title="Totalt antall mennesker som har flyktet fra landet">Totalt flyktninger fra</span>`,
-            data: "totalRefugeesFromX",
+            title: '<span class="nrcstat-widget-tooltip" title="Totalt antall mennesker som har flyktet fra landet">Totalt flyktninger fra</span>',
+            data: 'totalRefugeesFromX',
             render: (data, type, row) =>
-                type == "display" ? thousandsFormatter(data) : data
+              type == 'display' ? thousandsFormatter(data) : data
           },
           // Column 3: refugeesInXFromOtherCountriesInYear (Totalt flyktninger til)
           {
-            title: `<span class="nrcstat-widget-tooltip" title="Totalt antall mennesker som har flyktet til landet">Totalt flyktninger til</span>`,
-            data: "refugeesInXFromOtherCountriesInYear",
+            title: '<span class="nrcstat-widget-tooltip" title="Totalt antall mennesker som har flyktet til landet">Totalt flyktninger til</span>',
+            data: 'refugeesInXFromOtherCountriesInYear',
             render: (data, type, row) =>
-                type == "display" ? thousandsFormatter(data) : data
+              type == 'display' ? thousandsFormatter(data) : data
           },
           // Column 4: idpsInXInYear (Totalt internt fordrevne)
           {
-            title: `<span class="nrcstat-widget-tooltip" title="Totalt antall mennesker som har flyktet til landet">Totalt internt fordrevne</span>`,
-            data: "idpsInXInYear",
+            title: '<span class="nrcstat-widget-tooltip" title="Totalt antall mennesker som har flyktet til landet">Totalt internt fordrevne</span>',
+            data: 'idpsInXInYear',
             render: (data, type, row) =>
-                type == "display" ? thousandsFormatter(data) : data
+              type == 'display' ? thousandsFormatter(data) : data
           },
           // Column 5: newRefugeesFromXInYear (Nye flyktninger fra)
           {
-            title: `<span class="nrcstat-widget-tooltip" title="Totalt antall Internt fordrevne personer i landet">Nye flyktninger fra</span></span>`,
-            data: "newRefugeesFromXInYear",
+            title: '<span class="nrcstat-widget-tooltip" title="Totalt antall Internt fordrevne personer i landet">Nye flyktninger fra</span></span>',
+            data: 'newRefugeesFromXInYear',
             render: (data, type, row) =>
-                type == "display" ? thousandsFormatter(data) : data
+              type == 'display' ? thousandsFormatter(data) : data
           },
           // Column 6: newRefugeesInXFromOtherCountriesInYear (Nye flyktninger til)
           {
-            title: `<span class="nrcstat-widget-tooltip" title="Antall nye flyktninger til landet i 2017">Nye flyktninger til</span>`,
-            data: "newRefugeesInXFromOtherCountriesInYear",
+            title: '<span class="nrcstat-widget-tooltip" title="Antall nye flyktninger til landet i 2017">Nye flyktninger til</span>',
+            data: 'newRefugeesInXFromOtherCountriesInYear',
             render: (data, type, row) =>
-                type == "display" ? thousandsFormatter(data) : data
+              type == 'display' ? thousandsFormatter(data) : data
           },
           // Column 7: newIdpsInXInYear (Nye internt fordrevne)
           {
-            title: `<span class="nrcstat-widget-tooltip" title="Antall nye internt fordrevne personer i landet i 2017">Nye internt fordrevne</span>`,
-            data: "newIdpsInXInYear",
+            title: '<span class="nrcstat-widget-tooltip" title="Antall nye internt fordrevne personer i landet i 2017">Nye internt fordrevne</span>',
+            data: 'newIdpsInXInYear',
             render: (data, type, row) =>
-                type == "display" ? thousandsFormatter(data) : data
+              type == 'display' ? thousandsFormatter(data) : data
           },
           // Column 8: population (Folketall)
           {
-            data: "population",
+            data: 'population',
             render: (data, type, row) =>
-                type == "display" ? thousandsFormatter(data) : data
+              type == 'display' ? thousandsFormatter(data) : data
           },
           // Column 9: percentageWomenFleeingToCountry (Andel kvinner)
           {
-            title: `<span class="nrcstat-widget-tooltip" title="Andel kvinner blant mennesker som har flyktet til landet">Andel kvinner</span></span>`,
-            data: "percentageWomenFleeingToCountry",
+            title: '<span class="nrcstat-widget-tooltip" title="Andel kvinner blant mennesker som har flyktet til landet">Andel kvinner</span></span>',
+            data: 'percentageWomenFleeingToCountry',
             render: (data, type, row) =>
-                type == "display" ? percentFormatter(data) : data
+              type == 'display' ? percentFormatter(data) : data
           },
           // Column 10: percentageChildrenFleeingToCountry (Andel barn)
           {
-            title: `<span class="nrcstat-widget-tooltip" title="Andel barn blant mennesker som har flyktet til landet">Andel barn</span>`,
-            data: "percentageChildrenFleeingToCountry",
+            title: '<span class="nrcstat-widget-tooltip" title="Andel barn blant mennesker som har flyktet til landet">Andel barn</span>',
+            data: 'percentageChildrenFleeingToCountry',
             render: (data, type, row) =>
-                type == "display" ? percentFormatter(data) : data
+              type == 'display' ? percentFormatter(data) : data
           }
         ],
         language: {
@@ -299,50 +289,50 @@ export default function (widgetObject, widgetData, targetSelector) {
         paging: tableData.length > 10,
         colReorder: true,
         fixedHeader: true,
-        dom: "Bfrtip",
+        dom: 'Bfrtip',
         buttons: [
           {
-            extend: "csv",
-            text: "Last ned CSV-fil",
+            extend: 'csv',
+            text: 'Last ned CSV-fil',
             title: tableTitle
           },
           {
-            extend: "excel",
-            text: "Last ned Excel-fil",
+            extend: 'excel',
+            text: 'Last ned Excel-fil',
             title: tableTitle
           },
           {
             text: 'Last ned JSON-fil',
-            action: function ( e, dt, button, config ) {
-              var data = dt.buttons.exportData();
+            action: function (e, dt, button, config) {
+              var data = dt.buttons.exportData()
 
               $.fn.dataTable.fileSave(
-                  new Blob( [ JSON.stringify( data ) ] ),
+                new Blob([JSON.stringify(data)]),
                   `${tableTitle}.json`
-              );
+              )
             }
           },
           {
-            extend: "pdf",
-            text: "Skriv ut (PDF)",
-            orientation: "landscape",
+            extend: 'pdf',
+            text: 'Skriv ut (PDF)',
+            orientation: 'landscape',
             message: allAnnotationsTxt,
             title: tableTitle
           }
         ]
       })
-      ft.on("draw.dt", () => initTooltipster())
-      ft.on("responsive-display", () => initTooltipster())
+      ft.on('draw.dt', () => initTooltipster())
+      ft.on('responsive-display', () => initTooltipster())
       ft.rows.add(tableData).draw(false)
-      ft.order([ 1, "asc" ]).draw()
+      ft.order([1, 'asc']).draw()
       cb()
     },
-    function setupTooltips(cb) {
+    function setupTooltips (cb) {
       initTooltipster()
       cb(null)
     },
 
-    function setupSelectors(cb) {
+    function setupSelectors (cb) {
       each(continentCodeNameMap, (v, k) => {
         continentSelector.append(`<option value="${k}">${v}</option>`)
       })
@@ -353,7 +343,6 @@ export default function (widgetObject, widgetData, targetSelector) {
       continentSelector.on('change', e => {
         currentContinentCode = e.target.value
         drawWidgetTableFilterData()
-
       })
       countrySelector.on('change', e => {
         currentCountryCode = e.target.value
@@ -365,16 +354,16 @@ export default function (widgetObject, widgetData, targetSelector) {
 
   ])
 
-  function initTooltipster() {
+  function initTooltipster () {
     target.find('.nrcstat-widget-tooltip').tooltipster({
       interactive: true,
       delay: 100,
-      animation: "fade",
+      animation: 'fade',
       maxWidth: 300
     })
   }
 
-  function drawWidgetTableFilterData() {
+  function drawWidgetTableFilterData () {
     currentData = tableData.filter((v) => {
       if (!currentContinentCode) return true
       return v.continentCode == currentContinentCode
