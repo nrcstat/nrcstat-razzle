@@ -36,10 +36,7 @@ export default function StaticTable () {
     id: widgetParams.widgetId
   }
 
-  const renderFn = tableTypeToTableWidgetMap[tableType].render
-
-  console.log(widgetParams)
-  console.log(renderFn)
+  const renderFn = tableTypeToTableWidgetMap[tableType]({ ...widgetParams, t }).render
 
   const elementRef = useRef(null)
   const onReady = useCallback(element => {
@@ -47,6 +44,8 @@ export default function StaticTable () {
     renderFn(fakeWidgetObject, null, element)
   })
   return (
-    <div className='nrcstat__static-table__container' ref={onReady} />
+    <div className='nrcstat__static-table__container'>
+      <div className='nrcstat-table-widget' ref={onReady} />
+    </div>
   )
 }

@@ -1,3 +1,4 @@
+import nodeFetch from 'node-fetch'
 import {
   populationNumberFormatter,
   percentFormatter,
@@ -5,13 +6,21 @@ import {
 } from '@/util/tableWidgetFormatters.js'
 import { API_URL, LIB_URL } from '@/config.js'
 import { map, groupBy, find, findIndex, includes, each } from 'lodash'
-const continentColorMap = require('../assets/continentColorMap.json')
-const continentCodeNameMap = require('../assets/continentCodeNameMapNorwegian.json')
-const countryCodeNameMap = require('../assets/countryCodeNameMapNorwegian.json')
+import { isServer } from '../../../util/utils'
+const continentColorMap = require('./continentColorMap.json')
+const continentCodeNameMap = require('./continentCodeNameMapNorwegian.json')
+const countryCodeNameMap = require('./countryCodeNameMapNorwegian.json')
 const countryAnnotations = require('./countryAnnotations2018.json')
 const async = require('async')
 
 const $ = require('jquery')
+
+let fetch
+if (isServer()) {
+  fetch = nodeFetch
+} else {
+  fetch = window.fetch
+}
 
 const tableTitle = 'GLOBAL OVERSIKT OVER MENNESKER PÅ FLUKT'
 
@@ -36,9 +45,19 @@ const footerAnnotations = [
   'INTERNT FORDREVNE OG NYE INTERNT FORDREVNE - Kilde: Flyktninghjelpens senter for internt fordrevne (IDMC). For forklaring på de ulike anslagene, samt primærkilder, se www.internal-displacement.org. Tallene er fra inngangen til 2019 og omfatter bare mennesker som er fordrevet på grunn av krig og konflikt, og ikke mennesker som er rammet av naturkatastrofer.'
 ]
 
-export default function (widgetObject, widgetData, targetSelector) {
+function loadWidgetData () {
+  var q = {
+    where: { year: 2018, continentCode: { nin: ['WORLD'] } }
+  }
+  var urlQ = encodeURIComponent(JSON.stringify(q))
+
+  const url = `${API_URL}/datas?filter=${urlQ}`
+  return fetch(url)
+    .then(resp => resp.json())
+}
+
+function render (widgetObject, widgetData, targetSelector) {
   const wObject = widgetObject
-  const wData = widgetData
   const wConfig = widgetObject.config
 
   const target = $(targetSelector)
@@ -71,39 +90,38 @@ export default function (widgetObject, widgetData, targetSelector) {
       cb()
     },
 
-    function loadData (cb) {
-      var q = {
-        where: { year: 2018, continentCode: { nin: ['WORLD'] } }
+    async function loadData (cb) {
+      let data
+      if (widgetData) {
+        data = widgetData
+      } else {
+        data = await loadWidgetData()
       }
-      var urlQ = encodeURIComponent(JSON.stringify(q))
-
-      $.get(`${API_URL}/datas?filter=${urlQ}`, function (data) {
-        data = map(data, d => {
-          if (!d.data) d.data = 0
-          return d
-        })
-        data = groupBy(data, 'countryCode')
-        data = map(data, (datas, countryCode) => {
-          const country = {
-            continentCode: datas[0].continentCode,
-            countryCode: countryCode
-          }
-          tableDataPoints.forEach(dp => {
-            const dataPoint = find(datas, data => data.dataPoint == dp)
-            if (dataPoint && dataPoint.data) country[dp] = dataPoint.data
-            else country[dp] = 0
-          })
-          return country
-        })
-        data = map(data, d => {
-          d.continent = continentCodeNameMap[d.continentCode]
-          d.country = countryCodeNameMap[d.countryCode]
-          return d
-        })
-        tableData = data
-        currentData = data
-        cb(null)
+      data = map(data, d => {
+        if (!d.data) d.data = 0
+        return d
       })
+      data = groupBy(data, 'countryCode')
+      data = map(data, (datas, countryCode) => {
+        const country = {
+          continentCode: datas[0].continentCode,
+          countryCode: countryCode
+        }
+        tableDataPoints.forEach(dp => {
+          const dataPoint = find(datas, data => data.dataPoint == dp)
+          if (dataPoint && dataPoint.data) country[dp] = dataPoint.data
+          else country[dp] = 0
+        })
+        return country
+      })
+      data = map(data, d => {
+        d.continent = continentCodeNameMap[d.continentCode]
+        d.country = countryCodeNameMap[d.countryCode]
+        return d
+      })
+      tableData = data
+      currentData = data
+      cb(null)
     },
     function configureAnnotations (cb) {
       tableData = tableData.map(country => {
@@ -395,4 +413,9 @@ export default function (widgetObject, widgetData, targetSelector) {
     ft.clear()
     ft.rows.add(currentData).draw(false)
   }
+}
+
+export default {
+  loadWidgetData,
+  render
 }

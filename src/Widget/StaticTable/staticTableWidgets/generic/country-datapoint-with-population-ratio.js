@@ -1,11 +1,19 @@
+import nodeFetch from 'node-fetch'
 import { thousandsFormatter, percentFormatter } from '@/util/tableWidgetFormatters.js'
 import { API_URL, LIB_URL } from '@/config.js'
 
-import json from '../../../old/assets/datatables_language.json'
+import { isServer } from '../../../../util/utils'
 const countryAnnotations = require('../countryAnnotations2018.json')
 const async = require('async')
 
 const $ = require('jquery')
+
+let fetch
+if (isServer()) {
+  fetch = nodeFetch
+} else {
+  fetch = window.fetch
+}
 
 export default function (tableTitle, placeColumnLabel, dataPointColumnLabel, populationRatioColumnLabel,
   footerAnnotations, queryObject, dataProcessingFunction,
@@ -15,7 +23,14 @@ export default function (tableTitle, placeColumnLabel, dataPointColumnLabel, pop
 // module.exports = function (title, dataColumnName, dataProcessingFunction, queryObject, foooterAnnotations, placeColumnName = "Land", orderingEnabled = true, dataColumnFormatter = thousandsFormatter) {
   if (typeof footerAnnotations === 'string') footerAnnotations = [footerAnnotations]
 
-  return function (widgetObject, widgetData, targetSelector) {
+  function loadWidgetData () {
+    var urlQ = encodeURIComponent(JSON.stringify(queryObject))
+    const url = `${API_URL}/datas?filter=${urlQ}`
+    return fetch(url)
+      .then(resp => resp.json())
+  }
+
+  function render (widgetObject, widgetData, targetSelector) {
     const wObject = widgetObject
     const wData = widgetData
     const wConfig = widgetObject.config
@@ -40,13 +55,11 @@ export default function (tableTitle, placeColumnLabel, dataPointColumnLabel, pop
         cb()
       },
 
-      function loadData (cb) {
-        var urlQ = encodeURIComponent(JSON.stringify(queryObject))
-        $.get(`${API_URL}/datas?filter=${urlQ}`, function (data) {
-          data = dataProcessingFunction(data)
-          tableData = data
-          cb(null)
-        })
+      async function loadData (cb) {
+        let data = await loadWidgetData()
+        data = dataProcessingFunction(data)
+        tableData = data
+        cb(null)
       },
       /*
       function configureAnnotations(cb) {
@@ -185,5 +198,10 @@ export default function (tableTitle, placeColumnLabel, dataPointColumnLabel, pop
         maxWidth: 300
       })
     }
+  }
+
+  return {
+    loadWidgetData,
+    render
   }
 }

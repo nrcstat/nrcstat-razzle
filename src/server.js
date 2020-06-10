@@ -24,7 +24,17 @@ import tableTypeToTableWidgetMap from './Widget/StaticTable/table-type-to-table-
 
 const dataPreLoaders = {
   GlobalMap: loadGlobalMapData,
-  StaticTable: (widget) => tableTypeToTableWidgetMap[widget.tableType].loadWidgetData(widget)
+  StaticTable: (widget) => {
+    // the functions for each static table widgets takes a "widgetParams" object made up
+    // of many things, including a prepared 't' trnnslate function. It doesn't serve a purpose
+    // on backend for now, so while we may wnnt to pass in a real function later, for now
+    // just create a mocked one
+    const widgetParams = {
+      ...widget,
+      t: () => ''
+    }
+    tableTypeToTableWidgetMap[widget.tableType](widgetParams).loadWidgetData(widget)
+  }
 }
 
 const server = express()

@@ -31,6 +31,7 @@ export default function (dataPointX, regionCodeNRC, countryLimit, title, foooter
     return fetch(url)
       .then(resp => resp.json())
   }
+
   function render (widgetObject, widgetData, targetSelector) {
     const wObject = widgetObject
     const wConfig = widgetObject.config
@@ -205,6 +206,5 @@ export default function (dataPointX, regionCodeNRC, countryLimit, title, foooter
   return {
     loadWidgetData,
     render
-
   }
 }

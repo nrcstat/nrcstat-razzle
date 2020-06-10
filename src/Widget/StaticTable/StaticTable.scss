@@ -1,6 +1,169 @@
 /* CSS for data tables */
+@import '@/style/common.scss';
 
 @import url(https://cdn.datatables.net/v/dt/jq-2.2.4/dt-1.10.15/r-2.1.1/datatables.min.css);
 @import url(https://cdn.datatables.net/responsive/2.1.1/css/responsive.dataTables.min.css);
 @import url(https://cdn.datatables.net/colreorder/1.3.3/css/colReorder.dataTables.min.css);
 @import url(https://cdn.datatables.net/fixedheader/3.1.2/css/fixedHeader.dataTables.min.css);
+
+
+
+
+@media (max-width: 640px){
+  .nrcstat-table-widget .btn-download {
+      margin-top: 3px;
+  }
+}
+@media (min-width: 641px) {
+  .nrcstat-table-widget .btn-download {
+      margin-top: 1px;
+  }
+}
+
+
+.nrcstat-table-widget a.btn-download:visited {
+  color: #000;
+}
+.nrcstat-table-widget .btn-download {
+  margin-left: 10px;
+  text-decoration: none;
+  max-width: 344px;
+  color: #000;
+  background-color: #dcdcdc;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  border: 1px solid #b1b1b1;
+  padding: 5px 10px;
+  display: inline-block;
+  font-size: 10pt;
+  font-family: "Roboto Condensed";
+}
+.nrcstat-table-widget .btn-download:hover {
+  padding: 4px 9px;
+  border: 2px solid #154881;
+}
+
+
+
+
+
+
+
+
+
+.nrcstat-table-widget a.dt-button {
+  margin-left: 10px;
+  text-decoration: none;
+  max-width: 344px;
+  color: #000;
+  background-color: #dcdcdc;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  border: 1px solid #b1b1b1;
+  padding: 5px 10px;
+  display: inline-block;
+  font-size: 10pt;
+  font-family: "Roboto Condensed";
+}
+.nrcstat-table-widget a.dt-button:hover {
+  padding: 4px 9px;
+  border: 2px solid #154881;
+}
+
+
+
+
+
+
+
+
+
+
+.nrcstat-widget-tooltip {
+  text-decoration: underline;
+  color: #337ab7;
+  cursor: pointer;
+}
+
+.tooltipster-content {
+  font: 10pt "Roboto Condensed";
+
+  padding: 1em 1em 1em 1em;
+  overflow: hidden;
+
+}
+
+.nrcstat-table-widget .download-button {
+  cursor: pointer;
+}
+.nrcstat-table-widget .table-tooltip {
+  cursor: pointer;
+  color: #337ab7;
+}
+.nrcstat-table-widget .table-annotation-tooltip {
+  cursor: pointer;
+  color: #337ab7;
+}
+
+.nrcstat-table-widget h4 {
+  font-family: "Roboto Condensed";
+  text-transform: uppercase;
+}
+.dataTable thead th {
+  font-family: "Roboto Condensed";
+  text-align: left;
+}
+.dataTable tbody td {
+  font-family: "Roboto Condensed";
+  font-weight: 200;
+}
+.nrcstat-table-widget-annotations {
+  /* this combination makes up "Roboto Light". See this page for details: https://fonts.google.com/?selection.family=Roboto+Condensed|Roboto:100i,300,400 */
+  font-family: "Roboto Condensed";
+  font-weight: 200;
+}
+
+
+
+
+@media (max-width: 640px){
+  .nrcstat-table-widget .controls-wrapper {
+      float: left;
+      display: inline-block;
+      width: 100%;
+  }
+}
+@media (min-width: 641px) {
+  .nrcstat-table-widget .controls-wrapper {
+      float: left;
+      display: inline-block;
+  }
+}
+
+
+.nrcstat-table-widget .dataTables_length, .nrcstat-table-widget .dataTables_filter,
+.nrcstat-table-widget .dataTables_paginate, .nrcstat-table-widget .dataTables_info,
+.nrcstat-table-widget .nrcstat-selector-continent, .nrcstat-table-widget .nrcstat-selector-country {
+  font-family: "Roboto";
+  font-weight: 200;
+}
+
+.nrcstat-table-widget .nrcstat-selector-continent, .nrcstat-table-widget .nrcstat-selector-country {
+  padding-top: 3px; margin-bottom: 5px; height: 30px; display: inline-block; margin-right: 10px;
+}
+
+@media (max-width: 640px){
+  .nrcstat-table-widget .nrcstat-selector-continent, .nrcstat-table-widget .nrcstat-selector-country {
+      float: none;
+      text-align: center;
+      width: 100%;
+      margin-bottom: 0;
+  }
+}
+@media (min-width: 641px) {
+  .nrcstat-table-widget .nrcstat-selector-continent, .nrcstat-table-widget .nrcstat-selector-country {
+      float: left;
+  }
+}

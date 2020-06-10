@@ -19,7 +19,6 @@
     fetch(assetsPath)
       .then(resp => resp.json())
       .then(data => {
-        console.log(data)
         window.localeTranslation = data.localeTranslation
         window.nrcStatDrawWidgetQueue = data.widgetQueue
 
