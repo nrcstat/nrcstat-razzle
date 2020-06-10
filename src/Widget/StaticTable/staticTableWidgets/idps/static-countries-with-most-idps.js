@@ -1,8 +1,6 @@
 
 import generator from '../generic/generic-table-widget'
 
-const countryCodeNameMap = require('@/Widget/StaticTable/staticTableWidgets/countryCodeNameMapNorwegian.json')
-
 export default function (widgetParams) {
   const { t, periodYear } = widgetParams
   const title = t('RefugeeReport2020.IDP.CountriesWithMostIdps.Heading')

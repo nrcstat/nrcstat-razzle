@@ -6,59 +6,61 @@ const nrcWorldZoneNameMap = require('@/Widget/StaticTable/staticTableWidgets/nrc
 
 const countryCodeNameMap = require('@/Widget/StaticTable/staticTableWidgets/countryCodeNameMapNorwegian.json')
 
-const title = 'Antall nye internt fordrevne i 2018 fordelt på verdensdel'
+export default function (widgetParams) {
+  const { t, periodYear } = widgetParams
+  const title = t('RefugeeReport2020.IDP.NewIdpsPerWorldZone.Heading')
 
-const footerAnnotations = [
-  'Kilde: Internal Displacement Monitoring Centre (IDMC).'
-]
+  const footerAnnotations = t('RefugeeReport2020.IDP.NewIdpsPerWorldZone.TableFooterText')
+    .replace('\n', '<br /><br />')
 
-const query = {
-  where: {
-    year: 2018,
-    dataPoint: 'newIdpsInXInYear',
-    continentCode: { nin: ['WORLD'] },
-    regionCodeNRC: { nin: ['MISC_AND_STATELESS'] }
-  },
-  order: 'data DESC'
+  const query = {
+    where: {
+      year: periodYear,
+      dataPoint: 'newIdpsInXInYear',
+      continentCode: { nin: ['WORLD'] },
+      regionCodeNRC: { nin: ['MISC_AND_STATELESS'] }
+    },
+    order: 'data DESC'
 
-}
+  }
 
-export default generator(title, 'Antall', process, query, footerAnnotations, 'Verdensdel', false, thousandsFormatter)
+  return generator(title, 'Antall', process, query, footerAnnotations, 'Verdensdel', false, thousandsFormatter)
 
-function process (data) {
-  data = _.groupBy(data, 'regionCodeNRC')
-  data = _.mapValues(data, (countries, regionCodeNRC) => {
-    return _.sumBy(countries, 'data')
-  })
-  data = _.map(data, (newIdpsInXInYear, regionCodeNRC) => {
-    return {
-      regionCodeNRC,
-      newIdpsInXInYear: newIdpsInXInYear
-    }
-  })
+  function process (data) {
+    data = _.groupBy(data, 'regionCodeNRC')
+    data = _.mapValues(data, (countries, regionCodeNRC) => {
+      return _.sumBy(countries, 'data')
+    })
+    data = _.map(data, (newIdpsInXInYear, regionCodeNRC) => {
+      return {
+        regionCodeNRC,
+        newIdpsInXInYear: newIdpsInXInYear
+      }
+    })
 
-  const asiaPlusMiddleEastOceaniaData = _.remove(data, d => _.includes(['ASOC', 'ME'], d.regionCodeNRC))
-  const asiaPlusMiddleEastOceaniaSum = _.sumBy(asiaPlusMiddleEastOceaniaData, 'newIdpsInXInYear')
+    const asiaPlusMiddleEastOceaniaData = _.remove(data, d => _.includes(['ASOC', 'ME'], d.regionCodeNRC))
+    const asiaPlusMiddleEastOceaniaSum = _.sumBy(asiaPlusMiddleEastOceaniaData, 'newIdpsInXInYear')
 
-  data = _.map(data, d => {
-    return Object.assign(d, { place: nrcWorldZoneNameMap[d.regionCodeNRC] })
-  })
-  data.push({
-    place: 'Asia inkludert Midtøsten og Oseania',
-    newIdpsInXInYear: asiaPlusMiddleEastOceaniaSum
-  })
+    data = _.map(data, d => {
+      return Object.assign(d, { place: t(`NRC.Web.StaticTextDictionary.Continents.${d.regionCodeNRC}`) })
+    })
+    data.push({
+      place: 'Asia inkludert Midtøsten og Oseania',
+      newIdpsInXInYear: asiaPlusMiddleEastOceaniaSum
+    })
 
-  const total = _.sumBy(data, 'newIdpsInXInYear')
-  data = _.map(data, d => {
-    return Object.assign(d, { data: d.newIdpsInXInYear })
-  })
+    const total = _.sumBy(data, 'newIdpsInXInYear')
+    data = _.map(data, d => {
+      return Object.assign(d, { data: d.newIdpsInXInYear })
+    })
 
-  data = _.sortBy(data, 'place')
+    data = _.sortBy(data, 'place')
 
-  const totalFormatted = thousandsFormatter(total)
-  data.push({
-    place: '<strong>Verden totalt <sup class="table-annotation-tooltip" title="Avviket skyldes avrunding. ">1)</sup></strong>',
-    data: `<strong>${totalFormatted}</strong>`
-  })
-  return data
+    const totalFormatted = thousandsFormatter(total)
+    data.push({
+      place: '<strong>Verden totalt <sup class="table-annotation-tooltip" title="Avviket skyldes avrunding. ">1)</sup></strong>',
+      data: `<strong>${totalFormatted}</strong>`
+    })
+    return data
+  }
 }

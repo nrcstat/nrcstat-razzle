@@ -16,13 +16,15 @@ if (isServer()) {
   fetch = window.fetch
 }
 
-export default function (dataPointX, regionCodeNRC, countryLimit, title, foooterAnnotations, year = 2018) {
+export default function (dataPointX, regionCodeNRC, countryLimit, title, foooterAnnotations, widgetParams) {
   if (typeof regionCodeNRC === 'string') regionCodeNRC = [regionCodeNRC]
   if (typeof foooterAnnotations === 'string') foooterAnnotations = [foooterAnnotations]
 
+  const { t, periodYear } = widgetParams
+
   function loadWidgetData () {
     var q = {
-      where: { year: year, dataPoint: dataPointX, regionCodeNRC: { inq: regionCodeNRC } },
+      where: { year: periodYear, dataPoint: dataPointX, regionCodeNRC: { inq: regionCodeNRC } },
       limit: countryLimit,
       order: 'data DESC'
     }
@@ -70,8 +72,7 @@ export default function (dataPointX, regionCodeNRC, countryLimit, title, foooter
           }
         })
         data = map(data, d => {
-          d.country =
-                countryCodeNameMap[d.countryCode]
+          d.country = t(`NRC.Web.StaticTextDictionary.Contries.${d.countryCode}`)
           return d
         })
         data = filter(data, d => d.data != null)

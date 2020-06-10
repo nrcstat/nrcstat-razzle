@@ -1,39 +1,37 @@
 
 import generator from '../generic/generic-table-widget'
 
-const countryCodeNameMap = require('@/Widget/StaticTable/staticTableWidgets/countryCodeNameMapNorwegian.json')
+export default function (widgetParams) {
+  const { t, periodYear } = widgetParams
+  const title = t('RefugeeReport2020.RefugeesFrom.CountriesWithMostRefugeesFromCountry.Heading')
 
-const title = 'Landene flest har flyktet fra'
+  const footerAnnotations = t('RefugeeReport2020.RefugeesFrom.CountriesWithMostRefugeesFromCountry.TableFooterText')
+    .replace('\n', '<br /><br />')
 
-const footerAnnotations = [
-  'Tallene gjelder ved inngangen til 2018.',
-  'Kilder: FNs høykommissær for flyktninger (UNHCR) og FNs hjelpeorganisasjon for Palestina-flyktninger (UNRWA).'
-]
+  const query = {
+    where: {
+      year: periodYear,
+      dataPoint: 'totalRefugeesFromX',
+      continentCode: { nin: ['WORLD'] }
+    },
+    limit: 30,
+    order: 'data DESC'
 
-const query = {
-  where: {
-    year: 2018,
-    dataPoint: 'totalRefugeesFromX',
-    continentCode: { nin: ['WORLD'] }
-  },
-  limit: 30,
-  order: 'data DESC'
+  }
 
-}
+  return generator(title, 'Antall flyktninger', process, query, footerAnnotations)
 
-export default generator(title, 'Antall flyktninger', process, query, footerAnnotations)
-
-function process (data) {
-  data = _.map(data, (v) => {
-    return {
-      countryCode: v.countryCode,
-      data: v.data
-    }
-  })
-  data = _.map(data, d => {
-    d.place =
-        countryCodeNameMap[d.countryCode]
-    return d
-  })
-  return data
+  function process (data) {
+    data = _.map(data, (v) => {
+      return {
+        countryCode: v.countryCode,
+        data: v.data
+      }
+    })
+    data = _.map(data, d => {
+      d.place = t(`NRC.Web.StaticTextDictionary.Contries.${d.countryCode}`)
+      return d
+    })
+    return data
+  }
 }

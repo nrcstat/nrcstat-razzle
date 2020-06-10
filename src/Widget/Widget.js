@@ -31,7 +31,6 @@ function Widget (props) {
   const { type, locale } = props
   const SpecificWidget = widgetMap[type]
   const FixedLocaleContext = buildFixedLocaleContext(locale)
-  console.log('i am widget')
   return (
     <FixedLocaleContext>
       <WidgetParamsContext.Provider value={props}>

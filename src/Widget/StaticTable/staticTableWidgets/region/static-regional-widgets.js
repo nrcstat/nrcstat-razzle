@@ -1,43 +1,37 @@
 import regionalWidgetGenerator from './generics/countries-with-most-of-datapoint-x'
 
+// process footer
+function f (input) {
+  return input.replace('\n', '<br /><br />')
+}
+
 export default {
-  'static-africa-countries-with-most-refugees-from': regionalWidgetGenerator('totalRefugeesFromX', 'AF', 30, 'LAND I AFRIKA SOM FLEST HAR FLYKTET FRA', 'Kilde: UNHCR'),
-  'static-africa-countries-with-most-refugees-to-country': regionalWidgetGenerator('refugeesInXFromOtherCountriesInYear', 'AF', 30, 'LAND I AFRIKA SOM FLEST HAR FLYKTET TIL', 'Kilde: UNHCR'),
-  'static-africa-countries-with-most-new-refugees-to-country': regionalWidgetGenerator(
-    'newRefugeesInXFromOtherCountriesInYear',
-    'AF',
-    30,
-    'Flest nye flyktninger i 2018 til landet',
-    [
-      'Kilde: UNHCR']
-  ),
-  'static-africa-countries-with-most-new-refugees-from': regionalWidgetGenerator('newRefugeesFromXInYear', 'AF', 30, 'Flest nye flyktninger i 2018 fra landet', 'Kilde: UNHCR'),
-  'static-africa-countries-with-most-idps': regionalWidgetGenerator('idpsInXInYear', 'AF', 30, 'LAND I AFRIKA MED FLEST INTERNT FORDREVNE', 'Kilde: IDMC'),
-  'static-africa-countries-with-most-new-idps': regionalWidgetGenerator('newIdpsInXInYear', 'AF', 30, 'LAND I AFRIKA MED FLEST NYE INTERNT FORDREVNE I 2018', 'Kilde: IDMC'),
+  'static-africa-countries-with-most-refugees-from': (w) => regionalWidgetGenerator('totalRefugeesFromX', 'AF', 30, w.t('RefugeeReport2020.Regional.Africa.CountriesWithMostRefugeesFromCountry.Heading'), f(w.t('RefugeeReport2020.Regional.Africa.CountriesWithMostRefugeesFromCountry.TableFooterText')), w),
+  'static-africa-countries-with-most-refugees-to-country': (w) => regionalWidgetGenerator('refugeesInXFromOtherCountriesInYear', 'AF', 30, w.t('RefugeeReport2020.Regional.Africa.CountriesWithMostRefugeesToCountry.Heading'), f(w.t('RefugeeReport2020.Regional.Africa.CountriesWithMostRefugeesToCountry.TableFooterText')), w),
+  'static-africa-countries-with-most-new-refugees-to-country': (w) => regionalWidgetGenerator('newRefugeesInXFromOtherCountriesInYear', 'AF', 30, w.t('RefugeeReport2020.Regional.Africa.CountriesWithMostNewRefugeesToCountry.Heading'), f(w.t('RefugeeReport2020.Regional.Africa.CountriesWithMostNewRefugeesToCountry.TableFooterText')), w),
+  'static-africa-countries-with-most-new-refugees-from': (w) => regionalWidgetGenerator('newRefugeesFromXInYear', 'AF', 30, w.t('RefugeeReport2020.Regional.Africa.CountriesWithMostNewRefugeesFrom.Heading'), f(w.t('RefugeeReport2020.Regional.Africa.CountriesWithMostNewRefugeesFrom.TableFooterText')), w),
+  'static-africa-countries-with-most-idps': (w) => regionalWidgetGenerator('idpsInXInYear', 'AF', 30, w.t('RefugeeReport2020.Regional.Africa.CountriesWithMostIdps.Heading'), f(w.t('RefugeeReport2020.Regional.Africa.CountriesWithMostIdps.TableFooterText')), w),
+  'static-africa-countries-with-most-new-idps': (w) => regionalWidgetGenerator('newIdpsInXInYear', 'AF', 30, w.t('RefugeeReport2020.Regional.Africa.CountriesWithMostNewIdps.Heading'), f(w.t('RefugeeReport2020.Regional.Africa.CountriesWithMostNewIdps.TableFooterText')), w),
 
-  'static-america-countries-with-most-refugees-from': regionalWidgetGenerator('totalRefugeesFromX', 'NANS', 30, 'LAND I AMERIKA SOM FLEST HAR FLYKTET FRA', 'Kilde: UNHCR'),
-  'static-america-countries-with-most-refugees-to-country': regionalWidgetGenerator('refugeesInXFromOtherCountriesInYear', 'NANS', 30, 'LAND I AMERIKA FLEST HAR FLYKTET TIL', 'Kilde: UNHCR'),
-  'static-america-countries-with-most-new-refugees-to-country': regionalWidgetGenerator('newRefugeesInXFromOtherCountriesInYear', 'NANS', 30, 'Flest nye flyktninger i 2018 til landet', 'Kilde: UNHCR'),
-  'static-america-countries-with-most-new-refugees-from': regionalWidgetGenerator('newRefugeesFromXInYear', 'NANS', 30, 'Flest nye flyktninger i 2018 fra landet', 'Kilde: UNHCR'),
-  'static-america-countries-with-most-idps': regionalWidgetGenerator('idpsInXInYear', 'NANS', 30, 'LAND I AMERIKA MED FLEST INTERNT FORDREVNE', 'Kilde: IDMC'),
-  'static-america-countries-with-most-new-idps': regionalWidgetGenerator('newIdpsInXInYear', 'NANS', 30, 'LAND I AMERIKA MED FLEST NYE INTERNT FORDREVNE I 2018',
-    [
-      'Kilde: IDMC'
-    ]
-  ),
+  'static-america-countries-with-most-refugees-from': (w) => regionalWidgetGenerator('totalRefugeesFromX', 'NANS', 30, w.t('RefugeeReport2020.Regional.America.CountriesWithMostRefugeesFromCountry.Heading'), f(w.t('RefugeeReport2020.Regional.America.CountriesWithMostRefugeesFromCountry.TableFooterText')), w),
+  'static-america-countries-with-most-refugees-to-country': (w) => regionalWidgetGenerator('refugeesInXFromOtherCountriesInYear', 'NANS', 30, w.t('RefugeeReport2020.Regional.America.CountriesWithMostRefugeesToCountry.Heading'), f(w.t('RefugeeReport2020.Regional.America.CountriesWithMostRefugeesToCountry.TableFooterText')), w),
+  'static-america-countries-with-most-new-refugees-to-country': (w) => regionalWidgetGenerator('newRefugeesInXFromOtherCountriesInYear', 'NANS', 30, w.t('RefugeeReport2020.Regional.America.CountriesWithMostNewRefugeesToCountry.Heading'), f(w.t('RefugeeReport2020.Regional.America.CountriesWithMostNewRefugeesToCountry.TableFooterText')), w),
+  'static-america-countries-with-most-new-refugees-from': (w) => regionalWidgetGenerator('newRefugeesFromXInYear', 'NANS', 30, w.t('RefugeeReport2020.Regional.America.CountriesWithMostNewRefugeesFrom.Heading'), f(w.t('RefugeeReport2020.Regional.America.CountriesWithMostNewRefugeesFrom.TableFooterText')), w),
+  'static-america-countries-with-most-idps': (w) => regionalWidgetGenerator('idpsInXInYear', 'NANS', 30, w.t('RefugeeReport2020.Regional.America.CountriesWithMostIdps.Heading'), f(w.t('RefugeeReport2020.Regional.America.CountriesWithMostIdps.TableFooterText')), w),
+  'static-america-countries-with-most-new-idps': (w) => regionalWidgetGenerator('newIdpsInXInYear', 'NANS', 30, w.t('RefugeeReport2020.Regional.America.CountriesWithMostNewIdps.Heading'), f(w.t('RefugeeReport2020.Regional.America.CountriesWithMostNewIdps.TableFooterText')), w),
 
-  'static-asia-oceania-middle-east-countries-with-most-refugees-from': regionalWidgetGenerator('totalRefugeesFromX', ['ASOC', 'ME'], 30, 'LAND I ASIA OG OCEANIA, INKL. MIDTØSTEN, SOM FLEST HAR FLYKTET FRA', 'Kilde: UNHCR'),
-  'static-asia-oceania-middle-east-countries-with-most-refugees-to-country': regionalWidgetGenerator('refugeesInXFromOtherCountriesInYear', ['ASOC', 'ME'], 30, 'LAND I ASIA OG OCEANIA, INKL. MIDTØSTEN, FLEST HAR FLYKTET TIL', 'Kilde: UNHCR'),
-  'static-asia-oceania-middle-east-countries-with-most-new-refugees-to-country': regionalWidgetGenerator('newRefugeesInXFromOtherCountriesInYear', ['ASOC', 'ME'], 30, 'Flest nye flyktninger i 2018 til landet', 'Kilde: UNHCR'),
-  'static-asia-oceania-middle-east-countries-with-most-new-refugees-from': regionalWidgetGenerator('newRefugeesFromXInYear', ['ASOC', 'ME'], 30, 'Flest nye flyktninger i 2018 fra landet', 'Kilde: UNHCR'),
-  'static-asia-oceania-middle-east-countries-with-most-idps': regionalWidgetGenerator('idpsInXInYear', ['ASOC', 'ME'], 30, 'LAND I ASIA OG OCEANIA, INKL. MIDTØSTEN, MED FLEST INTERNT FORDREVNE', 'Kilde: IDMC'),
-  'static-asia-oceania-middle-east-countries-with-most-new-idps': regionalWidgetGenerator('newIdpsInXInYear', ['ASOC', 'ME'], 30, 'LAND I ASIA OG OCEANIA, INKL. MIDTØSTEN, MED FLEST NYE INTERNT FORDREVNE I 2018', 'Kilde: IDMC'),
+  'static-asia-oceania-middle-east-countries-with-most-refugees-from': (w) => regionalWidgetGenerator('totalRefugeesFromX', ['ASOC', 'ME'], 30, w.t('RefugeeReport2020.Regional.AsiaOceaniaMiddleEast.CountriesWithMostRefugeesFromCountry.Heading'), f(w.t('RefugeeReport2020.Regional.AsiaOceaniaMiddleEast.CountriesWithMostRefugeesFromCountry.TableFooterText')), w),
+  'static-asia-oceania-middle-east-countries-with-most-refugees-to-country': (w) => regionalWidgetGenerator('refugeesInXFromOtherCountriesInYear', ['ASOC', 'ME'], 30, w.t('RefugeeReport2020.Regional.AsiaOceaniaMiddleEast.CountriesWithMostRefugeesToCountry.Heading'), f(w.t('RefugeeReport2020.Regional.AsiaOceaniaMiddleEast.CountriesWithMostRefugeesToCountry.TableFooterText')), w),
+  'static-asia-oceania-middle-east-countries-with-most-new-refugees-to-country': (w) => regionalWidgetGenerator('newRefugeesInXFromOtherCountriesInYear', ['ASOC', 'ME'], 30, w.t('RefugeeReport2020.Regional.AsiaOceaniaMiddleEast.CountriesWithMostNewRefugeesToCountry.Heading'), f(w.t('RefugeeReport2020.Regional.AsiaOceaniaMiddleEast.CountriesWithMostNewRefugeesToCountry.TableFooterText')), w),
+  'static-asia-oceania-middle-east-countries-with-most-new-refugees-from': (w) => regionalWidgetGenerator('newRefugeesFromXInYear', ['ASOC', 'ME'], 30, w.t('RefugeeReport2020.Regional.AsiaOceaniaMiddleEast.CountriesWithMostNewRefugeesFrom.Heading'), f(w.t('RefugeeReport2020.Regional.AsiaOceaniaMiddleEast.CountriesWithMostNewRefugeesFrom.TableFooterText')), w),
+  'static-asia-oceania-middle-east-countries-with-most-idps': (w) => regionalWidgetGenerator('idpsInXInYear', ['ASOC', 'ME'], 30, w.t('RefugeeReport2020.Regional.AsiaOceaniaMiddleEast.CountriesWithMostIdps.Heading'), f(w.t('RefugeeReport2020.Regional.AsiaOceaniaMiddleEast.CountriesWithMostIdps.TableFooterText')), w),
+  'static-asia-oceania-middle-east-countries-with-most-new-idps': (w) => regionalWidgetGenerator('newIdpsInXInYear', ['ASOC', 'ME'], 30, w.t('RefugeeReport2020.Regional.AsiaOceaniaMiddleEast.CountriesWithMostNewIdps.Heading'), f(w.t('RefugeeReport2020.Regional.AsiaOceaniaMiddleEast.CountriesWithMostNewIdps.TableFooterText')), w),
 
-  'static-europe-countries-with-most-refugees-from': regionalWidgetGenerator('totalRefugeesFromX', 'EU', 30, 'LAND I EUROPA SOM FLEST HAR FLYKTET FRA', 'Kilde: UNHCR'),
-  'static-europe-countries-with-most-refugees-to-country': regionalWidgetGenerator('refugeesInXFromOtherCountriesInYear', 'EU', 30, 'LAND I EUROPA SOM FLEST HAR FLYKTET TIL', 'Kilde: UNHCR'),
-  'static-europe-countries-with-most-new-refugees-to-country': regionalWidgetGenerator('newRefugeesInXFromOtherCountriesInYear', 'EU', 30, 'Flest nye flyktninger i 2018 til landet', 'Kilde: UNHCR'),
-  'static-europe-countries-with-most-new-refugees-from': regionalWidgetGenerator('newRefugeesFromXInYear', 'EU', 30, 'Flest nye flyktninger i 2018 fra landet', 'Kilde: UNHCR'),
-  'static-europe-countries-with-most-idps': regionalWidgetGenerator('idpsInXInYear', 'EU', 30, 'LAND I EUROPA MED FLEST INTERNT FORDREVNE', 'Kilde: IDMC'),
-  'static-europe-countries-with-most-new-idps': regionalWidgetGenerator('newIdpsInXInYear', 'EU', 30, 'LAND I EUROPA MED FLEST NYE INTERNT FORDREVNE I 2018', 'Kilde: IDMC')
+  'static-europe-countries-with-most-refugees-from': (w) => regionalWidgetGenerator('totalRefugeesFromX', 'EU', 30, w.t('RefugeeReport2020.Regional.Europe.CountriesWithMostRefugeesFromCountry.Heading'), f(w.t('RefugeeReport2020.Regional.Europe.CountriesWithMostRefugeesFromCountry.TableFooterText')), w),
+  'static-europe-countries-with-most-refugees-to-country': (w) => regionalWidgetGenerator('refugeesInXFromOtherCountriesInYear', 'EU', 30, w.t('RefugeeReport2020.Regional.Europe.CountriesWithMostRefugeesToCountry.Heading'), f(w.t('RefugeeReport2020.Regional.Europe.CountriesWithMostRefugeesToCountry.TableFooterText')), w),
+  'static-europe-countries-with-most-new-refugees-to-country': (w) => regionalWidgetGenerator('newRefugeesInXFromOtherCountriesInYear', 'EU', 30, w.t('RefugeeReport2020.Regional.Europe.CountriesWithMostNewRefugeesToCountry.Heading'), f(w.t('RefugeeReport2020.Regional.Europe.CountriesWithMostNewRefugeesToCountry.TableFooterText')), w),
+  'static-europe-countries-with-most-new-refugees-from': (w) => regionalWidgetGenerator('newRefugeesFromXInYear', 'EU', 30, w.t('RefugeeReport2020.Regional.Europe.CountriesWithMostNewRefugeesFrom.Heading'), f(w.t('RefugeeReport2020.Regional.Europe.CountriesWithMostNewRefugeesFrom.TableFooterText')), w),
+  'static-europe-countries-with-most-idps': (w) => regionalWidgetGenerator('idpsInXInYear', 'EU', 30, w.t('RefugeeReport2020.Regional.Europe.CountriesWithMostIdps.Heading'), f(w.t('RefugeeReport2020.Regional.Europe.CountriesWithMostIdps.TableFooterText')), w),
+  'static-europe-countries-with-most-new-idps': (w) => regionalWidgetGenerator('newIdpsInXInYear', 'EU', 30, w.t('RefugeeReport2020.Regional.Europe.CountriesWithMostNewIdps.Heading'), f(w.t('RefugeeReport2020.Regional.Europe.CountriesWithMostNewIdps.TableFooterText')), w)
 
 }
