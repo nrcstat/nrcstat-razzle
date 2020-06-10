@@ -12,13 +12,16 @@
 <body>
 
   <style>
-    #abc222 {
+    #abc222,
+    #abc111 {
       height: 500px;
     }
   </style>
 
-  <div id="abc222"></div>
+
   <div id="abc111"></div>
+  <div id="abc222"></div>
+  <div id="abc333"></div>
   <script>
 
     // NrcStatWidgetLibrary.generateWidget({
@@ -27,13 +30,21 @@
     // });
 
     // NrcStatWidgetLibrary.getInstance().generateWidget({
-    //   targetSelector: "#abc222",
-    //   widgetId: "sv-SE-global-displacement-radial-bar-chart-map-2020-0.1"
+    //   targetSelector: "#abc111",
+    //   widgetId: "en-GB-global-displacement-radial-bar-chart-map-2020-0.1"
     // });
 
     NrcStatWidgetLibrary.getInstance().generateWidget({
-      targetSelector: "#abc222",
+      targetSelector: "#abc111",
       widgetId: "2019-static-africa-countries-with-most-refugees-from"
+    });
+    NrcStatWidgetLibrary.getInstance().generateWidget({
+      targetSelector: "#abc222",
+      widgetId: "2019-static-africa-countries-with-most-refugees-to-country"
+    });
+    NrcStatWidgetLibrary.getInstance().generateWidget({
+      targetSelector: "#abc333",
+      widgetId: "2019-static-africa-countries-with-most-new-refugees-to-country"
     });
   </script>
 </body>

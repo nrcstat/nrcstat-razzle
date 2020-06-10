@@ -20,7 +20,7 @@ import {
   formatDataPercentage,
   formatNumber,
   isMobileDevice
-} from '@/old/widgetHelpers'
+} from '@/util/widgetHelpers.js'
 
 import './GlobalMap.scss'
 
@@ -39,7 +39,7 @@ import refugeesFromIcon from './assets/images/refugeesFrom_small.png'
 import refugeesToIcon from './assets/images/refugeesTo_small.png'
 import idpsIcon from './assets/images/IDP_small.png'
 
-import norwegianCountryNames from '@/old/assets/countryCodeNameMapNorwegian.json'
+import norwegianCountryNames from '@/Widget/StaticTable/staticTableWidgets/countryCodeNameMapNorwegian.json'
 import countryLinks from './assets/json/country-links.json'
 import gazaGeoJson from './assets/json//gaza.json'
 import middleResolutionCountriesGeoJson from './assets/json/ne_110m_admin_0_countries.json'
@@ -1169,7 +1169,7 @@ function GlobalMap ({ mapboxgl }) {
           return hideTooltip()
         }
 
-        hoverPopup.children('.top').html(`<p class="top-header">${norwegianCountryNames[countryCode]}</p><h3>${t()}</h3>`)
+        hoverPopup.children('.top').html(`<p class="top-header">${t(`NRC.Web.StaticTextDictionary.Contries.${countryCode}`)}</p><h3>${t('hoverBox.totally')}</h3>`)
 
         const dataHtml = [
           {

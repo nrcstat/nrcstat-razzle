@@ -39,6 +39,13 @@ module.exports = {
       if (process.env.NODE_ENV === 'production') {
         appConfig.output.publicPath = process.env.RAZZLE_URL + '/'
       }
+
+      appConfig.module = appConfig.module || {}
+      appConfig.module.rules = appConfig.module.rules || []
+      appConfig.module.rules.push({
+        test: /datatables\.net.*/,
+        use: 'imports-loader?define=>false'
+      })
     }
 
     // Applying this to be able to attach the VsCode debugger to the server process.

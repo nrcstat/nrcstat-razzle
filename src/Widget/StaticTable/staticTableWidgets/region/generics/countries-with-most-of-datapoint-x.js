@@ -33,7 +33,6 @@ export default function (dataPointX, regionCodeNRC, countryLimit, title, foooter
   }
   function render (widgetObject, widgetData, targetSelector) {
     const wObject = widgetObject
-    const wData = widgetData
     const wConfig = widgetObject.config
 
     const target = $(targetSelector)
@@ -56,30 +55,28 @@ export default function (dataPointX, regionCodeNRC, countryLimit, title, foooter
         cb()
       },
 
-      function loadData (cb) {
-        var q = {
-          where: { year: year, dataPoint: dataPointX, regionCodeNRC: { inq: regionCodeNRC } },
-          limit: countryLimit,
-          order: 'data DESC'
+      async function loadData (cb) {
+        let data
+        if (widgetData) {
+          data = widgetData
+        } else {
+          data = await loadWidgetData()
         }
-        var urlQ = encodeURIComponent(JSON.stringify(q))
-        $.get(`${API_URL}/datas?filter=${urlQ}`, function (data) {
-          data = map(data, (v) => {
-            return {
-              countryCode: v.countryCode,
-              data: v.data
-            }
-          })
-          data = map(data, d => {
-            d.country =
-                countryCodeNameMap[d.countryCode]
-            return d
-          })
-          data = filter(data, d => d.data != null)
-          data = filter(data, d => d.data != 0)
-          tableData = data
-          cb(null)
+        data = map(data, (v) => {
+          return {
+            countryCode: v.countryCode,
+            data: v.data
+          }
         })
+        data = map(data, d => {
+          d.country =
+                countryCodeNameMap[d.countryCode]
+          return d
+        })
+        data = filter(data, d => d.data != null)
+        data = filter(data, d => d.data != 0)
+        tableData = data
+        cb(null)
       },
       function configureAnnotations (cb) {
         tableData = tableData.map(country => {
