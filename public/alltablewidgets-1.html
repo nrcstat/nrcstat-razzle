@@ -554,36 +554,36 @@
   <script>
 
     var stuff = [
-      // "2019-static-main-table",
+      "2019-static-main-table",
 
-      // "2019-static-countries-with-most-idps",
-      // "2019-static-countries-with-most-new-idps",
-      // "2019-static-idps-per-worldzone",
-      // "2019-static-new-idps-per-worldzone",
+      "2019-static-countries-with-most-idps",
+      "2019-static-countries-with-most-new-idps",
+      "2019-static-idps-per-worldzone",
+      "2019-static-new-idps-per-worldzone",
 
-      // "2019-static-new-refugees-from-country-per-worldzone",
-      // "2019-static-refugees-from-country-per-worldzone",
-      // "2019-static-countries-with-most-new-refugees-from-country",
-      // "2019-static-countries-with-most-refugees-from-country",
+      "2019-static-new-refugees-from-country-per-worldzone",
+      "2019-static-refugees-from-country-per-worldzone",
+      "2019-static-countries-with-most-new-refugees-from-country",
+      "2019-static-countries-with-most-refugees-from-country",
 
-      // "2019-static-refugees-to-country-per-worldzone",
-      // "2019-static-new-refugees-to-country-per-worldzone",
-      // "2019-static-countries-with-most-refugees-to-country",
-      // "2019-static-countries-with-most-new-refugees-to-country",
+      "2019-static-refugees-to-country-per-worldzone",
+      "2019-static-new-refugees-to-country-per-worldzone",
+      "2019-static-countries-with-most-refugees-to-country",
+      "2019-static-countries-with-most-new-refugees-to-country",
 
-      // "2019-static-countries-with-most-voluntary-returns",
+      "2019-static-countries-with-most-voluntary-returns",
 
-      // "2019-static-refugees-plus-idps-from-origin-countries-per-worldzone",
-      // "2019-static-refugees-plus-idps-in-host-countries-per-worldzone",
-      // "2019-static-origin-countries-with-most-refugees-plus-idps-long",
-      // "2019-static-origin-countries-with-most-refugees-plus-idps-short",
+      "2019-static-refugees-plus-idps-from-origin-countries-per-worldzone",
+      "2019-static-refugees-plus-idps-in-host-countries-per-worldzone",
+      "2019-static-origin-countries-with-most-refugees-plus-idps-long",
+      "2019-static-origin-countries-with-most-refugees-plus-idps-short",
 
-      // "2019-static-africa-countries-with-most-refugees-from",
-      // "2019-static-africa-countries-with-most-refugees-to-country",
-      // "2019-static-africa-countries-with-most-new-refugees-to-country",
-      // "2019-static-africa-countries-with-most-new-refugees-from",
-      // "2019-static-africa-countries-with-most-idps",
-      // "2019-static-africa-countries-with-most-new-idps",
+      "2019-static-africa-countries-with-most-refugees-from",
+      "2019-static-africa-countries-with-most-refugees-to-country",
+      "2019-static-africa-countries-with-most-new-refugees-to-country",
+      "2019-static-africa-countries-with-most-new-refugees-from",
+      "2019-static-africa-countries-with-most-idps",
+      "2019-static-africa-countries-with-most-new-idps",
 
 
 
@@ -618,7 +618,7 @@
     for (var i = 0; i < stuff.length; i++) {
       var s = stuff[i];
       NrcStatWidgetLibrary.getInstance().generateWidget({
-        widgetId: s,
+        widgetId: "en-GB-" + s,
         targetSelector: '#' + s,
       })
     }
