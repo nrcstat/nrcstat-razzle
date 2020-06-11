@@ -41,7 +41,7 @@ export default function StaticTable () {
   const elementRef = useRef(null)
   const onReady = useCallback(element => {
     elementRef.current = element
-    element.parentNode.parentNode.parentNode.style.height = 'auto'
+    $(elements).parents('.nrcstat-block').css('height', 'auto')
     renderFn(fakeWidgetObject, null, element)
   })
   return (
