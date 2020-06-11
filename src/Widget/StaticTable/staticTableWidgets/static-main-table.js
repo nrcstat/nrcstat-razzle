@@ -328,16 +328,16 @@ export default function (widgetParams) {
           buttons: [
             {
               extend: 'csv',
-              text: 'Last ned CSV-fil',
+              text: t('RefugeeReport2020.MainTable.Actions.dowloadExcelFile'),
               title: tableTitle
             },
             {
               extend: 'excel',
-              text: 'Last ned Excel-fil',
+              text: t('RefugeeReport2020.MainTable.Actions.dowloadExcelFile'),
               title: tableTitle
             },
             {
-              text: 'Last ned JSON-fil',
+              text: t('RefugeeReport2020.MainTable.Actions.dowloadJsonFile'),
               action: function (e, dt, button, config) {
                 var data = dt.buttons.exportData()
 
