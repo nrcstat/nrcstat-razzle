@@ -26,7 +26,48 @@ export const determineWidgetType = (API_URL) => widgetId => {
     }
     const [, tableType] = widgetIdParam.match(/static-(.+)/)
     return { locale, type: 'StaticTable', periodYear, tableType }
+  } else if (/dynamic_country_dashboard_/.test(widgetId)) {
+    return { locale, type: 'CountryDashboard', ...parseDynamicCountryDashboardWidgetId(widgetId) }
   } else {
     return { locale, type: 'Donut' }
   }
+}
+
+function parseDynamicCountryDashboardWidgetId (widgetId) {
+  const patternCountryYear = /dynamic_country_dashboard_([A-Z]{2})_(\d{4})/
+  const patternCountryYearDataPoints = /dynamic_country_dashboard_([A-Z]{2})_(\d{4})_([A-Za-z,]+)/
+
+  let countryCode
+  let year
+  let dataPoints = [
+    'totalRefugeesFromX',
+    'idpsInXInYear',
+    'refugeesInXFromOtherCountriesInYear',
+    'newRefugeesFromXInYear',
+    'newRefugeesInXFromOtherCountriesInYear',
+    'newIdpsInXInYear',
+    'voluntaryReturnsToXInYear',
+    'asylumSeekersFromXToNorwayInYear',
+    'population',
+    'percentageWomenFleeingToCountry',
+    'percentageChildrenFleeingToCountry'
+  ]
+  let showMap = true
+
+  if (patternCountryYearDataPoints.test(widgetId)) {
+    const matches = patternCountryYearDataPoints.exec(widgetId)
+    countryCode = matches[1]
+    year = matches[2]
+    dataPoints = matches[3].split(',')
+  } else if (patternCountryYear.test(widgetId)) {
+    const matches = patternCountryYear.exec(widgetId)
+    countryCode = matches[1]
+    year = matches[2]
+  }
+
+  if (widgetId.indexOf('hideMap') !== -1) {
+    showMap = false
+  }
+
+  return { countryCode, year, dataPoints, showMap }
 }

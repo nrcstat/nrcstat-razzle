@@ -19,9 +19,9 @@
   </style>
 
 
-  <div id="abc111"></div>
-  <div id="abc222"></div>
-  <div id="abc333"></div>
+  <div id="abc111" class="nrcstat-block"></div>
+  <div id="abc222" class="nrcstat-block"></div>
+  <div id="abc333" class="nrcstat-block"></div>
   <script>
 
     // NrcStatWidgetLibrary.generateWidget({
@@ -34,17 +34,14 @@
     //   widgetId: "en-GB-global-displacement-radial-bar-chart-map-2020-0.1"
     // });
 
+    // NrcStatWidgetLibrary.getInstance().generateWidget({
+    //   targetSelector: "#abc111",
+    //   widgetId: "2019-static-africa-countries-with-most-refugees-from"
+    // });
+
     NrcStatWidgetLibrary.getInstance().generateWidget({
       targetSelector: "#abc111",
-      widgetId: "2019-static-africa-countries-with-most-refugees-from"
-    });
-    NrcStatWidgetLibrary.getInstance().generateWidget({
-      targetSelector: "#abc222",
-      widgetId: "2019-static-africa-countries-with-most-refugees-to-country"
-    });
-    NrcStatWidgetLibrary.getInstance().generateWidget({
-      targetSelector: "#abc333",
-      widgetId: "2019-static-africa-countries-with-most-new-refugees-to-country"
+      widgetId: "dynamic_country_dashboard_AF_2018"
     });
   </script>
 </body>
