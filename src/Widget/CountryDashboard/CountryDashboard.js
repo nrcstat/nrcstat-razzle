@@ -146,7 +146,14 @@ function CountryDashboard ({ mapboxgl }) {
         display: 'inline-block'
       })
       $(targetSelector)
-        .parent('.nrcstat-block')
+        .parent('.nrcstat__rootwidget')
+        .css({
+          width: '100%',
+          height: 'auto',
+          display: 'inline-block'
+        })
+      $(targetSelector)
+        .parents('.nrcstat-block')
         .css({
           display: 'table'
         })
