@@ -532,7 +532,7 @@ function GlobalMap ({ mapboxgl }) {
               ],
               dp.dataPointKey
             )
-          ) { dataPointValue = formatDataPercentage(dataPointValue, 'nb_NO') } else dataPointValue = formatDataNumber(dataPointValue, 'nb_NO', true)
+          ) { dataPointValue = formatDataPercentage(dataPointValue, 'nb-NO') } else dataPointValue = formatDataNumber(dataPointValue, 'nb-NO', true)
 
           Object.assign(dp, { dataPointValue })
           return dp
@@ -1190,7 +1190,7 @@ function GlobalMap ({ mapboxgl }) {
         ]
           .sort((a, b) => b.data - a.data)
           .map(d => {
-            return { ...d, data: formatDataNumber(d.data, 'nb_NO') }
+            return { ...d, data: formatDataNumber(d.data, 'nb-NO') }
           })
           .map(
             d =>

@@ -403,7 +403,7 @@ function CountryDashboard ({ mapboxgl }) {
         ]
           .sort((a, b) => b.data - a.data)
           .map(d => {
-            return { ...d, data: formatDataNumber(d.data, 'nb_NO') }
+            return { ...d, data: formatDataNumber(d.data, 'nb-NO') }
           })
           .map(
             d =>
@@ -543,14 +543,14 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender, t }) {
         <td className='data-cell'>
           {formatDataNumber(
             leftColStat ? leftColStat.data : null,
-            'nb_NO',
+            'nb-NO',
             true
           )}
         </td>
         <td className='data-cell'>
           {formatDataNumber(
             rightColStat ? rightColStat.data : null,
-            'nb_NO',
+            'nb-NO',
             true
           )}
         </td>
@@ -708,7 +708,7 @@ function HorizontalBar ({ label, fraction, style }) {
             }}
             dangerouslySetInnerHTML={{
               __html: !isNull(fraction)
-                ? formatDataPercentage(fraction, 'nb_NO').replace(' ', '&nbsp;')
+                ? formatDataPercentage(fraction, 'nb-NO').replace(' ', '&nbsp;')
                 : ''
             }}
           />
@@ -904,7 +904,7 @@ function countryInfo__statsTable (iso2) {
           ],
           dp.dataPointKey
         )
-      ) { dataPointValue = formatDataPercentage(dataPointValue, 'nb_NO') } else dataPointValue = formatDataNumber(dataPointValue, 'nb_NO', true)
+      ) { dataPointValue = formatDataPercentage(dataPointValue, 'nb-NO') } else dataPointValue = formatDataNumber(dataPointValue, 'nb-NO', true)
 
       Object.assign(dp, { dataPointValue })
       return dp
@@ -1257,7 +1257,7 @@ const dataTransformer = t => data => {
       )
       const dataLabel = isNull(countryData.data)
         ? '-'
-        : formatDataNumber(countryData.data, 'nb_NO', true)
+        : formatDataNumber(countryData.data, 'nb-NO', true)
       let xOffsetForDataLabel
       switch (countryData.dataPoint) {
         case 'totalRefugeesFromX':

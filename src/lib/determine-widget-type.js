@@ -1,6 +1,7 @@
-import { ENABLED_LOCALES, DEFAULT_LOCALE } from '../config.js'
+import { ENABLED_LOCALES, DEFAULT_LOCALE, API_URL } from '../config.js'
+import nodeFetch from 'node-fetch'
 
-export const determineWidgetType = (API_URL) => widgetId => {
+export const determineWidgetType = async widgetId => {
   let locale, widgetIdParam
 
   const localesPipeDelimited = ENABLED_LOCALES.join('|')
@@ -29,8 +30,15 @@ export const determineWidgetType = (API_URL) => widgetId => {
   } else if (/dynamic_country_dashboard_/.test(widgetId)) {
     return { locale, type: 'CountryDashboard', ...parseDynamicCountryDashboardWidgetId(widgetId) }
   } else {
-    return { locale, type: 'Donut' }
+    const widgetObject = await loadWidgetObject(widgetId)
+    console.log(widgetObject)
+    return { locale, type: 'Donut', widgetObject }
   }
+}
+
+async function loadWidgetObject (widgetId) {
+  return nodeFetch(`${API_URL}/widgets/${widgetId}`)
+    .then(resp => resp.json())
 }
 
 function parseDynamicCountryDashboardWidgetId (widgetId) {

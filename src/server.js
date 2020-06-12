@@ -21,6 +21,7 @@ import { i18n } from './server-only/locale-service.js'
 import { mapNestedObjectToPathKeyedObject } from './util/mapNestedObjectToPathKeyedObject'
 
 import tableTypeToTableWidgetMap from './Widget/StaticTable/table-type-to-table-widget-map.js'
+import { API_URL } from './config'
 
 const dataPreLoaders = {
   GlobalMap: loadGlobalMapData,
@@ -46,7 +47,12 @@ server
   .use(express.static(process.env.RAZZLE_PUBLIC_DIR))
   .get('/render-widgets', async (req, res) => {
     const rawQueue = JSON.parse(req.query.queue)
-    const enrichedQueue = rawQueue.map(w => Object.assign(w, { ...determineWidgetType()(w.widgetId) }))
+    const enrichWidget = async (widget) => {
+      const widgetType = await determineWidgetType(widget.widgetId)
+      const enriched = { ...widget, ...widgetType }
+      return enriched
+    }
+    const enrichedQueue = await Promise.all(rawQueue.map(enrichWidget))
     // TODO: replace this with a Promise.all() method to load all data in parallel
     for (let i = 0; i < enrichedQueue.length; i++) {
       const widget = enrichedQueue[i]

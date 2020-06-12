@@ -45,12 +45,12 @@ export function formatDataPercentageEnglish (percentageAsDecimal) {
 }
 
 export function formatDataNumber (number, locale, forceFullFormat = false) {
-  if (locale === 'nb_NO') return formatDataNumberNorwegian(number, forceFullFormat)
+  if (locale === 'nb-NO') return formatDataNumberNorwegian(number, forceFullFormat)
   else return formatDataNumberEnglish(number, forceFullFormat)
 }
 
 export function formatDataPercentage (percentageAsDecimal, locale) {
-  if (locale === 'nb_NO') return formatDataPercentageNorwegian(percentageAsDecimal)
+  if (locale === 'nb-NO') return formatDataPercentageNorwegian(percentageAsDecimal)
   else return formatDataPercentageEnglish(percentageAsDecimal)
 }
 
