@@ -40,8 +40,10 @@
   }
   .nrcstat-country-dashboard-map-block {
     display: flex;
-    flex-grow: 4;
-    justify-content: stretch;
+    // flex-grow: 4;
+    // justify-content: stretch;
+    min-width: 350px;
+    width: 40%;
     .nrcstat-country-dashboard-map-block__map-container {
       display: flex;
       width: 100%;

@@ -102,17 +102,14 @@ function CountryDashboard ({ mapboxgl }) {
   const { getNsFixedT } = useContext(FixedLocaleContext)
   const widgetParams = useContext(WidgetParamsContext)
   console.log(widgetParams)
-  const { countryCode, year, dataPoints, showMap } = widgetParams
+  const { countryCode, year, dataPoints, showMap, containerRef } = widgetParams
   const t = getNsFixedT(['Widget.Static.CountryDashboard', 'GeographicalNames'])
 
   const leonardoCentroid = getCountryCentroid(countryCode)
   const leonardoBoundingBox = leonardoCentroid.boundingbox
 
-  const containerRef = React.useRef()
-  const onReady = containerElement => {
-    containerRef.current = containerElement
-
-    const targetSelector = containerElement
+  useEffect(() => {
+    const targetSelector = containerRef.current
 
     clearWidgetContainer()
     const { dataBlock, mapBlock } = drawWidgetContainer()
@@ -445,11 +442,9 @@ function CountryDashboard ({ mapboxgl }) {
     let isCountryInfoPopupOrPopoverActive = false
 
     addLegend(targetSelector)
-  }
+  }, [])
 
-  return (
-    <div ref={onReady} />
-  )
+  return null
 }
 
 function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender }) {

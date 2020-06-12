@@ -33,10 +33,12 @@ function Widget (props) {
   const { type, locale } = props
   const SpecificWidget = widgetMap[type]
   const FixedLocaleContext = buildFixedLocaleContext(locale)
+  const containerRef = React.useRef()
+  const onReady = ref => { containerRef.current = ref }
   return (
     <FixedLocaleContext>
-      <WidgetParamsContext.Provider value={props}>
-        <div className='nrcstat__rootwidget'>
+      <WidgetParamsContext.Provider value={{ ...props, containerRef }}>
+        <div className='nrcstat__rootwidget' ref={onReady}>
           <SpecificWidget />
         </div>
       </WidgetParamsContext.Provider>
