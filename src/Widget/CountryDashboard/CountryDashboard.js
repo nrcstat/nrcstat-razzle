@@ -122,7 +122,7 @@ function CountryDashboard ({ mapboxgl }) {
     const yalla = () => new Promise(resolve => setTimeout(() => resolve(), 1000))
 
     Promise.all([fetchData(countryCode), mapLoaded(), yalla()]).then(([data]) => {
-      drawDataBlock(dataBlock, data)
+      drawDataBlock(dataBlock, data, t)
       drawMapBlock(
         mapBlock,
         data.filter(d => d.year === YEAR_TO_SHOW_IN_RADIAL_BAR_CHART)
@@ -164,7 +164,7 @@ function CountryDashboard ({ mapboxgl }) {
         <div class="nrcstat-country-dashboard-map-block">
           <div class="nrcstat-country-dashboard-map-block__map-container">
             <div class="nrcstat-country-dashboard-map-block__mapbox"></div>
-            <div class="nrcstat-country-dsahboard-map-block__source">Kilder: UNHCR og IDMC</div>
+            <div class="nrcstat-country-dsahboard-map-block__source">${t('radialBarChart.sources')}</div>
           </div>
         </div>
       </div>`
@@ -179,13 +179,14 @@ function CountryDashboard ({ mapboxgl }) {
       return { dataBlock, mapBlock }
     }
 
-    function drawDataBlock (dataBlock, data) {
+    function drawDataBlock (dataBlock, data, t) {
       ReactDOM.render(
         <Dashboard
           countryCode={countryCode}
           data={data}
           dataPointsToShow={dataPoints}
           onAfterRender={() => map.resize()}
+          t={t}
         />,
         dataBlock[0]
       )
@@ -214,7 +215,7 @@ function CountryDashboard ({ mapboxgl }) {
         .addTo(map)
 
       ReactDOM.render(
-        <RadialBarChart data={Object.values(dataTransformer(data))[0]} />,
+        <RadialBarChart data={Object.values(dataTransformer(t)(data))[0]} />,
         el
       )
 
@@ -249,7 +250,7 @@ function CountryDashboard ({ mapboxgl }) {
             {
               type: 'Feature',
               properties: {
-                countryLabel: 'Totaltall'
+                countryLabel: t('radialBarChart.belowChart.line1')
               },
               geometry: {
                 type: 'Point',
@@ -280,7 +281,7 @@ function CountryDashboard ({ mapboxgl }) {
             {
               type: 'Feature',
               properties: {
-                countryLabel: 'ved inngangen til 2019'
+                countryLabel: t('radialBarChart.belowChart.line2')
               },
               geometry: {
                 type: 'Point',
@@ -447,7 +448,7 @@ function CountryDashboard ({ mapboxgl }) {
   return null
 }
 
-function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender }) {
+function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender, t }) {
   const [leftColSelectedOption, setLeftColSelectedOption] = useState('total')
   const [rightColSelectedOption, setRightColSelectedOption] = useState(
     String(YEAR_TO_SHOW_IN_RADIAL_BAR_CHART)
@@ -458,7 +459,7 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender }) {
 
   const COL_SELECT_OPTIONS = [
     {
-      label: 'TOTAL',
+      label: t('yearPicker.total'),
       value: 'total'
     },
     {
@@ -473,30 +474,31 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender }) {
       label: '2018',
       value: '2018'
     }
+    // TODO: configure for next year
   ]
   const TABLE_ROWS = [
     {
-      label: 'FLYKTNINGER FRA XXX',
+      label: (options) => t('dataPoint.refugeesFromCountry', options),
       totalDataPoint: 'totalRefugeesFromX',
       newInYearXDataPoint: 'newRefugeesFromXInYear'
     },
     {
-      label: 'FLYKTNINGER TIL XXX',
+      label: (options) => t('dataPoint.refugeesToCountry', options),
       totalDataPoint: 'refugeesInXFromOtherCountriesInYear',
       newInYearXDataPoint: 'newRefugeesInXFromOtherCountriesInYear'
     },
     {
-      label: 'INTERNT FORDREVNE I XXX',
+      label: (options) => t('dataPoint.idpsInCountry', options),
       totalDataPoint: 'idpsInXInYear',
       newInYearXDataPoint: 'newIdpsInXInYear'
     },
     {
-      label: 'FRIVILLIGE TILBAKEVENDINGER TIL XXX',
+      label: (options) => t('dataPoint.voluntaryReturnsToCountry', options),
       totalDataPoint: null,
       newInYearXDataPoint: 'voluntaryReturnsToXInYear'
     },
     {
-      label: 'ASYLSØKERE TIL NORGE FRA XXX',
+      label: (options) => t('dataPoint.asylumSeekersFromCountryToNorway', options),
       totalDataPoint: null,
       newInYearXDataPoint: 'asylumSeekersFromXToNorwayInYear'
     }
@@ -536,9 +538,7 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender }) {
     return (
       <tr>
         <td>
-          {row.label
-            .replace('XXX', norwegianCountryNames[countryCode])
-            .toUpperCase()}
+          {row.label({ countryName: t(`NRC.Web.StaticTextDictionary.Contries.${countryCode}`) })}
         </td>
         <td className='data-cell'>
           {formatDataNumber(
@@ -594,7 +594,7 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender }) {
           fontSize: '2em'
         }}
       >
-        {norwegianCountryNames[countryCode]}
+        {t(`NRC.Web.StaticTextDictionary.Contries.${countryCode}`)}
       </p>
       {dataPointsToShow.includes(DATA_POINT_POPULATION) && (
         <p
@@ -606,7 +606,7 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender }) {
             fontSize: '1em'
           }}
         >
-          FOLKETALL: {population} millioner
+          {t('population', { populationInMillions: population })}
         </p>
       )}
       {tableRows.length > 0 && (
@@ -654,7 +654,7 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender }) {
         DATA_POINT_PERCENTAGE_WOMEN_FLEEING_TO_COUNTRY
       ) && (
         <HorizontalBar
-          label='Andel kvinner blant flyktningene i landet'
+          label={t('dataPoint.percentageWomenAmongstRefugeesInCountry')}
           fraction={
             dataPoint_percentageWomenFleeingToCountry
               ? dataPoint_percentageWomenFleeingToCountry.data
@@ -667,7 +667,7 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender }) {
         DATA_POINT_PERCENTAGE_CHILDREN_FLEEING_TO_COUNTRY
       ) && (
         <HorizontalBar
-          label='Andel barn blant flyktningene i landet'
+          label={t('dataPoint.percentageChildrenAmongstRefugeesInCountry')}
           fraction={
             dataPoint_percentageChildrenFleeingToCountry
               ? dataPoint_percentageChildrenFleeingToCountry.data
@@ -677,11 +677,10 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender }) {
         />
       )}
       <p className='footnote' style={{ marginBottom: '-0.5em' }}>
-        Tallene gjelder ved utgangen til hvert kalenderår.
+        {t('legend.numbersApplyAtEntryToEachCalendarYear')}
       </p>
       <p className='footnote' style={{ marginBottom: '5px' }}>
-        Kilder: FNs høykommissær for flyktninger (UNHCR) og FNs
-        hjelpeorganisasjon for Palestina-flyktninger (UNRWA).
+        {t('legend.sources')}
       </p>
     </>
   )
@@ -1227,18 +1226,18 @@ class RadialBarChart extends React.Component {
   }
 }
 
-const dataPointToLabel = {
-  idpsInXInYear: 'XXX internt fordrevne',
-  totalRefugeesFromX: 'XXX flyktninger fra',
-  refugeesInXFromOtherCountriesInYear: 'XXX flyktninger til'
-}
+const dataPointToLabel = t => ({
+  idpsInXInYear: t('radialBarChart.label.idps'),
+  totalRefugeesFromX: t('radialBarChart.label.refugeesFrom'),
+  refugeesInXFromOtherCountriesInYear: t('radialBarChart.label.refugeesTo')
+})
 const dataPointToColour = {
   idpsInXInYear: 'rgba(114,199,231,0.72)',
   totalRefugeesFromX: 'rgba(255,121,0,0.72)',
   refugeesInXFromOtherCountriesInYear: 'rgba(253,200,47,0.72)'
 }
 
-const dataTransformer = data => {
+const dataTransformer = t => data => {
   const filtered = data.filter(v =>
     includes(
       [
@@ -1252,7 +1251,7 @@ const dataTransformer = data => {
   const countries = groupBy(filtered, 'countryCode')
   const mapped = mapValues(countries, countryDatas =>
     countryDatas.map(countryData => {
-      const label = dataPointToLabel[countryData.dataPoint].replace(
+      const label = dataPointToLabel(t)[countryData.dataPoint].replace(
         'XXX',
         isNull(countryData.data) ? '' : ''
       )
