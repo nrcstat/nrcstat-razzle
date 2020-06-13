@@ -34,7 +34,7 @@ const dataPreLoaders = {
       ...widget,
       t: () => ''
     }
-    tableTypeToTableWidgetMap[widget.tableType](widgetParams).loadWidgetData(widget)
+    return tableTypeToTableWidgetMap[widget.tableType](widgetParams).loadWidgetData(widget)
   }
 }
 

@@ -56,7 +56,12 @@ export default function (tableTitle, placeColumnLabel, dataPointColumnLabel, pop
       },
 
       async function loadData (cb) {
-        let data = await loadWidgetData()
+        let data
+        if (widgetData) {
+          data = widgetData
+        } else {
+          data = await loadWidgetData()
+        }
         data = dataProcessingFunction(data)
         tableData = data
         cb(null)
