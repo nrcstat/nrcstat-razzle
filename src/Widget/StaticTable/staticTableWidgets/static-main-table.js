@@ -224,6 +224,8 @@ export default function (widgetParams) {
         continentSelector = widgetEl.find('.continent-selector')
         countrySelector = widgetEl.find('.country-selector')
 
+
+
         cb()
       },
 
@@ -253,42 +255,42 @@ export default function (widgetParams) {
             },
             // Column 2: totalRefugeesFromX (Totalt flyktninger fra)
             {
-              title: `<span class="nrcstat-widget-tooltip" title="${t('RefugeeReport2020.MainTable.Column.totalRefugeesFrom.hoverText')}">${t('RefugeeReport2020.MainTable.Column.totalRefugeesFrom.label')}</span>`,
+              title: `<span class="nrcstat-tablewidget-header" >${t('RefugeeReport2020.MainTable.Column.totalRefugeesFrom.label')}</span><span class="nrcstat-widget-tooltip" title="${t('RefugeeReport2020.MainTable.Column.totalRefugeesFrom.hoverText')}">${t('&#9432;')}</span>`,
               data: 'totalRefugeesFromX',
               render: (data, type, row) =>
                 type == 'display' ? thousandsFormatter(data) : data
             },
             // Column 3: refugeesInXFromOtherCountriesInYear (Totalt flyktninger til)
             {
-              title: `<span class="nrcstat-widget-tooltip" title="${t('RefugeeReport2020.MainTable.Column.totalRefugeesTo.hoverText')}">${t('RefugeeReport2020.MainTable.Column.totalRefugeesTo.label')}</span>`,
+              title: `<span class="nrcstat-tablewidget-header" >${t('RefugeeReport2020.MainTable.Column.totalRefugeesTo.label')}</span><span class="nrcstat-widget-tooltip" title="${t('RefugeeReport2020.MainTable.Column.totalRefugeesFrom.hoverText')}">${t('&#9432;')}</span>`,
               data: 'refugeesInXFromOtherCountriesInYear',
               render: (data, type, row) =>
                 type == 'display' ? thousandsFormatter(data) : data
             },
             // Column 4: idpsInXInYear (Totalt internt fordrevne)
             {
-              title: `<span class="nrcstat-widget-tooltip" title="${t('RefugeeReport2020.MainTable.Column.totalRefugeesTo.hoverText')}">${t('RefugeeReport2020.MainTable.Column.totalIdps.label')}</span>`,
+              title: `<span class="nrcstat-tablewidget-header" >${t('RefugeeReport2020.MainTable.Column.totalIdps.label')}</span><span class="nrcstat-widget-tooltip" title="${t('RefugeeReport2020.MainTable.Column.totalRefugeesFrom.hoverText')}">${t('&#9432;')}</span>`,
               data: 'idpsInXInYear',
               render: (data, type, row) =>
                 type == 'display' ? thousandsFormatter(data) : data
             },
             // Column 5: newRefugeesFromXInYear (Nye flyktninger fra)
             {
-              title: `<span class="nrcstat-widget-tooltip" title="${t('RefugeeReport2020.MainTable.Column.totalIdps.hoverText')}">${t('RefugeeReport2020.MainTable.Column.newRefugeesFrom.label')}</span></span>`,
+              title: `<span class="nrcstat-tablewidget-header" >${t('RefugeeReport2020.MainTable.Column.newRefugeesFrom.label')}</span><span class="nrcstat-widget-tooltip" title="${t('RefugeeReport2020.MainTable.Column.totalRefugeesFrom.hoverText')}">${t('&#9432;')}</span>`,
               data: 'newRefugeesFromXInYear',
               render: (data, type, row) =>
                 type == 'display' ? thousandsFormatter(data) : data
             },
             // Column 6: newRefugeesInXFromOtherCountriesInYear (Nye flyktninger til)
             {
-              title: `<span class="nrcstat-widget-tooltip" title="${t('RefugeeReport2020.MainTable.Column.newRefugeesTo.hoverText')}">${t('RefugeeReport2020.MainTable.Column.newRefugeesTo.label')}/span>`,
+              title: `<span class="nrcstat-tablewidget-header" >${t('RefugeeReport2020.MainTable.Column.newRefugeesTo.label')}</span><span class="nrcstat-widget-tooltip" title="${t('RefugeeReport2020.MainTable.Column.totalRefugeesFrom.hoverText')}">${t('&#9432;')}</span>`,
               data: 'newRefugeesInXFromOtherCountriesInYear',
               render: (data, type, row) =>
                 type == 'display' ? thousandsFormatter(data) : data
             },
             // Column 7: newIdpsInXInYear (Nye internt fordrevne)
             {
-              title: `<span class="nrcstat-widget-tooltip" title="${t('RefugeeReport2020.MainTable.Column.newIdps.hoverText')}">${t('RefugeeReport2020.MainTable.Column.newIdps.label')}</span>`,
+              title: `<span class="nrcstat-tablewidget-header" >${t('RefugeeReport2020.MainTable.Column.newIdps.label')}</span><span class="nrcstat-widget-tooltip" title="${t('RefugeeReport2020.MainTable.Column.totalRefugeesFrom.hoverText')}">${t('&#9432;')}</span>`,
               data: 'newIdpsInXInYear',
               render: (data, type, row) =>
                 type == 'display' ? thousandsFormatter(data) : data
@@ -301,14 +303,14 @@ export default function (widgetParams) {
             },
             // Column 9: percentageWomenFleeingToCountry (Andel kvinner)
             {
-              title: `<span class="nrcstat-widget-tooltip" title="${t('RefugeeReport2020.MainTable.Column.percentageWomen.hoverText')}">${t('RefugeeReport2020.MainTable.Column.percentageWomen.label')}</span></span>`,
+              title: `<span class="nrcstat-tablewidget-header" >${t('RefugeeReport2020.MainTable.Column.percentageWomen.label')}</span><span class="nrcstat-widget-tooltip" title="${t('RefugeeReport2020.MainTable.Column.totalRefugeesFrom.hoverText')}">${t('&#9432;')}</span>`,
               data: 'percentageWomenFleeingToCountry',
               render: (data, type, row) =>
                 type == 'display' ? percentFormatter(data) : data
             },
             // Column 10: percentageChildrenFleeingToCountry (Andel barn)
             {
-              title: `<span class="nrcstat-widget-tooltip" title="${t('RefugeeReport2020.MainTable.Column.percentageChildren.hoverText')}">${t('RefugeeReport2020.MainTable.Column.percentageChildren.label')}</span>`,
+              title: `<span class="nrcstat-tablewidget-header" >${t('RefugeeReport2020.MainTable.Column.percentageChildren.label')}</span><span class="nrcstat-widget-tooltip" title="${t('RefugeeReport2020.MainTable.Column.totalRefugeesFrom.hoverText')}">${t('&#9432;')}</span>`,
               data: 'percentageChildrenFleeingToCountry',
               render: (data, type, row) =>
                 type == 'display' ? percentFormatter(data) : data
@@ -411,8 +413,12 @@ export default function (widgetParams) {
     }
   }
 
+
+
   return {
     loadWidgetData,
     render
   }
 }
+
+

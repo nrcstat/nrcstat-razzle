@@ -186,7 +186,11 @@ function GlobalMap ({ mapboxgl }) {
   const { getNsFixedT } = useContext(FixedLocaleContext)
   const widgetParams = useContext(WidgetParamsContext)
   const { periodYear, preloadedWidgetData } = widgetParams
-  const t = getNsFixedT(['Widget.Static.GlobalRadialBarChartDisplacementMap', 'GeographicalNames'])
+  const t = getNsFixedT([
+    'Widget.Static.GlobalRadialBarChartDisplacementMap',
+    'GeographicalNames',
+    'Widget.Static.GlobalRadialBarChartDisplacementMap.ADMIN-SETTINGS-ONLY-ADMINS-TOUCH-THIS'
+  ])
 
   const containerElementRef = useRef(null)
   const mapboxElementRef = useRef(null)
@@ -227,10 +231,18 @@ function GlobalMap ({ mapboxgl }) {
 
       const statsTable = countryInfo__statsTable(selectedCountryIso2)
 
-      const countryUrl = countryLinks[selectedCountryIso2]
-      const countryLink = countryUrl
-        ? `<p class="country-link"><a href="https://www.flyktninghjelpen.no/${countryUrl}" target="_blank">${t('countryInfoPopup.readMoreAboutCountryLink', { countryName: countryName })}</a></p>`
-        : ''
+      let countryLink = ''
+
+      const countriesWithReadMoreLink = t('CountryStatisticsPopup.countriesWithReadMoreLink').split('\n').filter(countryCode => countryCode)
+      if (countriesWithReadMoreLink.includes(selectedCountryIso2)) {
+        console.log('hi')
+        const countryUrl = t(`CountryStatisticsPopup.CountryReadMoreLink.${selectedCountryIso2}`)
+        console.log(countryUrl)
+        if (countryUrl) {
+          countryLink = `<p class="country-link"><a href="${countryUrl}" target="_blank">${t('countryInfoPopup.readMoreAboutCountryLink', { countryName: countryName })}</a></p>`
+          console.log(countryLink)
+        }
+      }
 
       // close menu when popover opens
 
@@ -454,10 +466,19 @@ function GlobalMap ({ mapboxgl }) {
 
       const statsTable = countryInfo__statsTable(selectedCountryIso2)
 
-      const countryUrl = countryLinks[selectedCountryIso2]
-      const countryLink = countryUrl
-        ? `<p class="country-link"><a href="https://www.flyktninghjelpen.no/${countryUrl}" target="_blank">${t('countryInfoPopup.readMoreAboutCountryLink', { countryName })}</a></p>`
-        : ''
+      let countryLink = ''
+
+      const countriesWithReadMoreLink = t('CountryStatisticsPopup.countriesWithReadMoreLink').split('\n').filter(countryCode => countryCode)
+      console.log(countriesWithReadMoreLink)
+      if (countriesWithReadMoreLink.includes(selectedCountryIso2)) {
+        console.log('hi')
+        const countryUrl = t(`CountryStatisticsPopup.CountryReadMoreLink.${selectedCountryIso2}`)
+        console.log(countryUrl)
+        if (countryUrl) {
+          countryLink = `<p class="country-link"><a href="${countryUrl}" target="_blank">${t('countryInfoPopup.readMoreAboutCountryLink', { countryName: countryName })}</a></p>`
+          console.log(countryLink)
+        }
+      }
 
       const population = getCountryStat(selectedCountryIso2, 'population').data
       const populationHtml = `<p class="population">${t('countryInfoPopup.population', { populationInMillions: population })}</p>`
