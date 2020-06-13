@@ -17,7 +17,6 @@ const colours = ['#70a873', '#70b8c7', '#ffb271', '#70d1e5', '#ea9282', '#fee08a
 function Donut () {
   const widgetParams = useContext(WidgetParamsContext)
   const { widgetObject } = widgetParams
-  console.log(widgetParams)
 
   const data = translateCustomData(widgetObject.customData)
   console.log(data)
@@ -49,7 +48,6 @@ function Donut () {
 }
 
 const func = (props) => {
-  console.log(props)
   const { cx, cy } = props.viewBox
   return (
     <svg viewBox='0 0 300 300' preserveAspectRatio='xMidYMid meet'>

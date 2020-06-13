@@ -235,12 +235,9 @@ function GlobalMap ({ mapboxgl }) {
 
       const countriesWithReadMoreLink = t('CountryStatisticsPopup.countriesWithReadMoreLink').split('\n').filter(countryCode => countryCode)
       if (countriesWithReadMoreLink.includes(selectedCountryIso2)) {
-        console.log('hi')
         const countryUrl = t(`CountryStatisticsPopup.CountryReadMoreLink.${selectedCountryIso2}`)
-        console.log(countryUrl)
         if (countryUrl) {
           countryLink = `<p class="country-link"><a href="${countryUrl}" target="_blank">${t('countryInfoPopup.readMoreAboutCountryLink', { countryName: countryName })}</a></p>`
-          console.log(countryLink)
         }
       }
 
@@ -469,14 +466,10 @@ function GlobalMap ({ mapboxgl }) {
       let countryLink = ''
 
       const countriesWithReadMoreLink = t('CountryStatisticsPopup.countriesWithReadMoreLink').split('\n').filter(countryCode => countryCode)
-      console.log(countriesWithReadMoreLink)
       if (countriesWithReadMoreLink.includes(selectedCountryIso2)) {
-        console.log('hi')
         const countryUrl = t(`CountryStatisticsPopup.CountryReadMoreLink.${selectedCountryIso2}`)
-        console.log(countryUrl)
         if (countryUrl) {
           countryLink = `<p class="country-link"><a href="${countryUrl}" target="_blank">${t('countryInfoPopup.readMoreAboutCountryLink', { countryName: countryName })}</a></p>`
-          console.log(countryLink)
         }
       }
 
@@ -905,7 +898,6 @@ function GlobalMap ({ mapboxgl }) {
       map.on('click', 'countries', function (event) {
         hideTooltip()
         var selectedCountry = event.features[0].properties
-        console.log(selectedCountry, 'clicked')
 
         if (mobileLegendActive) {
           $(targetSelector)
@@ -1146,7 +1138,6 @@ function GlobalMap ({ mapboxgl }) {
         if (map.getZoom() < 3) return
         if (isCountryInfoPopupOrPopoverActive) return
         const countryCode = marker.properties.iso
-        // console.log(e, marker);
 
         /*
           targetElHeight = clientHeight

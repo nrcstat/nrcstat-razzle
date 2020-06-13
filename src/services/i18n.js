@@ -15,7 +15,6 @@ if (isClient()) {
   i18n
     .use(initReactI18next) // if not using I18nextProvider
     .init({
-      debug: process.env.NODE_ENV === 'development',
       fallbackLng: 'en-GB',
       defaultNS: 'Glossary',
       interpolation: {

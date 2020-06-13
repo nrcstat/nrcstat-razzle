@@ -52,7 +52,8 @@ export default function (widgetParams) {
       .then(resp => resp.json())
   }
 
-  function render (widgetObject, widgetData, targetSelector) {
+  function render (widgetObject, widgetData, targetSelector, languageObject) {
+    console.log(languageObject)
     const wObject = widgetObject
     const wConfig = widgetObject.config
 
@@ -224,8 +225,6 @@ export default function (widgetParams) {
         continentSelector = widgetEl.find('.continent-selector')
         countrySelector = widgetEl.find('.country-selector')
 
-
-
         cb()
       },
 
@@ -316,9 +315,7 @@ export default function (widgetParams) {
                 type == 'display' ? percentFormatter(data) : data
             }
           ],
-          language: {
-            url: 'https://wlib.staging.nrcdata.no/datatables_language.json'
-          },
+          language: languageObject,
 
           responsive: true,
           searching: true,
@@ -413,12 +410,8 @@ export default function (widgetParams) {
     }
   }
 
-
-
   return {
     loadWidgetData,
     render
   }
 }
-
-
