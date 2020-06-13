@@ -1,7 +1,7 @@
 import React, { useContext, useLayoutEffect, useState, useRef } from 'react'
 import {
   ResponsiveContainer, LineChart, XAxis, Tooltip, CartesianGrid,
-  PieChart, Pie, Sector, Cell
+  PieChart, Pie, Sector, Cell, Text, Label
 } from 'recharts'
 import { isServer } from '../../util/utils'
 import { FixedLocaleContext } from '../../services/i18n'
@@ -24,6 +24,7 @@ function Donut () {
   return (
     <ResponsiveContainer>
       <PieChart>
+
         <Pie
           dataKey='value'
           startAngle={0}
@@ -35,6 +36,7 @@ function Donut () {
           paddingAngle={0}
         >
           {data.map((d, i) => <Cell key={`cell-${i}`} fill={colours[i % colours.length]} stroke={colours[i % colours.length]} />)}
+          <Label position='center' fontFamily='Roboto' content={func} value={widgetObject.config.title}>TEXT</Label>
         </Pie>
         <Tooltip
           active
@@ -44,6 +46,28 @@ function Donut () {
       </PieChart>
     </ResponsiveContainer>
   )
+}
+
+const func = (props) => {
+  console.log(props)
+  const { cx, cy } = props.viewBox
+  return (
+    <svg viewBox='0 0 300 300' preserveAspectRatio='xMidYMid meet'>
+      <text x={150} y={150} fontSize='16' dy='.3em' textAnchor='middle' verticalAnchor='middle'>{props.value}</text>
+    </svg>
+
+  )
+  return (
+    <Text
+      x={cx}
+      y={cy}
+      textAnchor='middle'
+      verticalAnchor='middle'
+      width={300}
+      scaleToFit
+    >
+      test test test test test test test test test test test test test test
+    </Text>)
 }
 
 export default Donut
