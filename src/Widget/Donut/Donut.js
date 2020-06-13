@@ -3,7 +3,6 @@ import {
   ResponsiveContainer, LineChart, XAxis, Tooltip, CartesianGrid,
   PieChart, Pie, Sector, Cell, Text, Label
 } from 'recharts'
-import { isServer } from '../../util/utils'
 import { FixedLocaleContext } from '../../services/i18n'
 import { WidgetParamsContext } from '../Widget'
 import { useMouse } from '@umijs/hooks'
@@ -19,11 +18,10 @@ function Donut () {
   const { widgetObject } = widgetParams
 
   const data = translateCustomData(widgetObject.customData)
-  console.log(data)
+
   return (
     <ResponsiveContainer>
       <PieChart>
-
         <Pie
           dataKey='value'
           startAngle={0}

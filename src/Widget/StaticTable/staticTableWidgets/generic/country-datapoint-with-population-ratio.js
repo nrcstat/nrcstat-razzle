@@ -30,7 +30,7 @@ export default function (tableTitle, placeColumnLabel, dataPointColumnLabel, pop
       .then(resp => resp.json())
   }
 
-  function render (widgetObject, widgetData, targetSelector) {
+  function render (widgetObject, widgetData, targetSelector, languageObject) {
     const wObject = widgetObject
     const wData = widgetData
     const wConfig = widgetObject.config
@@ -164,9 +164,7 @@ export default function (tableTitle, placeColumnLabel, dataPointColumnLabel, pop
               }
             }
           ],
-          language: {
-            url: 'https://wlib.staging.nrcdata.no/datatables_language.json'
-          },
+          language: languageObject,
           responsive: true,
           searching: true,
           info: true,

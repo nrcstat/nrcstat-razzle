@@ -101,7 +101,6 @@ function CountryDashboard ({ mapboxgl }) {
 
   const { getNsFixedT } = useContext(FixedLocaleContext)
   const widgetParams = useContext(WidgetParamsContext)
-  console.log(widgetParams)
   const { countryCode, year, dataPoints, showMap, containerRef } = widgetParams
   const t = getNsFixedT(['Widget.Static.CountryDashboard', 'GeographicalNames'])
 

@@ -102,7 +102,6 @@ server
     payload.__LOADABLE_REQUIRED_CHUNKS__ = JSON.parse(/<script.+>(.+)<\/script>/g.exec(js)[1])
 
     const css = extractor.getStyleTags((attrs) => {
-      console.log(attrs)
       if (attrs) {
         const linkUrl = attrs.url
         payload.links.push(linkUrl)
