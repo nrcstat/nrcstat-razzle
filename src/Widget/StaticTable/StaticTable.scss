@@ -874,6 +874,13 @@ table.dataTable td {
             margin-top: 0.5em;
         }
     }
+
+    table.dataTable td li {
+      border-bottom: 1px solid #dadada;
+    }
+    table.dataTable td li span.dtr-data {
+      float: right;
+    }
 }
  
 @media screen and (max-width: 640px) {
