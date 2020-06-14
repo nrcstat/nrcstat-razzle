@@ -40,7 +40,6 @@
   .title{
     color: $nrcOrange;
     text-align: center;
-    text-transform: uppercase;
     font-size: 160%;
     margin-top: 20px;
   }
@@ -163,7 +162,6 @@
     font-size: 120%;
     font-weight: normal;
     font-family: "Roboto Condensed";
-    text-transform: uppercase;
     z-index: 16000;
 
     &:hover {
@@ -219,7 +217,6 @@
     font-size: 100%;
     font-weight: normal;
     font-family: "Roboto Condensed";
-    text-transform: uppercase;
     z-index: 16000;
 
     &hover {
@@ -247,7 +244,6 @@
       background-color: #F5F4F2;
       margin-top: 40px;
       padding: 5px;
-      text-transform: uppercase;
       text-align: left;
       border-radius: 3px;
     }
@@ -314,7 +310,6 @@
     }
 
     h1 {
-      text-transform: uppercase;
       color: $nrcOrange;
       font-size: 2em;
       margin: 0.67em 0;
@@ -579,7 +574,6 @@
     p.top-header {
       margin: 0;
       font-size: 1.1em;
-      text-transform: uppercase;
       white-space: normal !important;
     }
 

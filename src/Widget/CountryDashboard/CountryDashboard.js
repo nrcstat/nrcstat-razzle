@@ -588,7 +588,6 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender, t }) {
           margin: 0,
           padding: 0,
           color: '#ff7602',
-          textTransform: 'uppercase',
           fontFamily: "'Roboto Condensed'",
           fontSize: '2em'
         }}

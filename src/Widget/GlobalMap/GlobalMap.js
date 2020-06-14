@@ -1024,7 +1024,7 @@ function GlobalMap ({ mapboxgl }) {
           return {
             type: 'Feature',
             properties: {
-              countryLabel: norwegianCountryNames[centroid.iso].toUpperCase(),
+              countryLabel: t(`NRC.Web.StaticTextDictionary.Contries.${centroid.iso}`),
               countryShortLabel: centroid.iso,
               iso: centroid.iso,
               sizeFactor: sizeFactor,
