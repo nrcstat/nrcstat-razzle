@@ -53,7 +53,6 @@ export default function (widgetParams) {
   }
 
   function render (widgetObject, widgetData, targetSelector, languageObject) {
-    console.log(languageObject)
     const wObject = widgetObject
     const wConfig = widgetObject.config
 

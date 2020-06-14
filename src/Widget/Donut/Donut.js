@@ -33,7 +33,7 @@ function Donut () {
           paddingAngle={0}
         >
           {data.map((d, i) => <Cell key={`cell-${i}`} fill={colours[i % colours.length]} stroke={colours[i % colours.length]} />)}
-          <Label position='center' fontFamily='Roboto' content={func} value={widgetObject.config.title}>TEXT</Label>
+          <Label position='center' fontFamily='Roboto' fontWeight='bold' content={func} value={widgetObject.config.title} />
         </Pie>
         <Tooltip
           active
@@ -49,7 +49,7 @@ const func = (props) => {
   const { cx, cy } = props.viewBox
   return (
     <svg viewBox='0 0 300 300' preserveAspectRatio='xMidYMid meet'>
-      <text x={150} y={150} fontSize='16' dy='.3em' textAnchor='middle' verticalAnchor='middle'>{props.value}</text>
+      <text x={150} y={150} size={50} textAnchor='middle' verticalAnchor='middle'>{props.value}</text>
     </svg>
 
   )
