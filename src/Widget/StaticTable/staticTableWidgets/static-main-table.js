@@ -10,7 +10,6 @@ import { isServer } from '../../../util/utils'
 const continentColorMap = require('./continentColorMap.json')
 const continentCodeNameMap = require('./continentCodeNameMapNorwegian.json')
 const countryCodeNameMap = require('./countryCodeNameMapNorwegian.json')
-const countryAnnotations = require('./countryAnnotations2018.json')
 const async = require('async')
 
 const $ = require('jquery')
@@ -25,6 +24,9 @@ if (isServer()) {
 export default function (widgetParams) {
   const { t, periodYear } = widgetParams
   const tableTitle = t('RefugeeReport2020.MainTable.Heading')
+
+  const countryAnnotations = buildCountrySpecificFootnotes2019(t)
+  console.log(countryAnnotations)
 
   const footerAnnotations = t('RefugeeReport2020.MainTable.TableFooterText')
     .split('\n')
@@ -124,7 +126,7 @@ export default function (widgetParams) {
           const countryCode = country.countryCode
 
           // Check if there is an annotation for this country. If so, add to the country object and annotations
-          let annotationIndex = 0
+          let annotationIndex = -1
           const annotations = []
           do {
             annotationIndex = findIndex(
@@ -135,6 +137,9 @@ export default function (widgetParams) {
             if (annotationIndex !== -1) { annotations.push(countryAnnotations[annotationIndex].annotation) }
           } while (annotationIndex !== -1)
 
+          if (annotations.length > 0) {
+            console.log(countryCode, annotations)
+          }
           country.annotations = annotations
 
           return country
@@ -425,4 +430,66 @@ export default function (widgetParams) {
     loadWidgetData,
     render
   }
+}
+
+function buildCountrySpecificFootnotes2019 (t) {
+  return [
+    {
+      countryCode: ['DZ', 'EH'],
+      annotation: t('RefugeeReport2020.CountrySpecificFootnote.AlgerieWesternSahara')
+    },
+    {
+      countryCode: ['AU'],
+      annotation: t('RefugeeReport2020.CountrySpecificFootnote.Australia')
+    },
+
+    {
+      countryCode: ['BD', 'MM'],
+      annotation: t('RefugeeReport2020.CountrySpecificFootnote.BangladeshMyanmar')
+    },
+
+    {
+      countryCode: ['IQ', 'SY', 'JO'],
+      annotation: t('RefugeeReport2020.CountrySpecificFootnote.IraqJordanSyria')
+    },
+
+    {
+      countryCode: ['JP'],
+      annotation: t('RefugeeReport2020.CountrySpecificFootnote.Japan')
+    },
+
+    {
+      countryCode: ['CN', 'VN'],
+      annotation: t('RefugeeReport2020.CountrySpecificFootnote.ChinaVietnam')
+    },
+
+    {
+      countryCode: ['JO', 'LB', 'PS', 'SY'],
+      annotation: t('RefugeeReport2020.CountrySpecificFootnote.JordanLebanonPalestineSyria')
+    },
+    {
+      countryCode: ['KO', 'RS'],
+      annotation: t('RefugeeReport2020.CountrySpecificFootnote.KosovoSerbia')
+    },
+
+    {
+      countryCode: ['ZA'],
+      annotation: t('RefugeeReport2020.CountrySpecificFootnote.SouthAfrica')
+    },
+
+    {
+      countryCode: ['TR'],
+      annotation: t('RefugeeReport2020.CountrySpecificFootnote.Turkey')
+    },
+
+    {
+      countryCode: ['VE', 'AW', 'BR', 'CL', 'CO', 'CW', 'DO', 'EC', 'GY', 'MX', 'PA', 'PY', 'PE', 'TT', 'UY'],
+      annotation: t('RefugeeReport2020.CountrySpecificFootnote.ArubaBrazilChileColombiaCuracaoDominicanRepublicEcuadorGuyanaMexicoPanamaParaguayPeruTrinidadTobagoUruguayVenezuela')
+    },
+
+    {
+      countryCode: ['US'],
+      annotation: t('RefugeeReport2020.CountrySpecificFootnote.USA')
+    }
+  ]
 }
