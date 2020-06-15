@@ -1042,3 +1042,6 @@ table.dataTable > tbody > tr.child span.dtr-title {
 table.dataTable > tbody > tr.child > td.child > ul.dtr-details {
   width: 100%;
 }
+table.dataTable > tbody > tr.child > td.child > ul.dtr-details li span.dtr-data {
+  float: right;
+}
