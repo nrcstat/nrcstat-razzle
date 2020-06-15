@@ -42,6 +42,8 @@ const server = express()
 
 server.use(cors())
 
+const dataCache = {}
+
 server
   .disable('x-powered-by')
   .use(express.static(process.env.RAZZLE_PUBLIC_DIR))
@@ -58,8 +60,13 @@ server
       const widget = enrichedQueue[i]
       const dataLoader = dataPreLoaders[widget.type]
       if (dataLoader) {
-        const data = await dataLoader(widget)
-        widget.preloadedWidgetData = data
+        if (dataCache[widget.widgetId]) {
+          widget.preloadedWidgetData = dataCache[widget.widgetId]
+        } else {
+          const data = await dataLoader(widget)
+          widget.preloadedWidgetData = data
+          dataCache[widget.widgetId] = data
+        }
       }
     }
 

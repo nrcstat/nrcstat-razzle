@@ -1,6 +1,8 @@
 /* CSS for data tables */
 @import '@/style/common.scss';
 
+@import url(//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css);
+
 /*
 @import url(https://cdn.datatables.net/v/dt/jq-2.2.4/dt-1.10.15/r-2.1.1/datatables.min.css);
 @import url(https://cdn.datatables.net/responsive/2.1.1/css/responsive.dataTables.min.css);
@@ -383,27 +385,22 @@ table.dataTable {
                 background-position: center right;
             }
  
-            /* im unsure if we use icons currently, perhaps we can referene ceorrect imports later */
-
-             
-             /*
             .sorting {
-                background-image: url('../images/sort_both.png');
+                background-image: url('./images/sort_both.png');
             }
 
             .sorting_asc {
-                background-image: url('../images/sort_asc.png');
+                background-image: url('./images/sort_asc.png');
             }
             .sorting_desc {
-                background-image: url('../images/sort_desc.png');
+                background-image: url('./images/sort_desc.png');
             }
             .sorting_asc_disabled {
-                background-image: url('../images/sort_asc_disabled.png');
+                background-image: url('./images/sort_asc_disabled.png');
             }
             .sorting_desc_disabled {
-                background-image: url('../images/sort_desc_disabled.png');
+                background-image: url('./images/sort_desc_disabled.png');
             }
-            */
         }
     }
  
@@ -424,6 +421,8 @@ table.dataTable {
         td {
             padding: 8px 10px;
         }
+
+        
     }
  
  
@@ -911,4 +910,135 @@ table.dataTable td {
              padding: 3px;
 
           }
+}
+
+
+
+
+
+
+
+
+/* div.container {
+  min-width: 980px;
+  margin: 0 auto;
+} */
+
+/* DataTables Responsive With FontAwesome */
+
+table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child {
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer;
+}
+table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child:before {
+  /*top: 8px;
+  left: 4px;
+  height: 16px;
+  width: 16px;*/
+  display: block;
+  position: absolute;
+  /*color: white;
+  border: 2px solid white;
+  border-radius: 16px;
+  text-align: center;
+  line-height: 14px;
+  box-shadow: 0 0 3px #444;
+  box-sizing: content-box;
+  content: '+';
+  background-color: #31b131;*/
+  display: block;
+  position: absolute;
+  font-family: "FontAwesome";
+  content: '\f067';
+  color: #ff7602;
+}
+table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child.dataTables_empty:before {
+  display: none;
+}
+table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td:first-child:before {
+  /*content: '-';
+  background-color: #d33333;*/
+  font-family: "FontAwesome";
+  content: '\f068';
+  color: #ff7602;
+}
+table.dataTable.dtr-inline.collapsed > tbody > tr.child td:before {
+  display: none;
+}
+table.dataTable.dtr-inline.collapsed.compact > tbody > tr > td:first-child {
+  padding-left: 27px;
+}
+table.dataTable.dtr-inline.collapsed.compact > tbody > tr > td:first-child:before {
+  top: 5px;
+  left: 4px;
+  height: 14px;
+  width: 14px;
+  border-radius: 14px;
+  line-height: 12px;
+}
+table.dataTable.dtr-column > tbody > tr > td.control {
+  position: relative;
+  cursor: pointer;
+}
+table.dataTable.dtr-column > tbody > tr > td.control:before {
+  top: 50%;
+  left: 50%;
+  height: 16px;
+  width: 16px;
+  margin-top: -10px;
+  margin-left: -5px;
+  display: block;
+  position: absolute;
+  font-family: "FontAwesome";
+  content: '\f067';
+  color: #ff7602;
+  /*color: white;
+  border: 2px solid white;
+  border-radius: 16px;
+  text-align: center;
+  line-height: 14px;
+  box-shadow: 0 0 3px #444;
+  box-sizing: content-box;
+  content: '+';
+  background-color: #31b131;*/
+}
+table.dataTable.dtr-column > tbody > tr.parent td.control:before {
+  /*content: '-';
+  background-color: #d33333;*/
+  font-family: "FontAwesome";
+  content: '\f068';
+  color: #ff7602;
+}
+table.dataTable > tbody > tr.child {
+  padding: 0.5em 1em;
+}
+table.dataTable > tbody > tr.child:hover {
+  background: transparent !important;
+}
+table.dataTable > tbody > tr.child ul {
+  display: inline-block;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+table.dataTable > tbody > tr.child ul li {
+  border-bottom: 1px solid #efefef;
+  padding: 0.5em 0;
+}
+table.dataTable > tbody > tr.child ul li:first-child {
+  padding-top: 0;
+}
+table.dataTable > tbody > tr.child ul li:last-child {
+  border-bottom: none;
+}
+table.dataTable > tbody > tr.child span.dtr-title {
+  display: inline-block;
+  min-width: 75px;
+  font-weight: bold;
+}
+
+
+table.dataTable > tbody > tr.child > td.child > ul.dtr-details {
+  width: 100%;
 }
