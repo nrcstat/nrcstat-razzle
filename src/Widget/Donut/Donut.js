@@ -11,7 +11,7 @@ import { formatDataNumber } from '../../util/widgetHelpers.js'
 
 import './Donut.scss'
 
-const colours = ['#70a873', '#70b8c7', '#ffb271', '#70d1e5', '#ea9282', '#fee08a', '#a9a9a9', '#e6e6e6', '#f5f5f5', '#707070']
+const colours = ['#FF9C48', '#47A3B5', '#FED769', '#70A873', '#E5735F']
 
 function Donut () {
   const widgetParams = useContext(WidgetParamsContext)
@@ -47,23 +47,23 @@ function Donut () {
 
 const func = (props) => {
   const { cx, cy } = props.viewBox
+
+  var width = 500; var height = 500
+
+  var textNode = document.getElementById('t1')
+  // var bb = textNode.getBBox()
+  const bb = { width: 500, height: 500 }
+  var widthTransform = width / bb.width
+  var heightTransform = height / bb.height
+  var value = widthTransform < heightTransform ? widthTransform : heightTransform
+  value = 1
+
   return (
     <svg viewBox='0 0 300 300' preserveAspectRatio='xMidYMid meet'>
-      <text x={150} y={150} size={50} textAnchor='middle' verticalAnchor='middle'>{props.value}</text>
+      <text x={150} y={150} size={50} textAnchor='middle' transform={`matrix(${value}, 0, 0, ${value}, 0, 0)`}>{props.value}</text>
     </svg>
 
   )
-  return (
-    <Text
-      x={cx}
-      y={cy}
-      textAnchor='middle'
-      verticalAnchor='middle'
-      width={300}
-      scaleToFit
-    >
-      test test test test test test test test test test test test test test
-    </Text>)
 }
 
 export default Donut
