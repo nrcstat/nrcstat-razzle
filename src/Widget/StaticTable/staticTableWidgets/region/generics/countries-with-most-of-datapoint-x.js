@@ -134,6 +134,7 @@ export default function (dataPointX, regionCodeNRC, countryLimit, title, foooter
         <table id="datatable${id}" class="display responsive no-wrap row-border cell-border stripe hover order-column" style="width: 100%;">
           <thead>
             <tr>
+              <th></th>
               <th>Land</th>
               <th>Antall</th>
             </tr>
@@ -149,6 +150,7 @@ export default function (dataPointX, regionCodeNRC, countryLimit, title, foooter
       function setupTable (cb) {
         ft = $(`#datatable${id}`).DataTable({
           columns: [
+            { data: () => '' },
             {
               data: 'country',
               render: (data, type, row) => {
@@ -172,7 +174,16 @@ export default function (dataPointX, regionCodeNRC, countryLimit, title, foooter
             }
           ],
           language: languageObject,
-          responsive: true,
+          responsive: {
+            details: {
+              type: 'column'
+            }
+          },
+          columnDefs: [{
+            className: 'control',
+            orderable: false,
+            targets: 0
+          }],
           searching: true,
           info: true,
           paging: tableData.length > 10,

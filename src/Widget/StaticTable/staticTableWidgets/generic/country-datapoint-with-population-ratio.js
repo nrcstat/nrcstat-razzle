@@ -122,6 +122,7 @@ export default function (tableTitle, placeColumnLabel, dataPointColumnLabel, pop
         <table id="datatable${id}" class="display responsive no-wrap row-border cell-border stripe hover order-column" style="width: 100%;">
           <thead>
             <tr>
+              <th></th>
               <th>${placeColumnLabel}</th>
               <th>${dataPointColumnLabel}</th>
               <th>${populationRatioColumnLabel}</th>
@@ -138,6 +139,7 @@ export default function (tableTitle, placeColumnLabel, dataPointColumnLabel, pop
       function setupTable (cb) {
         ft = $(`#datatable${id}`).DataTable({
           columns: [
+            { data: () => '' },
             {
               data: 'place',
               render: (data, type, row) => {
@@ -170,7 +172,16 @@ export default function (tableTitle, placeColumnLabel, dataPointColumnLabel, pop
             }
           ],
           language: languageObject,
-          responsive: true,
+          responsive: {
+            details: {
+              type: 'column'
+            }
+          },
+          columnDefs: [{
+            className: 'control',
+            orderable: false,
+            targets: 0
+          }],
           searching: true,
           info: true,
           paging: tableData.length > 10,
