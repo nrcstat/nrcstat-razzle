@@ -134,8 +134,8 @@ const MIN_COUNTRY_NAME_SIZE = 8
 const MAX_COUNTRY_NAME_SIZE = 26
 
 // const easing = BezierEasing(0.34, 0.58, 0.62, 1.11)
-// const easing = BezierEasing(0.34, 0.58, 0.64, 0.76)
-const easing = BezierEasing(1, 0, 0.64, 0.76)
+const easingOpacity = BezierEasing(0.27, 1, 0.75, 0.72)
+const easing = BezierEasing(0.21, 0.55, 0.81, 0.35)
 
 const animationEvent = 'webkitAnimationEnd oanimationend msAnimationEnd animationend'
 
@@ -186,11 +186,7 @@ function GlobalMap ({ mapboxgl }) {
   const { getNsFixedT } = useContext(FixedLocaleContext)
   const widgetParams = useContext(WidgetParamsContext)
   const { periodYear, preloadedWidgetData } = widgetParams
-  const t = getNsFixedT([
-    'Widget.Static.GlobalRadialBarChartDisplacementMap',
-    'GeographicalNames',
-    'Widget.Static.GlobalRadialBarChartDisplacementMap.ADMIN-SETTINGS-ONLY-ADMINS-TOUCH-THIS'
-  ])
+  const t = getNsFixedT(['Widget.Static.GlobalRadialBarChartDisplacementMap', 'GeographicalNames'])
 
   const containerElementRef = useRef(null)
   const mapboxElementRef = useRef(null)
@@ -1047,6 +1043,7 @@ function GlobalMap ({ mapboxgl }) {
         const zoom = map.getZoom()
         const zoomNormalized = (zoom - MIN_ZOOM) / (MAX_ZOOM - MIN_ZOOM)
         const factor = easing(zoomNormalized)
+        const factorOpacity = easing(zoomNormalized)
         const dimension = 30 + baseSize * factor
         const fontSize =
           MIN_COUNTRY_NAME_SIZE +
@@ -1080,8 +1077,17 @@ function GlobalMap ({ mapboxgl }) {
         elements.forEach(el => {
           const sizeFactor = el.dataset.sizeFactor
           const adjustedDimension = dimension * sizeFactor
+          console.log(factorOpacity)
+          var adjustedOpacity = 0
+          if (factorOpacity > 0.5) {
+            adjustedOpacity = factorOpacity
+          } else {
+            adjustedOpacity = 1 - factorOpacity
+          }
+
           el.style.width = adjustedDimension + 'px'
           el.style.height = adjustedDimension + 'px'
+          el.style.opacity = adjustedOpacity
         })
       }
 
@@ -1096,10 +1102,12 @@ function GlobalMap ({ mapboxgl }) {
         type: 'symbol',
         source: 'country-labels-src',
         layout: {
-          'text-field': ['get', 'countryLabel'],
-          'text-font': ['Helvetica Regular'],
+          'text-font': ['Roboto Condensed'],
           'text-max-width': 50,
           'text-line-height': 1
+        },
+        paint: {
+          'text-color': '#474747'
         },
         filter: ['==', 'sizeClass', 'small']
       })
@@ -1108,10 +1116,12 @@ function GlobalMap ({ mapboxgl }) {
         type: 'symbol',
         source: 'country-labels-src',
         layout: {
-          'text-field': ['get', 'countryLabel'],
-          'text-font': ['Helvetica Regular'],
+          'text-font': ['Roboto Condensed'],
           'text-max-width': 50,
           'text-line-height': 1
+        },
+        paint: {
+          'text-color': '#666666'
         },
         filter: ['==', 'sizeClass', 'medium']
       })
@@ -1121,9 +1131,12 @@ function GlobalMap ({ mapboxgl }) {
         source: 'country-labels-src',
         layout: {
           'text-field': ['get', 'countryLabel'],
-          'text-font': ['Helvetica Regular'],
+          'text-font': ['Roboto Condensed'],
           'text-max-width': 50,
           'text-line-height': 1
+        },
+        paint: {
+          'text-color': '#474747'
         },
         filter: ['==', 'sizeClass', 'large']
       })
