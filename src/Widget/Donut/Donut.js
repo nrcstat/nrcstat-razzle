@@ -1,23 +1,32 @@
-import React, { useContext, useLayoutEffect, useState, useRef } from 'react'
-import {
-  ResponsiveContainer, LineChart, XAxis, Tooltip, CartesianGrid,
-  PieChart, Pie, Sector, Cell, Text, Label
-} from 'recharts'
+import { useMouse } from '@umijs/hooks'
+import React, { useContext, useRef, useEffect } from 'react'
+import ReactDOM from 'react-dom'
+import { Cell, Label, Pie, PieChart, ResponsiveContainer, Tooltip, Legend } from 'recharts'
 import { FixedLocaleContext } from '../../services/i18n'
 import { WidgetParamsContext } from '../Widget'
-import { useMouse } from '@umijs/hooks'
-
-import { formatDataNumber } from '../../util/widgetHelpers.js'
-
 import './Donut.scss'
+
+import * as $ from 'jquery'
+import { isClient } from '../../util/utils'
 
 const colours = ['#FF9C48', '#47A3B5', '#FED769', '#70A873', '#E5735F']
 
 function Donut () {
+  return (
+    <>
+      <DonutChart />
+      <p>yo ho</p>
+    </>
+  )
+}
+
+function DonutChart () {
   const widgetParams = useContext(WidgetParamsContext)
   const { widgetObject } = widgetParams
 
   const data = translateCustomData(widgetObject.customData)
+
+  console.log('hell')
 
   return (
     <ResponsiveContainer>
@@ -29,12 +38,12 @@ function Donut () {
           endAngle={-360}
           data={data}
           fill='#8884d8'
-          /* label */
           paddingAngle={0}
         >
           {data.map((d, i) => <Cell key={`cell-${i}`} fill={colours[i % colours.length]} stroke={colours[i % colours.length]} />)}
-          <Label position='center' fontFamily='Roboto' fontWeight='bold' content={func} value={widgetObject.config.title} />
+          <Label position='center' content={<DonutTitle />} value={widgetObject.config.title} />
         </Pie>
+
         <Tooltip
           active
           content={<CustomTooltip />}
@@ -45,25 +54,44 @@ function Donut () {
   )
 }
 
-const func = (props) => {
-  const { cx, cy } = props.viewBox
+class DonutTitle extends React.Component {
+  textRef = React.createRef()
 
-  var width = 500; var height = 500
+  state = {
+    scale: 0,
+    x: 0,
+    y: 0
+  }
 
-  var textNode = document.getElementById('t1')
-  // var bb = textNode.getBBox()
-  const bb = { width: 500, height: 500 }
-  var widthTransform = width / bb.width
-  var heightTransform = height / bb.height
-  var value = widthTransform < heightTransform ? widthTransform : heightTransform
-  value = 1
+  componentDidMount () {
+    // Calculate scale transformation
+    const textElement = this.textRef.current
+    var bb = textElement.getBBox()
+    const enclosingCircleRadius = this.props.viewBox.innerRadius
+    const boundingBoxWidthHeight = enclosingCircleRadius * 2 * Math.SQRT1_2
+    var widthTransform = boundingBoxWidthHeight / bb.width
+    var heightTransform = boundingBoxWidthHeight / bb.height
+    var scale = widthTransform < heightTransform ? widthTransform : heightTransform
 
-  return (
-    <svg viewBox='0 0 300 300' preserveAspectRatio='xMidYMid meet'>
-      <text x={150} y={150} size={50} textAnchor='middle' transform={`matrix(${value}, 0, 0, ${value}, 0, 0)`}>{props.value}</text>
-    </svg>
+    console.log(bb)
 
-  )
+    // Calculate (x,y) translate
+    const { cx, cy } = this.props.viewBox
+    const x = cx
+    // TODO: this calculation is strange and a result of trial & error - fix it?
+    const y = cy + (bb.height * scale) / 12
+
+    this.setState({ scale, x, y })
+  }
+
+  render () {
+    console.log('hehe')
+    return (
+      <g transform={`translate(${this.state.x}, ${this.state.y})`}>
+        <text fontFamily='Roboto' fill='#474747' fontWeight='bold' textAnchor='middle' alignmentBaseline='middle' transform={`scale(${this.state.scale})`} ref={this.textRef}>{this.props.value}</text>
+      </g>
+    )
+  }
 }
 
 export default Donut
