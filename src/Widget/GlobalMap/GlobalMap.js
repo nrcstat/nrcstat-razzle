@@ -810,7 +810,7 @@ function GlobalMap ({ mapboxgl }) {
       container: ref,
       center: initialCenter,
       zoom: START_ZOOM,
-      style: 'mapbox://styles/nrcmaps/cjx1qihkq00r81ctczmmai9ps',
+      style: 'mapbox://styles/nrcmaps/ckbhz9yj30zxx1imwrkxsyii2',
       minZoom: MIN_ZOOM,
       maxZoom: MAX_ZOOM
     })
@@ -843,7 +843,7 @@ function GlobalMap ({ mapboxgl }) {
       map.addLayer(
         Object.assign(sharedLayerProperties, {
           id: 'countries-highlighted',
-          paint: { 'fill-color': 'rgba(212,212,212,0.68)' }
+          paint: { 'fill-color': 'rgba(251, 251, 251, 1)' }
         })
       )
       map.addLayer(

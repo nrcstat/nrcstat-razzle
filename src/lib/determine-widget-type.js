@@ -31,7 +31,14 @@ export const determineWidgetType = async widgetId => {
     return { locale, type: 'CountryDashboard', ...parseDynamicCountryDashboardWidgetId(widgetId) }
   } else {
     const widgetObject = await loadWidgetObject(widgetId)
-    return { locale, type: 'Donut', widgetObject }
+    const type = widgetObject.type
+    if (type === 'donut') {
+      return { locale, type: 'Donut', widgetObject }
+    } else if (type === 'line') {
+      return { locale, type: 'Line', widgetObject }
+    } else {
+      return { locale, type: 'Donut', widgetObject }
+    }
   }
 }
 
