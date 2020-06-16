@@ -186,7 +186,7 @@ function GlobalMap ({ mapboxgl }) {
   const { getNsFixedT } = useContext(FixedLocaleContext)
   const widgetParams = useContext(WidgetParamsContext)
   const { periodYear, preloadedWidgetData } = widgetParams
-  const t = getNsFixedT(['Widget.Static.GlobalRadialBarChartDisplacementMap', 'GeographicalNames'])
+  const t = getNsFixedT(['Widget.Static.GlobalRadialBarChartDisplacementMap', 'GeographicalNames', 'Widget.Static.GlobalRadialBarChartDisplacementMap.ADMIN-SETTINGS-ONLY-ADMINS-TOUCH-THIS'])
 
   const containerElementRef = useRef(null)
   const mapboxElementRef = useRef(null)
@@ -230,6 +230,7 @@ function GlobalMap ({ mapboxgl }) {
       let countryLink = ''
 
       const countriesWithReadMoreLink = t('CountryStatisticsPopup.countriesWithReadMoreLink').split('\n').filter(countryCode => countryCode)
+      console.log('here')
       if (countriesWithReadMoreLink.includes(selectedCountryIso2)) {
         const countryUrl = t(`CountryStatisticsPopup.CountryReadMoreLink.${selectedCountryIso2}`)
         if (countryUrl) {
@@ -441,6 +442,8 @@ function GlobalMap ({ mapboxgl }) {
       ) { mobileShareMenuActive = true } else mobileShareMenuActive = false
     }
 
+    // #region Country info (popup for tablet/desktop)
+
     function countryInfo__showPopup (event, map) {
       var selectedCountryIso2 = event.features[0].properties.iso_a2
       const countryName = t(`NRC.Web.StaticTextDictionary.Contries.${selectedCountryIso2}`)
@@ -462,6 +465,7 @@ function GlobalMap ({ mapboxgl }) {
       let countryLink = ''
 
       const countriesWithReadMoreLink = t('CountryStatisticsPopup.countriesWithReadMoreLink').split('\n').filter(countryCode => countryCode)
+      console.log('here2')
       if (countriesWithReadMoreLink.includes(selectedCountryIso2)) {
         const countryUrl = t(`CountryStatisticsPopup.CountryReadMoreLink.${selectedCountryIso2}`)
         if (countryUrl) {
