@@ -1,4 +1,4 @@
-import { useMouse } from '@umijs/hooks'
+import { useMouse, useEventListener } from '@umijs/hooks'
 import React, { useContext, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { Cell, Label, Pie, PieChart, ResponsiveContainer, Tooltip, Legend, Text as SvgText, Customized } from 'recharts'
@@ -10,6 +10,16 @@ import * as $ from 'jquery'
 import { isClient } from '../../util/utils'
 
 const colours = ['#FF9C48', '#47A3B5', '#FED769', '#70A873', '#E5735F']
+
+function DonutRerenderOnResize () {
+  const [show, setShow] = useState(true)
+  useEventListener('resize', () => {
+    setShow(false)
+    setInterval(() => setShow(true))
+  })
+  if (show) return (<Donut />)
+  else return null
+}
 
 function Donut () {
   const [viewBox, setViewBox] = useState(null)
@@ -91,7 +101,7 @@ class DonutTitle extends React.Component {
   }
 }
 
-export default Donut
+export default DonutRerenderOnResize
 
 function translateCustomData (customData) {
   return customData
