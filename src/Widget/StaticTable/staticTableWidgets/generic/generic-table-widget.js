@@ -180,7 +180,7 @@ export default function (title, dataColumnName, dataProcessingFunction, queryObj
         ft.on('responsive-display', () => initTooltipster())
         ft.rows.add(tableData).draw(false)
         if (orderingEnabled) {
-          ft.order([1, 'desc']).draw()
+          ft.order([2, 'desc']).draw()
         }
         cb()
       },

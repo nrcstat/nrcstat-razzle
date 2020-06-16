@@ -193,7 +193,7 @@ export default function (tableTitle, placeColumnLabel, dataPointColumnLabel, pop
         ft.on('responsive-display', () => initTooltipster())
         ft.rows.add(tableData).draw(false)
         if (orderingEnabled) {
-          ft.order([2, 'desc']).draw()
+          ft.order([3, 'desc']).draw()
         }
         cb()
       },

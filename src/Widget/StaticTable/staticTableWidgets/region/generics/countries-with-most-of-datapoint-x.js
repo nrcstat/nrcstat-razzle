@@ -193,7 +193,7 @@ export default function (dataPointX, regionCodeNRC, countryLimit, title, foooter
         ft.on('draw.dt', () => initTooltipster())
         ft.on('responsive-display', () => initTooltipster())
         ft.rows.add(tableData).draw(false)
-        ft.order([1, 'desc']).draw()
+        ft.order([2, 'desc']).draw()
         cb()
       },
       function setupTooltips (cb) {
