@@ -53,7 +53,7 @@ import centroidsRaw from '@/Widget/assets/json/geo_entities_updated_manually'
 middleResolutionCountriesGeoJson.features.push(gazaGeoJson.features[0])
 
 // TODO: switch to 2019
-const YEAR_TO_SHOW_IN_RADIAL_BAR_CHART = 2018
+const YEAR_TO_SHOW_IN_RADIAL_BAR_CHART = 2019
 
 const req = require.context('../assets/flags', false)
 // TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
@@ -368,7 +368,7 @@ function CountryDashboard ({ mapboxgl }) {
 
       const hoverPopup = $(`
     <div class="global-displacement-radial-bar-chart-tooltip">
-      <div class="top">2018.</div>
+      <div class="top">2019.</div>
       <div class="data"></div>
     </div>`)
       $('body').append(hoverPopup)
@@ -472,6 +472,10 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender, t }) {
     {
       label: '2018',
       value: '2018'
+    },
+    {
+      label: '2019',
+      value: '2019'
     }
     // TODO: configure for next year
   ]
