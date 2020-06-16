@@ -1,7 +1,7 @@
 import { useMouse } from '@umijs/hooks'
-import React, { useContext, useRef, useEffect } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
-import { Cell, Label, Pie, PieChart, ResponsiveContainer, Tooltip, Legend } from 'recharts'
+import { Cell, Label, Pie, PieChart, ResponsiveContainer, Tooltip, Legend, Text as SvgText, Customized } from 'recharts'
 import { FixedLocaleContext } from '../../services/i18n'
 import { WidgetParamsContext } from '../Widget'
 import './Donut.scss'
@@ -12,45 +12,55 @@ import { isClient } from '../../util/utils'
 const colours = ['#FF9C48', '#47A3B5', '#FED769', '#70A873', '#E5735F']
 
 function Donut () {
-  return (
-    <>
-      <DonutChart />
-      <p>yo ho</p>
-    </>
-  )
-}
-
-function DonutChart () {
+  const [viewBox, setViewBox] = useState(null)
   const widgetParams = useContext(WidgetParamsContext)
   const { widgetObject } = widgetParams
 
+  console.log(widgetObject)
+
   const data = translateCustomData(widgetObject.customData)
 
-  console.log('hell')
+  const subtitle = 'Millioner mennesker på flukt akkurat nå på flukt'
+  const source = 'Kilder: UNHCR, UNRWA, UNICEF'
+
+  const HackyViewBoxGetter = props => {
+    console.log(props)
+    setViewBox(props.viewBox)
+    return null
+  }
 
   return (
-    <ResponsiveContainer>
-      <PieChart>
-        <Pie
-          dataKey='value'
-          startAngle={0}
-          innerRadius='60%'
-          endAngle={-360}
-          data={data}
-          fill='#8884d8'
-          paddingAngle={0}
-        >
-          {data.map((d, i) => <Cell key={`cell-${i}`} fill={colours[i % colours.length]} stroke={colours[i % colours.length]} />)}
-          <Label position='center' content={<DonutTitle />} value={widgetObject.config.title} />
-        </Pie>
+    <div>
+      <div style={{ width: '100%', height: '450px' }}>
+        <ResponsiveContainer>
+          <PieChart>
+            <Pie
+              dataKey='value'
+              startAngle={0}
+              innerRadius='60%'
+              endAngle={-360}
+              data={data}
+              fill='#8884d8'
+              paddingAngle={0}
+            >
+              {data.map((d, i) => <Cell key={`cell-${i}`} fill={colours[i % colours.length]} stroke={colours[i % colours.length]} />)}
+              <Label position='center' content={<DonutTitle setViewBox={setViewBox} />} value={widgetObject.config.title} />
+            </Pie>
 
-        <Tooltip
-          active
-          content={<CustomTooltip />}
-          wrapperStyle={{ visibility: 'visible', foo: 'bar' }}
-        />
-      </PieChart>
-    </ResponsiveContainer>
+            <Tooltip
+              active
+              content={<CustomTooltip />}
+              wrapperStyle={{ visibility: 'visible', foo: 'bar' }}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+      {viewBox &&
+        <div style={{ width: viewBox.outerRadius * 2, margin: '0 auto', textAlign: 'center', position: 'relative', top: (-(450 / 2 - viewBox.outerRadius)) }}>
+          <p style={{ fontFamily: 'Roboto', color: '#474747', fontSize: '22px', fontWeight: '400', margin: 0, padding: 0, marginTop: '30px' }}>{widgetObject.config.subtitle}</p>
+          <p style={{ fontFamily: 'Roboto', color: '#474747', fontSize: '16px', fontWeight: '300', margin: 0, padding: 0, marginTop: '10px' }}>{widgetObject.config.source}</p>
+        </div>}
+    </div>
   )
 }
 
@@ -64,6 +74,7 @@ class DonutTitle extends React.Component {
   }
 
   componentDidMount () {
+    this.props.setViewBox(this.props.viewBox)
     // Calculate scale transformation
     const textElement = this.textRef.current
     var bb = textElement.getBBox()
@@ -72,8 +83,6 @@ class DonutTitle extends React.Component {
     var widthTransform = boundingBoxWidthHeight / bb.width
     var heightTransform = boundingBoxWidthHeight / bb.height
     var scale = widthTransform < heightTransform ? widthTransform : heightTransform
-
-    console.log(bb)
 
     // Calculate (x,y) translate
     const { cx, cy } = this.props.viewBox
@@ -85,7 +94,6 @@ class DonutTitle extends React.Component {
   }
 
   render () {
-    console.log('hehe')
     return (
       <g transform={`translate(${this.state.x}, ${this.state.y})`}>
         <text fontFamily='Roboto' fill='#474747' fontWeight='bold' textAnchor='middle' alignmentBaseline='middle' transform={`scale(${this.state.scale})`} ref={this.textRef}>{this.props.value}</text>
