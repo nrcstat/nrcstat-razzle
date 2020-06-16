@@ -33,7 +33,9 @@ function LineWidget () {
               <Label value={linkbox} offset={-10} position='insideBottomLeft' />
             </XAxis>
             <YAxis dataKey='2' width={80} tickFormatter={d => formatDataNumber(d, locale)} tickLine={{ stroke: 'rgb(188,188,188)' }} tick={{ fontFamily: 'Roboto Condensed', fontSize: '14px', fill: 'black' }} />
-            <Tooltip />
+            <Tooltip
+              formatter={d => formatDataNumber(d, locale)}
+            />
             <Legend
               align='center'
               layout='vertical'
