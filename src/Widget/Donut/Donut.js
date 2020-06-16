@@ -77,7 +77,7 @@ class DonutTitle extends React.Component {
     const { cx, cy } = this.props.viewBox
     const x = cx
     // TODO: this calculation is strange and a result of trial & error - fix it?
-    const y = cy + (bb.height * scale) / 12
+    const y = cy + (bb.height * scale) / 4
 
     this.setState({ scale, x, y })
   }
@@ -85,7 +85,7 @@ class DonutTitle extends React.Component {
   render () {
     return (
       <g transform={`translate(${this.state.x}, ${this.state.y})`}>
-        <text fontFamily='Roboto' fill='#474747' fontWeight='bold' textAnchor='middle' alignmentBaseline='middle' transform={`scale(${this.state.scale})`} ref={this.textRef}>{this.props.value}</text>
+        <text fontFamily='Roboto' fill='#474747' fontWeight='bold' textAnchor='middle' transform={`scale(${this.state.scale})`} ref={this.textRef}>{this.props.value}</text>
       </g>
     )
   }
