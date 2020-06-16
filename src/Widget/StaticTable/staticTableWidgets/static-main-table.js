@@ -112,8 +112,8 @@ export default function (widgetParams) {
           return country
         })
         data = map(data, d => {
-          d.continent = continentCodeNameMap[d.continentCode]
-          d.country = countryCodeNameMap[d.countryCode]
+          d.continent = t(`NRC.Web.StaticTextDictionary.Continents.${d.continentCode}`)
+          d.country = t(`NRC.Web.StaticTextDictionary.Contries.${d.countryCode}`)
           return d
         })
         tableData = data
