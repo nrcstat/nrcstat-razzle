@@ -1077,7 +1077,6 @@ function GlobalMap ({ mapboxgl }) {
         elements.forEach(el => {
           const sizeFactor = el.dataset.sizeFactor
           const adjustedDimension = dimension * sizeFactor
-          console.log(factorOpacity)
           var adjustedOpacity = 0
           if (factorOpacity > 0.5) {
             adjustedOpacity = factorOpacity

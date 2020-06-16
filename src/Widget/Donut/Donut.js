@@ -16,18 +16,7 @@ function Donut () {
   const widgetParams = useContext(WidgetParamsContext)
   const { widgetObject } = widgetParams
 
-  console.log(widgetObject)
-
   const data = translateCustomData(widgetObject.customData)
-
-  const subtitle = 'Millioner mennesker på flukt akkurat nå på flukt'
-  const source = 'Kilder: UNHCR, UNRWA, UNICEF'
-
-  const HackyViewBoxGetter = props => {
-    console.log(props)
-    setViewBox(props.viewBox)
-    return null
-  }
 
   return (
     <div>
