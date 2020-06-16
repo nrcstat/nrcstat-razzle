@@ -26,7 +26,6 @@ export default function (widgetParams) {
   const tableTitle = t('RefugeeReport2020.MainTable.Heading')
 
   const countryAnnotations = buildCountrySpecificFootnotes2019(t)
-  console.log(countryAnnotations)
 
   const footerAnnotations = t('RefugeeReport2020.MainTable.TableFooterText')
     .split('\n')
@@ -137,9 +136,6 @@ export default function (widgetParams) {
             if (annotationIndex !== -1) { annotations.push(countryAnnotations[annotationIndex].annotation) }
           } while (annotationIndex !== -1)
 
-          if (annotations.length > 0) {
-            console.log(countryCode, annotations)
-          }
           country.annotations = annotations
 
           return country
