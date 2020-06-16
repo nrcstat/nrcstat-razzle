@@ -1,7 +1,9 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { LineChart, Line, XAxis, Label, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { isServer, isClient } from '../../util/utils'
 import { formatDataNumber } from '@/util/widgetHelpers.js'
+
+import * as $ from 'jquery'
 
 import './Line.scss'
 import { WidgetParamsContext } from '../Widget'
@@ -13,10 +15,12 @@ function LineWidget () {
 
   const { locale, widgetObject: { customData, config: { title, subtitle, linkbox } } } = useContext(WidgetParamsContext)
 
-  console.log(linkbox)
+  const fixEpiServerAncestorBlockHeight = (element) => {
+    $(element).parents('.nrcstat-block').css('height', 'auto')
+  }
 
   return (
-    <div>
+    <div ref={fixEpiServerAncestorBlockHeight}>
       <div style={{ marginLeft: '10px' }}>
         <p style={{ fontFamily: 'Roboto Condensed', color: '#333333', fontSize: '24px', fontWeight: '400', margin: 0, padding: 0, marginBottom: '12px' }}>{title}</p>
         <p style={{ fontFamily: 'Roboto Condensed', color: '#333333', fontSize: '18px', fontWeight: '400', margin: 0, padding: 0, marginBottom: '20px' }}>{subtitle}</p>
