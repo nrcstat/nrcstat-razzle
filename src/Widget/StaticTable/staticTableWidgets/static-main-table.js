@@ -179,15 +179,6 @@ export default function (widgetParams) {
 
         tmpl = `
       <h4>${tableTitle}</h4>
-      <div>
-      <!--
-        <div style="float: right; margin-bottom: 5px; display: inline-block;">
-        <button class="btn-download">${t('RefugeeReport2020.MainTable.Actions.dowloadCsvFile')}</button>
-        <button class="btn-download">${t('RefugeeReport2020.MainTable.Actions.dowloadExcelFile')}</button>
-        <button class="btn-download">${t('RefugeeReport2020.MainTable.Actions.dowloadJsonFile')}</button>
-        <button class="btn-download">${t('RefugeeReport2020.MainTable.Actions.print')}</button>
-        </div>
-        -->
         <div class="controls-wrapper">
           <div class="nrcstat-selector-continent">
             <label>Kontinent:</label>
@@ -198,7 +189,6 @@ export default function (widgetParams) {
             <select class="form-control country-selector"><option value="">${t('RefugeeReport2020.MainTable.CountryContientDropdown.all')}</option></select>
           </div>
         </div>
-      </div>
       <table id="datatable${id}" class="display responsive no-wrap row-border cell-border stripe hover order-column" style="width: 100%;">
         <thead>
           <tr>
@@ -333,9 +323,10 @@ export default function (widgetParams) {
           searching: true,
           info: true,
           paging: tableData.length > 10,
+          lengthMenu: [10, 25, 50, 100, 250],
           colReorder: true,
           fixedHeader: true,
-          dom: 'Bfrtip',
+          dom: 'Blfrtip',
           buttons: [
             {
               extend: 'csv',
