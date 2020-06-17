@@ -5,10 +5,10 @@
   text-align: center;
   line-height: 1;
   font-weight: bold;
-  padding: 12px;
-  background: rgba(121, 121, 121, 0.8);
-  color: #fff;
-  border-radius: 2px;
+  padding: 12px 20px;
+  background: #474747;
+  color: #f4f4f4;
+  border-radius: 3px;
   margin-bottom: 10px;
 }
 
@@ -17,12 +17,13 @@
 .nrcstat-d3-tip .year, .nrcstat-donut-d3-tip .year {
   font-size: 14px;
   font-family: Roboto Condensed;
+  text-transform: uppercase;
 }
 
 .nrcstat-d3-tip .ruler, .nrcstat-donut-d3-tip .ruler {
   margin: 5px auto;
   max-width: 50px;
-  font-size: 12px;
+  font-size: 1px;
   font-family: "Roboto Condensed";
 }
 
