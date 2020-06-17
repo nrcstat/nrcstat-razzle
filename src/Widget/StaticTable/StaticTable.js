@@ -27,7 +27,7 @@ export default function StaticTable () {
   // TODO: fix to use proper SSR as far as possible
   if (isServer()) return null
 
-  const { getNsFixedT, locale } = useContext(FixedLocaleContext)
+  const { getNsFixedT } = useContext(FixedLocaleContext)
   const widgetParams = useContext(WidgetParamsContext)
   const { periodYear, preloadedWidgetData, tableType } = widgetParams
   const t = getNsFixedT(['Widget.Static.Table', 'GeographicalNames'])
@@ -53,7 +53,7 @@ export default function StaticTable () {
   )
 }
 
-function buildTableLanguageObject (t) {
+export function buildTableLanguageObject (t) {
   return {
     sEmptyTable: t('noDataAvailable'),
     sInfo: t('pagination.showingXToYOfZEntries'),
