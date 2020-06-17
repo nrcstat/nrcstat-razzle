@@ -36,7 +36,7 @@ export const determineWidgetType = async widget => {
       // special case: request comes from widget wizard, before a widget has been saved
       widgetObject = widget.widgetObject
     } else {
-      widgetObject = await loadWidgetObject(widgetId)
+      widgetObject = await loadWidgetObject(widgetIdParam)
     }
     widgetObject = removeLocaleLayer(widgetObject, locale)
     const type = widgetObject.type

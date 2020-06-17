@@ -48,7 +48,7 @@ function LineWidget () {
               label={{ fontFamily: 'Roboto Condensed' }}
             />
             {customData.map((s, i) => (
-              <Line dataKey='value' data={s.seriesData} name={s.seriesLegend} key={s.seriesLegend} stroke={colours[i % colours.length]} strokeWidth={3} dot={{ strokeWidth: 5 }} activeDot={{ r: 10 }} />
+              <Line dataKey='value' data={cleanSeries(s.seriesData)} name={s.seriesLegend} key={s.seriesLegend} stroke={colours[i % colours.length]} strokeWidth={3} dot={{ strokeWidth: 5 }} activeDot={{ r: 10 }} />
             ))}
 
             {/* <Line type="linear" dataKey="pv" stroke="#FF7900" strokeWidth={4} dot={{ strokeWidth: 0, fill: '#FF7900', r: 6 }} activeDot={{r: 8}} legendType="circle" /> */}
@@ -68,4 +68,8 @@ const renderCustomizedLabel = ({ cx, cy, index, value }) => {
       {value}
     </text>
   )
+}
+
+function cleanSeries (seriesData) {
+  return seriesData.filter(d => Boolean(d.date))
 }

@@ -45,7 +45,10 @@ export default function (widgetParams) {
 
     const total = _.sumBy(data, 'data')
 
-    data = _.sortBy(data, 'place')
+    data = _.sortBy(data, d => {
+      if (d.regionCodeNRC === 'MISC_AND_STATELESS') return 'ZZZZZZZZZZZ'
+      else return d.place
+    })
 
     const totalFormatted = thousandsFormatter(total)
     data.push({
