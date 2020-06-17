@@ -1,5 +1,5 @@
 @import '@/style/common.scss';
-@import url("https://api.tiles.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.css");
+@import url("https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.1/mapbox-gl.css");
 
 .nrcstat-radialchartmap-country-info-popover-wrapper {
 
@@ -275,7 +275,7 @@
   button:focus {outline:0;}
 
   .mapboxgl-popup-content {
-    border: 1px solid black;
+    border: 1px solid #474747;
     width: 31em;
   }
 
@@ -559,27 +559,30 @@
   padding: 0 0 0.5em 0;
   z-index: 20000;
   color: black;
-  border: 1px solid black;
-  border-radius: 7px;
+  border: 1px solid #919191;
+  border-radius: 5px;
   max-width: 12em;
   overflow: auto;
 
   .top {
     width: 100%;
     padding: 0.6em 0;
-    background-color: lightgrey;
+    background-color: #f4f4f4;
     text-align: center;
-    border-radius: 7px 7px 0 0;
+    border-radius: 5px 5px 0 0;
 
     p.top-header {
       margin: 0;
-      font-size: 1.1em;
+      font-size: 16px;
       white-space: normal !important;
+      text-transform: uppercase;
+      color: #474747;
     }
 
     h3 {
       margin: 0.2em 0 0 0;
-      font-size: 1.0em;
+      font-size: 14px;
+      color: #919191;
     }
   }
 
@@ -596,4 +599,16 @@
     position: relative;
     top: 5px;
   }
+}
+
+
+
+
+
+
+.mapboxgl-ctrl-zoom-out{
+  background-image: url('./assets/images/mapboxgl-ctrl-zoom-out.svg')
+}
+.mapboxgl-ctrl-zoom-in{
+  background-image: url('./assets/images/mapboxgl-ctrl-zoom-in.svg')
 }

@@ -13,13 +13,15 @@ const colours = ['#FF9C48', '#47A3B5', '#FED769', '#70A873', '#E5735F']
 function LineWidget () {
   if (isServer()) return null
 
-  const { locale, widgetObject: { customData, config: { title = '', subtitle = '', linkbox = '' } } } = useContext(WidgetParamsContext)
+  const { locale, widgetObject: { customData, config: { title = '', subtitle = '', linkbox = '', source = '' } } } = useContext(WidgetParamsContext)
 
   const fixEpiServerAncestorBlockHeight = (element) => {
     $(element).parents('.nrcstat-block').css('height', 'auto')
   }
 
   const yAxisWidth = isMobileDevice() ? 50 : 85
+
+  console.log(source)
 
   return (
     <div ref={fixEpiServerAncestorBlockHeight}>
