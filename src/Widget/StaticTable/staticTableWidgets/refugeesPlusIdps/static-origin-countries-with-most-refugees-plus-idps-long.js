@@ -31,6 +31,7 @@ export default function (widgetParams) {
         return country
       })
       .filter(country => !!country.data)
+      .filter(country => country.countryCode !== 'MISC')
       .orderBy(country => country.data, 'desc')
       .take(30)
       .value()
