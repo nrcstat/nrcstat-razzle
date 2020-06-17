@@ -48,7 +48,7 @@ export default function (widgetParams) {
       .map(c => _.pick(c, ['place', 'data', 'ratio']))
     // Order by ratio, then take first 54
       .orderBy(c => c.ratio, 'desc')
-      .take(54)
+      .take(50)
       .value()
   }
 
