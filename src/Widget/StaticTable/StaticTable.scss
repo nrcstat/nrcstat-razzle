@@ -102,7 +102,22 @@ body{
   padding: 1em 1em 1em 1em;
   overflow: hidden;
 
+
 }
+
+.tooltipster-box{
+  background-color: #474747!important;
+  color: #f4f4f4!important;
+  border-color: #f4f4f4!important;
+}
+
+.tooltipster-arrow-border, .tooltipster-sidetip .tooltipster-top, .tooltipster-arrow-background{
+  border-top-color: #474747!important;
+}
+
+
+
+
 
 .nrcstat-table-widget .download-button {
   cursor: pointer;
@@ -247,7 +262,26 @@ body{
 
 
 
+@media (max-width: 641px) {
+  .nrcstat-table-widget .nrcstat-selector-continent, .nrcstat-table-widget .nrcstat-selector-country, .dataTables_filter, .dataTables_length  {
+      float: left!important;
+      text-align: left!important;
+      margin-left: 3px!important;
+      padding-left: 0!important;
+      display: inline-block;
+  }
 
+  .dt-buttons {
+    display: none;
+  }
+
+  .dataTables_length{
+    padding-bottom: 0px!important;
+    margin-top: 7px!important;
+
+    float: right!important;
+  }
+}
 
 
 

@@ -1,0 +1,34 @@
+@import '@/style/common.scss';
+
+/* TOOLTIP */
+.nrcstat-d3-tip, .nrcstat-donut-d3-tip {
+  text-align: center;
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(121, 121, 121, 0.8);
+  color: #fff;
+  border-radius: 2px;
+  margin-bottom: 10px;
+}
+
+/* TODO: think of restoring the "triangle extender" */
+
+.nrcstat-d3-tip .year, .nrcstat-donut-d3-tip .year {
+  font-size: 14px;
+  font-family: Roboto Condensed;
+}
+
+.nrcstat-d3-tip .ruler, .nrcstat-donut-d3-tip .ruler {
+  margin: 5px auto;
+  max-width: 50px;
+  font-size: 12px;
+  font-family: "Roboto Condensed";
+}
+
+.nrcstat-d3-tip .number, .nrcstat-donut-d3-tip .number {
+  font-size: 20px;
+  font-family: "Roboto Condensed";
+}
+
+/* END OF TOOLTIP CSS */
