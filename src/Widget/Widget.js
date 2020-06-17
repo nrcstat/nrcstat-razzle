@@ -17,6 +17,7 @@ const Donut = loadable(() => import(/* webpackChunkName: "Donut" */ './Donut/Don
 const Pie = loadable(() => import(/* webpackChunkName: "Pie" */ './Pie/Pie'))
 const StaticTable = loadable(() => import(/* webpackChunkName: "Pie" */ './StaticTable/StaticTable'))
 const CountryDashboard = loadable(() => import(/* webpackChunkName: "Pie" */ './CountryDashboard/CountryDashboard'))
+const CustomTable = loadable(() => import(/* webpackChunkName: "Pie" */ './CustomTable/CustomTable'))
 
 const widgetMap = {
   GlobalMap: GlobalMap,
@@ -24,7 +25,8 @@ const widgetMap = {
   Donut: Donut,
   Pie: Pie,
   StaticTable: StaticTable,
-  CountryDashboard: CountryDashboard
+  CountryDashboard: CountryDashboard,
+  CustomTable: CustomTable
 }
 
 export const WidgetParamsContext = React.createContext()
