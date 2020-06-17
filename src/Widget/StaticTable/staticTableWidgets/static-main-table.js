@@ -361,7 +361,7 @@ export default function (widgetParams) {
         ft.on('draw.dt', () => initTooltipster())
         ft.on('responsive-display', () => initTooltipster())
         ft.rows.add(tableData).draw(false)
-        ft.order([1, 'asc']).draw()
+        ft.order([2, 'asc']).draw()
         cb()
       },
       function setupTooltips (cb) {
