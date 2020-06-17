@@ -1,7 +1,8 @@
 import { ENABLED_LOCALES, DEFAULT_LOCALE, API_URL } from '../config.js'
 import nodeFetch from 'node-fetch'
 
-export const determineWidgetType = async widgetId => {
+export const determineWidgetType = async widget => {
+  const { widgetId } = widget
   let locale, widgetIdParam
 
   const localesPipeDelimited = ENABLED_LOCALES.join('|')
@@ -30,7 +31,14 @@ export const determineWidgetType = async widgetId => {
   } else if (/dynamic_country_dashboard_/.test(widgetId)) {
     return { locale, type: 'CountryDashboard', ...parseDynamicCountryDashboardWidgetId(widgetId) }
   } else {
-    const widgetObject = await loadWidgetObject(widgetId)
+    let widgetObject
+    if (/widget-wizard/.test(widgetId)) {
+      // special case: request comes from widget wizard, before a widget has been saved
+      widgetObject = widget.widgetObject
+    } else {
+      widgetObject = await loadWidgetObject(widgetId)
+    }
+    widgetObject = removeLocaleLayer(widgetObject, locale)
     const type = widgetObject.type
     if (type === 'donut') {
       return { locale, type: 'Donut', widgetObject }
@@ -45,6 +53,20 @@ export const determineWidgetType = async widgetId => {
 async function loadWidgetObject (widgetId) {
   return nodeFetch(`${API_URL}/widgets/${widgetId}`)
     .then(resp => resp.json())
+}
+
+function removeLocaleLayer (widgetObject, locale) {
+  if (widgetObject.config.title[locale]) { widgetObject.config.title = widgetObject.config.title[locale] } else { widgetObject.config.title = '' }
+  if (widgetObject.config.subtitle[locale]) { widgetObject.config.subtitle = widgetObject.config.subtitle[locale] } else { widgetObject.config.subtitle = '' }
+  if (widgetObject.config.linkbox[locale]) { widgetObject.config.linkbox = widgetObject.config.linkbox[locale] } else { widgetObject.config.linkbox = '' }
+  if (widgetObject.config.source[locale]) { widgetObject.config.source = widgetObject.config.source[locale] } else { widgetObject.config.source = '' }
+  if (widgetObject.dataType === 'custom') {
+    if (widgetObject.customData[locale]) {
+      widgetObject.customData = widgetObject.customData[locale]
+    }
+  }
+
+  return widgetObject
 }
 
 function parseDynamicCountryDashboardWidgetId (widgetId) {

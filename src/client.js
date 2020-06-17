@@ -8,6 +8,7 @@ import './services/i18n.js'
 
 loadableReady(() => {
   window.nrcStatDrawWidgetQueue.forEach(params => {
+    console.log(params)
     ReactDOM.render(<Widget {...params} />, document.getElementById(params.targetSelector.replace(/#/g, '')))
   })
 })

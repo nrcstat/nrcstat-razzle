@@ -105,7 +105,7 @@ export default DonutRerenderOnResize
 
 function translateCustomData (customData) {
   return customData
-    .map(item => ({ name: item['0'], value: item['1'] }))
+    .map(item => ({ name: item.hoverLabel, value: item.value }))
     .filter(item => Boolean(item.value))
 }
 
