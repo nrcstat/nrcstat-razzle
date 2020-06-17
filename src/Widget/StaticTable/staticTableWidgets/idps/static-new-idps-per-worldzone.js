@@ -58,7 +58,7 @@ export default function (widgetParams) {
 
     const totalFormatted = thousandsFormatter(total)
     data.push({
-      place: '<strong>Verden totalt <sup class="table-annotation-tooltip" title="Avviket skyldes avrunding. ">1)</sup></strong>',
+      place: '<strong>Verden totalt</strong>',
       data: `<strong>${totalFormatted}</strong>`
     })
     return data

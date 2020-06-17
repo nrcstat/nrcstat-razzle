@@ -48,8 +48,6 @@ server
   .disable('x-powered-by')
   .use(express.static(process.env.RAZZLE_PUBLIC_DIR))
   .get('/render-widgets', async (req, res) => {
-    console.log('request')
-
     const rawQueue = JSON.parse(req.query.queue)
     const enrichWidget = async (widget) => {
       const widgetType = await determineWidgetType(widget)

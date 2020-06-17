@@ -45,7 +45,6 @@ export const determineWidgetType = async widget => {
     } else if (type === 'line') {
       return { locale, type: 'Line', widgetObject }
     } else if (type === 'custom-table') {
-      console.log(widgetObject)
       return { locale, type: 'CustomTable', widgetObject }
     } else {
       return { locale, type: 'Donut', widgetObject }

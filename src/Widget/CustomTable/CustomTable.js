@@ -10,6 +10,11 @@ import '../StaticTable/StaticTable.scss'
 
 import * as $ from 'jquery'
 import { isClient } from '../../util/utils'
+import {
+  populationNumberFormatter,
+  percentFormatter,
+  thousandsFormatter
+} from '@/util/tableWidgetFormatters.js'
 
 if (isClient()) {
   window.$ = window.jQuery = $
@@ -33,13 +38,6 @@ function CustomTable () {
   const { widgetObject, locale } = widgetParams
   const { widgetObject: { tableColumns, tableData } } = widgetParams
 
-  console.log('widgetObject', widgetObject)
-  console.log('tableColumns', tableColumns)
-  console.log('tableData', tableData)
-  console.log('locale', locale)
-
-  // const data = translateCustomData(widgetObject.customData)
-
   const onReady = tableElement => {
     $(tableElement).parents('.nrcstat-block').css('height', 'auto')
     const ft = $(tableElement).DataTable({
@@ -47,7 +45,11 @@ function CustomTable () {
         { data: () => '' },
         ...tableColumns.map(column => {
           return {
-            data: column.data
+            data: column.data,
+            render: (data, type, row) => {
+              if (column.type === 'numeric' && type === 'display') return thousandsFormatter(data)
+              else return data
+            }
           }
         })
       ],

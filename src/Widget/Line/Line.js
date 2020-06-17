@@ -19,8 +19,6 @@ function LineWidget () {
     $(element).parents('.nrcstat-block').css('height', 'auto')
   }
 
-  console.log(linkbox)
-
   return (
     <div ref={fixEpiServerAncestorBlockHeight}>
       <div style={{ marginLeft: '10px' }}>

@@ -230,7 +230,6 @@ function GlobalMap ({ mapboxgl }) {
       let countryLink = ''
 
       const countriesWithReadMoreLink = t('CountryStatisticsPopup.countriesWithReadMoreLink').split('\n').filter(countryCode => countryCode)
-      console.log('here')
       if (countriesWithReadMoreLink.includes(selectedCountryIso2)) {
         const countryUrl = t(`CountryStatisticsPopup.CountryReadMoreLink.${selectedCountryIso2}`)
         if (countryUrl) {
@@ -465,7 +464,6 @@ function GlobalMap ({ mapboxgl }) {
       let countryLink = ''
 
       const countriesWithReadMoreLink = t('CountryStatisticsPopup.countriesWithReadMoreLink').split('\n').filter(countryCode => countryCode)
-      console.log('here2')
       if (countriesWithReadMoreLink.includes(selectedCountryIso2)) {
         const countryUrl = t(`CountryStatisticsPopup.CountryReadMoreLink.${selectedCountryIso2}`)
         if (countryUrl) {
