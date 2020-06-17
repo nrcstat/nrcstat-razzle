@@ -1,3 +1,28 @@
 .nrcstat__rootwidget .recharts-default-legend li {
   margin-bottom: 5px;
 }
+
+.recharts-tooltip-item-value {
+  color: #474747;
+}
+
+
+  @media only screen and (max-width: 450px){
+    
+	.recharts-tooltip-wrapper{
+      width: 70%;
+      height: auto;
+
+    }
+
+    .recharts-default-tooltip ul{
+    	word-wrap: break-word!important;
+    	white-space:normal !important;
+
+    }
+
+    .recharts-legend-wrapper{
+    	margin-left: 0px!important;
+    }
+
+  }

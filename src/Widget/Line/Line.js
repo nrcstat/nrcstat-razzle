@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 import { LineChart, Line, XAxis, Label, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { isServer, isClient } from '../../util/utils'
-import { formatDataNumber } from '@/util/widgetHelpers.js'
+import { formatDataNumber, isMobileDevice } from '@/util/widgetHelpers.js'
 
 import * as $ from 'jquery'
 
@@ -19,22 +19,27 @@ function LineWidget () {
     $(element).parents('.nrcstat-block').css('height', 'auto')
   }
 
+  const yAxisWidth = isMobileDevice() ? 50 : 85
+
   return (
     <div ref={fixEpiServerAncestorBlockHeight}>
       <div style={{ marginLeft: '10px' }}>
-        <p style={{ fontFamily: 'Roboto Condensed', color: '#333333', fontSize: '24px', fontWeight: '400', margin: 0, padding: 0, marginBottom: '12px' }}>{title}</p>
-        <p style={{ fontFamily: 'Roboto Condensed', color: '#333333', fontSize: '18px', fontWeight: '400', margin: 0, padding: 0, marginBottom: '20px' }}>{subtitle}</p>
+        {title && <p style={{ fontFamily: 'Roboto Condensed', color: '#474747', fontSize: '24px', fontWeight: '400', margin: 0, padding: 0, marginBottom: '12px' }}>{title}</p>}
+        {subtitle && <p style={{ fontFamily: 'Roboto Condensed', color: '#919191', fontSize: '18px', fontWeight: '400', margin: 0, padding: 0, marginBottom: '30px' }}>{subtitle}</p>}
       </div>
       <div style={{ width: '100%', height: '450px' }}>
         <ResponsiveContainer>
-          <LineChart width={600} height={300}>
+          <LineChart>
             <CartesianGrid vertical={false} />
-            <XAxis dataKey='date' allowDuplicatedCategory={false} tick={false} axisLine={{ strokeWidth: 2, stroke: 'rgb(188,188,188)' }}>
-              <Label value={linkbox} offset={-10} position='insideBottomLeft' />
+            <XAxis dataKey='date' allowDuplicatedCategory={false} tick axisLine={{ strokeWidth: 2, stroke: 'rgb(188,188,188)' }} tickMargin={5} padding={{ left: 10 }} tick={{ fontFamily: 'Roboto Condensed', fontSize: '14px', fill: '#474747' }}>
+              <Label value={linkbox} offset={30} position='insideTopRight' style={{ fontFamily: 'Roboto Condensed', fontSize: '14px', fill: '#919191' }} />
             </XAxis>
-            <YAxis dataKey='value' width={80} tickFormatter={d => formatDataNumber(d, locale)} tickLine={{ stroke: 'rgb(188,188,188)' }} tick={{ fontFamily: 'Roboto Condensed', fontSize: '14px', fill: 'black' }} />
+            <YAxis dataKey='value' type='number' width={yAxisWidth} tickFormatter={d => formatDataNumber(d, locale)} tickMargin={5} tickLine={{ stroke: 'rgb(188,188,188)' }} tick={{ fontFamily: 'Roboto Condensed', fontSize: '14px', fill: '#474747' }} />
             <Tooltip
               formatter={(d, hoverLabel) => [formatDataNumber(d, locale), hoverLabel]}
+              contentStyle={{ padding: '10px', border: '1px solid #474747', borderRadius: '3px' }} // text box
+              labelStyle={{ fontFamily: 'Roboto Condensed', fontSize: '22px', color: '#474747', marginBottom: '10px', fontWeight: 'bold' }} //  year
+              itemStyle={{ paddingBottom: '5px', fontFamily: 'Roboto Condensed', fontSize: '16px' }}
             />
             <Legend
               align='center'
@@ -43,7 +48,9 @@ function LineWidget () {
               wrapperStyle={{
                 bottom: -30,
                 left: 20,
-                fontFamily: 'Roboto Condensed'
+                fontFamily: 'Roboto Condensed',
+                fontSize: '14px',
+                marginLeft: '60px'
               }}
               label={{ fontFamily: 'Roboto Condensed' }}
             />
