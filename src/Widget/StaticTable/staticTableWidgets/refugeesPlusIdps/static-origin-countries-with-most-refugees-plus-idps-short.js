@@ -15,7 +15,7 @@ export default function (widgetParams) {
     }
   }
 
-  return generator(title, 'Antall', process, query, footerAnnotations)
+  return generator(title, t('RefugeeReport2020.MiscSharedLabels.number'), process, query, footerAnnotations)
 
   function process (data) {
     data = _(data)

@@ -39,7 +39,7 @@ export default function (widgetParams) {
     })
 
     data.push({
-      place: 'Asia inkludert Midtøsten og Oseania',
+      place: t('RefugeeReport2020.MiscSharedLabels.asiaIncludedMiddleEastAndOceania'),
       data: asiaPlusMiddleEastOceaniaSum
     })
 
@@ -53,7 +53,7 @@ export default function (widgetParams) {
 
     const totalFormatted = thousandsFormatter(total)
     data.push({
-      place: '<strong>Verden totalt</strong>',
+      place: `<strong>${t('RefugeeReport2020.MiscSharedLabels.worldTotal')}</strong>`,
       data: `<strong>${totalFormatted}</strong>`
     })
     return data

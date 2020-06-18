@@ -19,7 +19,7 @@ export default function (widgetParams) {
 
   }
 
-  return generator(title, 'Antall internt fordrevne', process, query, footerAnnotations)
+  return generator(title, t('RefugeeReport2020.MiscSharedLabels.numberIdps'), process, query, footerAnnotations)
 
   function process (data) {
     data = _.map(data, (v) => {

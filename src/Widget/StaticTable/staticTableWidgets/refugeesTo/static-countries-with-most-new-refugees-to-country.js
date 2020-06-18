@@ -18,7 +18,7 @@ export default function (widgetParams) {
 
   }
 
-  return generator(title, 'Antall flyktninger', process, query, footerAnnotations, 'Land')
+  return generator(title, t('RefugeeReport2020.MiscSharedLabels.numberRefugees'), process, query, footerAnnotations, t('RefugeeReport2020.MiscSharedLabels.country'))
 
   function process (data) {
     data = _.map(data, (v) => {

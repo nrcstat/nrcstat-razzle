@@ -7,9 +7,9 @@ export default function (widgetParams) {
 
   const footerAnnotations = t('RefugeeReport2020.RatioToPopulation.HostCountriesWithMostRefugeesInRatioToPopulation.TableFooterText')
 
-  const placeColumnLabel = 'Land'
-  const dataPointColumnLabel = 'Antall flyktninger'
-  const populationRatioColumnLabel = 'Antall flyktninger i forhold til folketall'
+  const placeColumnLabel = t('RefugeeReport2020.MiscSharedLabels.country')
+  const dataPointColumnLabel = t('RefugeeReport2020.MiscSharedLabels.numberRefugees')
+  const populationRatioColumnLabel = t('RefugeeReport2020.MiscSharedLabels.numberRefugeesInRatioToPopulation')
 
   const query = {
     where: {

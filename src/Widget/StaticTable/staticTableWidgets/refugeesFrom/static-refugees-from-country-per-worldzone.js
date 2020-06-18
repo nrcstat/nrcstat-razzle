@@ -19,7 +19,7 @@ export default function (widgetParams) {
 
   }
 
-  return generator(title, 'Antall', process, query, footerAnnotations, 'Verdensdel', false, thousandsFormatter)
+  return generator(title, t('RefugeeReport2020.MiscSharedLabels.number'), process, query, footerAnnotations, t('RefugeeReport2020.MiscSharedLabels.worldZone'), false, thousandsFormatter)
 
   function process (data) {
     data = _.groupBy(data, 'regionCodeNRC')
@@ -40,7 +40,7 @@ export default function (widgetParams) {
     })
 
     data.push({
-      place: 'Asia inkludert Midtøsten og Oseania',
+      place: t('RefugeeReport2020.MiscSharedLabels.asiaIncludedMiddleEastAndOceania'),
       totalRefugeesFromX: asiaPlusMiddleEastOceaniaSum
     })
 
@@ -57,7 +57,7 @@ export default function (widgetParams) {
 
     const totalFormatted = thousandsFormatter(total)
     data.push({
-      place: '<strong>Verden totalt</strong>',
+      place: `<strong>${t('RefugeeReport2020.MiscSharedLabels.worldTotal')}</strong>`,
       data: `<strong>${totalFormatted}</strong>`
     })
     return data
