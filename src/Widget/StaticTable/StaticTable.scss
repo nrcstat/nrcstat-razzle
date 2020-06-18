@@ -1,4 +1,4 @@
-/* CSS for data tables */
+
 @import '@/style/common.scss';
 
 @import url(//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css);
@@ -147,6 +147,7 @@ body{
   /* this combination makes up "Roboto Light". See this page for details: https://fonts.google.com/?selection.family=Roboto+Condensed|Roboto:100i,300,400 */
   font-family: "Roboto Condensed";
   font-weight: 200;
+  text-align: left;
 }
 
 .accordion-open {
