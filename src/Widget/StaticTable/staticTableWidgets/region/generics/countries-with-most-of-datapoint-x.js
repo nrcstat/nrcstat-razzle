@@ -138,11 +138,36 @@ export default function (dataPointX, regionCodeNRC, countryLimit, title, foooter
             </tr>
           </thead>
         </table>
-        <div class="nrcstat-table-widget-annotations">${annotations}</div>
-        
+
+        <div class="nrcstat-table-widget-annotations">
+          <div class="accordion accordion-closed">
+            <div class="accordion-title" style="font-size: 16px; color: #474747; font-family: Roboto; font-weight: 200; cursor: pointer;"><i class="fa fa-plus-square-o" style="color: #ff7602;"></i>&nbsp;${t('footnotes.title')}</div>
+            <div class="accordion-body" style="font-size: 12px; color: #474747; white-space: pre-line;">
+              ${annotations}
+            </div>
+          </div>
+        </div>
+
         `
         widgetEl = $(tmpl)
         widgetEl.appendTo($(targetSelector))
+
+        $(targetSelector).find('.accordion-title').on('click', function () {
+          const accordionEl = $(this).parents('.accordion')
+          const isClosed = accordionEl.hasClass('accordion-closed')
+          if (isClosed) {
+            accordionEl.removeClass('accordion-closed')
+            accordionEl.addClass('accordion-open')
+            accordionEl.find('.fa').removeClass('fa-plus-square-o')
+            accordionEl.find('.fa').addClass('fa-minus-square-o')
+          } else {
+            accordionEl.addClass('accordion-closed')
+            accordionEl.removeClass('accordion-open')
+            accordionEl.find('.fa').addClass('fa-plus-square-o')
+            accordionEl.find('.fa').removeClass('fa-minus-square-o')
+          }
+        })
+
         cb()
       },
       function setupTable (cb) {

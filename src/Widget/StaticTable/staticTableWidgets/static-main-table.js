@@ -199,14 +199,14 @@ export default function (widgetParams) {
       </table>
       <div class="nrcstat-table-widget-annotations">
         <div class="accordion accordion-closed">
-          <div class="accordion-title" style="font-size: 18px; color: #ff7602; cursor: pointer;"><i class="fa fa-plus-square-o" aria-hidden="true"></i>&nbsp;${t('footnotes.title.countrySpecificNotes')}</div>
-          <div class="accordion-body" style="font-size: 14px; color: #474747; white-space: pre-line;">
+          <div class="accordion-title" style="font-size: 16px; color: #474747; font-family: Roboto; font-weight: 200; cursor: pointer;"><i class="fa fa-plus-square-o" style="color: #ff7602;"></i>&nbsp;${t('RefugeeReport2020.MainTable.Footnotes.Title.countrySpecificNotes')}</div>
+          <div class="accordion-body" style="font-size: 12px; color: #474747; white-space: pre-line;">
             ${countrySpecificAnnotations}
           </div>
         </div>
         <div class="accordion accordion-closed">
-          <div class="accordion-title" style="font-size: 18px; color: #ff7602; cursor: pointer;"><i class="fa fa-plus-square-o" aria-hidden="true"></i>&nbsp;${t('footnotes.title.generalNotes')}</div>
-          <div class="accordion-body" style="font-size: 14px; color: #474747; white-space: pre-line;">
+          <div class="accordion-title" style="font-size: 16px; color: #474747; font-family: Roboto; font-weight: 200; cursor: pointer;"><i class="fa fa-plus-square-o" style="color: #ff7602;"></i>&nbsp;${t('RefugeeReport2020.MainTable.Footnotes.Title.generalNotes')}</div>
+          <div class="accordion-body" style="font-size: 12px; color: #474747; white-space: pre-line;">
             ${footerAnnotations}
           </div>
         </div

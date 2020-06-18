@@ -44,7 +44,7 @@ export default function StaticTable () {
   const onReady = useCallback(element => {
     elementRef.current = element
     $(element).parents('.nrcstat-block').css('height', 'auto')
-    renderFn(fakeWidgetObject, preloadedWidgetData, element, languageObject)
+    renderFn(fakeWidgetObject, preloadedWidgetData, element, languageObject, t)
   })
   return (
     <div className='nrcstat__static-table__container'>

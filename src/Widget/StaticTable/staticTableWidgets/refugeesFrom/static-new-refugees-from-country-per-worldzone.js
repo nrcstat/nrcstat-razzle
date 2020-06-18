@@ -9,8 +9,6 @@ export default function (widgetParams) {
 
   const footerAnnotations = t('RefugeeReport2020.RefugeesFrom.NewRefugeesFromCountryPerWorldZone.TableFooterText')
 
-  console.log(t('RefugeeReport2020.RefugeesFrom.NewRefugeesFromCountryPerWorldZone.TableFooterText'))
-
   const query = {
     where: {
       year: periodYear,
