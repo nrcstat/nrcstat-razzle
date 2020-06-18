@@ -214,7 +214,7 @@ function CountryDashboard ({ mapboxgl }) {
         .addTo(map)
 
       ReactDOM.render(
-        <RadialBarChart data={Object.values(dataTransformer(t)(data))[0]} />,
+        <RadialBarChart data={Object.values(dataTransformer(t, locale)(data))[0]} />,
         el
       )
 
@@ -1023,7 +1023,7 @@ const dataPointToColour = {
   refugeesInXFromOtherCountriesInYear: 'rgba(253,200,47,0.72)'
 }
 
-const dataTransformer = t => data => {
+const dataTransformer = (t, locale) => data => {
   const filtered = data.filter(v =>
     includes(
       [
@@ -1045,22 +1045,44 @@ const dataTransformer = t => data => {
         ? '-'
         : formatDataNumber(countryData.data, 'nb-NO', true)
       let xOffsetForDataLabel
-      switch (countryData.dataPoint) {
-        case 'totalRefugeesFromX':
-          xOffsetForDataLabel = -75
-          break
 
-        case 'refugeesInXFromOtherCountriesInYear':
-          xOffsetForDataLabel = -73
-          break
+      console.log(locale)
+      if (locale === 'en-GB') {
+        switch (countryData.dataPoint) {
+          case 'totalRefugeesFromX':
+            xOffsetForDataLabel = -76
+            break
 
-        case 'idpsInXInYear':
-          xOffsetForDataLabel = -88
-          break
+          case 'refugeesInXFromOtherCountriesInYear':
+            xOffsetForDataLabel = -65
+            break
 
-        default:
-          xOffsetForDataLabel = 0
-          break
+          case 'idpsInXInYear':
+            xOffsetForDataLabel = -101
+            break
+
+          default:
+            xOffsetForDataLabel = 0
+            break
+        }
+      } else {
+        switch (countryData.dataPoint) {
+          case 'totalRefugeesFromX':
+            xOffsetForDataLabel = -75
+            break
+
+          case 'refugeesInXFromOtherCountriesInYear':
+            xOffsetForDataLabel = -73
+            break
+
+          case 'idpsInXInYear':
+            xOffsetForDataLabel = -88
+            break
+
+          default:
+            xOffsetForDataLabel = 0
+            break
+        }
       }
       return {
         dataLabel: dataLabel,
