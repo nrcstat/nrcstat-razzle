@@ -28,7 +28,6 @@ export default function (widgetParams) {
   const countryAnnotations = buildCountrySpecificFootnotes2019(t)
 
   const footerAnnotations = t('RefugeeReport2020.MainTable.TableFooterText')
-    .split('\n')
 
   const tableDataPoints = [
     'totalRefugeesFromX',
@@ -71,7 +70,6 @@ export default function (widgetParams) {
     let currentData
     let ft
     let allAnnotations
-    let allAnnotationsTxt = ''
     let allAnnotationsHtml = ''
 
     let continentSelector
@@ -165,17 +163,10 @@ export default function (widgetParams) {
       },
       function setTmpl (cb) {
         allAnnotations.forEach(annot => {
-          allAnnotationsTxt += `${annot.number}) ${annot.annotation}\n`
           allAnnotationsHtml +=
-          `<p style="font-size: small;"><sup>${annot.number})</sup>&nbsp;${
-            annot.annotation
-          }</p>` + '\n'
+          `<sup>${annot.number})</sup>&nbsp;${annot.annotation}` + '\n\n'
         })
-        footerAnnotations.forEach(annot => {
-          allAnnotationsTxt += `${annot}\n`
-          allAnnotationsHtml +=
-          `<p style="font-size: small;">${annot}</p>` + '\n'
-        })
+        allAnnotationsHtml += footerAnnotations
 
         tmpl = `
       <h4>${tableTitle}</h4>
@@ -348,13 +339,6 @@ export default function (widgetParams) {
                 `${tableTitle}.json`
                 )
               }
-            },
-            {
-              extend: 'pdf',
-              text: 'Skriv ut (PDF)',
-              orientation: 'landscape',
-              message: allAnnotationsTxt,
-              title: tableTitle
             }
           ]
         })
@@ -419,7 +403,7 @@ export default function (widgetParams) {
   }
 }
 
-function buildCountrySpecificFootnotes2019 (t) {
+export function buildCountrySpecificFootnotes2019 (t) {
   return [
     {
       countryCode: ['DZ', 'EH'],

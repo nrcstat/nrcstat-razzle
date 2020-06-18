@@ -3,8 +3,8 @@ import { thousandsFormatter } from '@/util/tableWidgetFormatters.js'
 import { API_URL, LIB_URL } from '@/config.js'
 import { map, filter, findIndex, includes, find } from 'lodash'
 import { isServer } from '../../../../../util/utils'
+import { buildCountrySpecificFootnotes2019 } from '../../static-main-table'
 const countryCodeNameMap = require('@/Widget/StaticTable/staticTableWidgets/countryCodeNameMapNorwegian.json')
-const countryAnnotations = require('../../countryAnnotations2018.json')
 const async = require('async')
 
 const $ = require('jquery')
@@ -18,9 +18,10 @@ if (isServer()) {
 
 export default function (dataPointX, regionCodeNRC, countryLimit, title, foooterAnnotations, widgetParams) {
   if (typeof regionCodeNRC === 'string') regionCodeNRC = [regionCodeNRC]
-  if (typeof foooterAnnotations === 'string') foooterAnnotations = [foooterAnnotations]
 
   const { t, periodYear } = widgetParams
+
+  const countryAnnotations = buildCountrySpecificFootnotes2019(t)
 
   function loadWidgetData () {
     var q = {
@@ -125,9 +126,7 @@ export default function (dataPointX, regionCodeNRC, countryLimit, title, foooter
         allAnnotations.forEach(annot => {
           annotations += `<p style="font-size: small;"><sup>${annot.number})</sup>&nbsp;${annot.annotation}</p>`
         })
-        foooterAnnotations.forEach(annot => {
-          annotations += `<p style="font-size: small;">${annot}</p>`
-        })
+        annotations += foooterAnnotations
         tmpl = `
         <h4>${title}</h4>
         

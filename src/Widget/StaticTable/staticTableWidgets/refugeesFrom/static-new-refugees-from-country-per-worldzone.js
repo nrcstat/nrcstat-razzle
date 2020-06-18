@@ -8,7 +8,8 @@ export default function (widgetParams) {
   const title = t('RefugeeReport2020.RefugeesFrom.NewRefugeesFromCountryPerWorldZone.Heading')
 
   const footerAnnotations = t('RefugeeReport2020.RefugeesFrom.NewRefugeesFromCountryPerWorldZone.TableFooterText')
-    .replace('\n', '<br /><br />')
+
+  console.log(t('RefugeeReport2020.RefugeesFrom.NewRefugeesFromCountryPerWorldZone.TableFooterText'))
 
   const query = {
     where: {

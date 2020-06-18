@@ -6,7 +6,6 @@ export default function (widgetParams) {
   const title = t('RefugeeReport2020.IDP.RefugeeDataPointPlusIDPDataPoint.OriginCountriesWithMostRefugeesPlusIdps.LongTable.Heading')
 
   const footerAnnotations = t('RefugeeReport2020.IDP.RefugeeDataPointPlusIDPDataPoint.OriginCountriesWithMostRefugeesPlusIdps.LongTable.TableFooterText')
-    .replace('\n', '<br /><br />')
 
   const query = {
 

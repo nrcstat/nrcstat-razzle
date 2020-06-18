@@ -6,7 +6,6 @@ export default function (widgetParams) {
   const title = t('RefugeeReport2020.RefugeesTo.CountriesWithMostRefugeesToCountry.Heading')
 
   const footerAnnotations = t('RefugeeReport2020.RefugeesTo.CountriesWithMostRefugeesToCountry.TableFooterText')
-    .replace('\n', '<br /><br />')
 
   const query = {
     where: {

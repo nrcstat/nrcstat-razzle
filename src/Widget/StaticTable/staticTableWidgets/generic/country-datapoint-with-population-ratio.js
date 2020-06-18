@@ -21,7 +21,6 @@ export default function (tableTitle, placeColumnLabel, dataPointColumnLabel, pop
   ratioColumnFormatter = percentFormatter,
   orderingEnabled = true) {
 // module.exports = function (title, dataColumnName, dataProcessingFunction, queryObject, foooterAnnotations, placeColumnName = "Land", orderingEnabled = true, dataColumnFormatter = thousandsFormatter) {
-  if (typeof footerAnnotations === 'string') footerAnnotations = [footerAnnotations]
 
   function loadWidgetData () {
     var urlQ = encodeURIComponent(JSON.stringify(queryObject))
@@ -110,13 +109,8 @@ export default function (tableTitle, placeColumnLabel, dataPointColumnLabel, pop
       },
       */
       function setTmpl (cb) {
-        let annotations = ''
-        /* allAnnotations.forEach(annot => {
-          annotations += `<p style="font-size: small;"><sup>${annot.number})</sup>&nbsp;${annot.annotation}</p>`
-        }) */
-        footerAnnotations.forEach(annot => {
-          annotations += `<p style="font-size: small;">${annot}</p>`
-        })
+        const annotations = footerAnnotations
+        console.log('LOOK HERE', annotations)
         tmpl = `
         <h4>${tableTitle}</h4>
         <table id="datatable${id}" class="display responsive no-wrap row-border cell-border stripe hover order-column" style="width: 100%;">

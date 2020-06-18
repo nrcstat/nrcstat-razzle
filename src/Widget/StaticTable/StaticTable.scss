@@ -143,6 +143,8 @@ body{
   font-weight: 200;
 }
 .nrcstat-table-widget-annotations {
+  white-space: pre-line;
+  font-size: small;
   /* this combination makes up "Roboto Light". See this page for details: https://fonts.google.com/?selection.family=Roboto+Condensed|Roboto:100i,300,400 */
   font-family: "Roboto Condensed";
   font-weight: 200;

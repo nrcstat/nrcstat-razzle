@@ -6,7 +6,6 @@ export default function (widgetParams) {
   const tableTitle = t('RefugeeReport2020.RatioToPopulation.HostCountriesWithMostRefugeesInRatioToPopulation.Heading')
 
   const footerAnnotations = t('RefugeeReport2020.RatioToPopulation.HostCountriesWithMostRefugeesInRatioToPopulation.TableFooterText')
-    .replace('\n', '<br /><br />')
 
   const placeColumnLabel = 'Land'
   const dataPointColumnLabel = 'Antall flyktninger'

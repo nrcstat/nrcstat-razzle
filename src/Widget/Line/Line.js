@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import { LineChart, Line, XAxis, Label, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { LineChart, Line, XAxis, Label, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Customized } from 'recharts'
 import { isServer, isClient } from '../../util/utils'
 import { formatDataNumber, isMobileDevice } from '@/util/widgetHelpers.js'
 
@@ -31,7 +31,7 @@ function LineWidget () {
       </div>
       <div style={{ width: '100%', height: '450px' }}>
         <ResponsiveContainer>
-          <LineChart>
+          <LineChart margin={{ top: 5, right: (source ? 18 : 5), bottom: 5, left: 5 }}>
             <CartesianGrid vertical={false} />
             <XAxis dataKey='date' allowDuplicatedCategory={false} tick axisLine={{ strokeWidth: 2, stroke: 'rgb(188,188,188)' }} tickMargin={5} padding={{ left: 10 }} tick={{ fontFamily: 'Roboto Condensed', fontSize: '14px', fill: '#474747' }}>
               <Label value={linkbox} offset={30} position='insideTopRight' style={{ fontFamily: 'Roboto Condensed', fontSize: '14px', fill: '#919191' }} />
@@ -59,9 +59,7 @@ function LineWidget () {
             {customData.map((s, i) => (
               <Line dataKey='value' data={cleanSeries(s.seriesData)} name={s.seriesLegend} key={s.seriesLegend} stroke={colours[i % colours.length]} strokeWidth={3} dot={{ strokeWidth: 5 }} activeDot={{ r: 10 }} />
             ))}
-
-            {/* <Line type="linear" dataKey="pv" stroke="#FF7900" strokeWidth={4} dot={{ strokeWidth: 0, fill: '#FF7900', r: 6 }} activeDot={{r: 8}} legendType="circle" /> */}
-            {/* <Line type="linear" dataKey="Antall flyktninger fra" stroke="#72C7E7" strokeWidth={4} dot={{ strokeWidth: 0, fill: '#72C7E7', r: 6 }} activeDot={{r: 8}} legendType="circle" /> */}
+            <Customized component={<SourceLabel source={source} />} />
           </LineChart>
         </ResponsiveContainer>
       </div>
@@ -71,12 +69,8 @@ function LineWidget () {
 
 export default LineWidget
 
-const renderCustomizedLabel = ({ cx, cy, index, value }) => {
-  return (
-    <text x={cx} y={cy} dominantBaseline='central'>
-      {value}
-    </text>
-  )
+function SourceLabel ({ width, height, source }) {
+  return <g transform={`translate(${width - 10}, ${height - 100})`}><text fontFamily='Roboto Condensed' fontSize='14px' fill='#919191' transform='rotate(90)' textAnchor='end'>{source}</text></g>
 }
 
 function cleanSeries (seriesData) {

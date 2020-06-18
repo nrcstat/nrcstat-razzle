@@ -2,7 +2,6 @@ import nodeFetch from 'node-fetch'
 import { thousandsFormatter } from '@/util/tableWidgetFormatters.js'
 import { API_URL, LIB_URL } from '@/config.js'
 import { isServer } from '../../../../util/utils'
-const countryAnnotations = require('../countryAnnotations2018.json')
 const async = require('async')
 
 const $ = require('jquery')
@@ -16,7 +15,6 @@ if (isServer()) {
 
 export default function (title, dataColumnName, dataProcessingFunction, queryObject, foooterAnnotations, placeColumnName = 'Land', orderingEnabled = true, dataColumnFormatter = thousandsFormatter) {
   if (typeof regionCodeNRC === 'string') regionCodeNRC = [regionCodeNRC]
-  if (typeof foooterAnnotations === 'string') foooterAnnotations = [foooterAnnotations]
 
   function loadWidgetData () {
     var urlQ = encodeURIComponent(JSON.stringify(queryObject))
@@ -105,13 +103,7 @@ export default function (title, dataColumnName, dataProcessingFunction, queryObj
       },
       */
       function setTmpl (cb) {
-        let annotations = ''
-        /* allAnnotations.forEach(annot => {
-          annotations += `<p style="font-size: small;"><sup>${annot.number})</sup>&nbsp;${annot.annotation}</p>`
-        }) */
-        foooterAnnotations.forEach(annot => {
-          annotations += `<p style="font-size: small;">${annot}</p>`
-        })
+        const annotations = foooterAnnotations
         tmpl = `
         <h4>${title}</h4>
         <table id="datatable${id}" class="display responsive no-wrap row-border cell-border stripe hover order-column" style="width: 100%;">

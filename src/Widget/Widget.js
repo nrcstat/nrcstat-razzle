@@ -15,9 +15,9 @@ const GlobalMap = loadable(() => import(/* webpackChunkName: "GlobalMap" */ './G
 const Line = loadable(() => import(/* webpackChunkName: "Line" */ './Line/Line'))
 const Donut = loadable(() => import(/* webpackChunkName: "Donut" */ './Donut/Donut'))
 const Pie = loadable(() => import(/* webpackChunkName: "Pie" */ './Pie/Pie'))
-const StaticTable = loadable(() => import(/* webpackChunkName: "Pie" */ './StaticTable/StaticTable'))
-const CountryDashboard = loadable(() => import(/* webpackChunkName: "Pie" */ './CountryDashboard/CountryDashboard'))
-const CustomTable = loadable(() => import(/* webpackChunkName: "Pie" */ './CustomTable/CustomTable'))
+const StaticTable = loadable(() => import(/* webpackChunkName: "StaticTable" */ './StaticTable/StaticTable'))
+const CountryDashboard = loadable(() => import(/* webpackChunkName: "CountryDashboard" */ './CountryDashboard/CountryDashboard'))
+const CustomTable = loadable(() => import(/* webpackChunkName: "CustomTable" */ './CustomTable/CustomTable'))
 
 const widgetMap = {
   GlobalMap: GlobalMap,
