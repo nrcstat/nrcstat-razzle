@@ -447,19 +447,12 @@ function CountryDashboard ({ mapboxgl }) {
 }
 
 function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender, t }) {
-  const [leftColSelectedOption, setLeftColSelectedOption] = useState('total')
-  const [rightColSelectedOption, setRightColSelectedOption] = useState(
-    String(YEAR_TO_SHOW_IN_RADIAL_BAR_CHART)
-  )
+  const [selectedYear, setSelectedYear] = useState(String(YEAR_TO_SHOW_IN_RADIAL_BAR_CHART))
   useEffect(() => {
     onAfterRender()
   })
 
   const COL_SELECT_OPTIONS = [
-    {
-      label: t('yearPicker.total'),
-      value: 'total'
-    },
     {
       label: '2016',
       value: '2016'
@@ -476,7 +469,6 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender, t }) {
       label: '2019',
       value: '2019'
     }
-    // TODO: configure for next year
   ]
   const TABLE_ROWS = [
     {
@@ -496,13 +488,13 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender, t }) {
     },
     {
       label: (options) => t('dataPoint.voluntaryReturnsToCountry', options),
-      totalDataPoint: null,
-      newInYearXDataPoint: 'voluntaryReturnsToXInYear'
+      totalDataPoint: 'voluntaryReturnsToXInYear',
+      newInYearXDataPoint: null
     },
     {
       label: (options) => t('dataPoint.asylumSeekersFromCountryToNorway', options),
-      totalDataPoint: null,
-      newInYearXDataPoint: 'asylumSeekersFromXToNorwayInYear'
+      totalDataPoint: 'asylumSeekersFromXToNorwayInYear',
+      newInYearXDataPoint: null
     }
   ]
   const DATA_POINT_POPULATION = 'population'
@@ -519,22 +511,14 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender, t }) {
     const leftColStat = getCountryStat(
       data,
       countryCode,
-      leftColSelectedOption === 'total'
-        ? row.totalDataPoint
-        : row.newInYearXDataPoint,
-      leftColSelectedOption === 'total'
-        ? YEAR_TO_SHOW_IN_RADIAL_BAR_CHART
-        : parseInt(leftColSelectedOption)
+      row.newInYearXDataPoint,
+      parseInt(selectedYear)
     )
     const rightColStat = getCountryStat(
       data,
       countryCode,
-      rightColSelectedOption === 'total'
-        ? row.totalDataPoint
-        : row.newInYearXDataPoint,
-      rightColSelectedOption === 'total'
-        ? YEAR_TO_SHOW_IN_RADIAL_BAR_CHART
-        : parseInt(rightColSelectedOption)
+      row.totalDataPoint,
+      parseInt(selectedYear)
     )
 
     return (
@@ -616,14 +600,16 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender, t }) {
             <tr>
               <td />
               <td className='data-header-cell'>
+                {t('header.newIn')}&nbsp;
                 <select
                   className='option-select'
-                  onChange={e => setLeftColSelectedOption(e.target.value)}
+                  onChange={e => setSelectedYear(e.target.value)}
                 >
                   {COL_SELECT_OPTIONS.map(option => (
                     <option
+                      key={option.value}
                       value={option.value}
-                      selected={option.value === leftColSelectedOption}
+                      selected={option.value === selectedYear}
                     >
                       {option.label}
                     </option>
@@ -631,20 +617,7 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender, t }) {
                 </select>
               </td>
               <td className='data-header-cell'>
-                <select
-                  className='option-select'
-                  onChange={e => setRightColSelectedOption(e.target.value)}
-                >
-                  {COL_SELECT_OPTIONS.map(option => (
-                    <option
-                      key={option.value}
-                      value={option.value}
-                      selected={option.value === rightColSelectedOption}
-                    >
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                {t('header.totalIn')}&nbsp;{selectedYear}
               </td>
             </tr>
             {tableRows}
