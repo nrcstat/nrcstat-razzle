@@ -70,7 +70,7 @@ export default function (widgetParams) {
     let currentData
     let ft
     let allAnnotations
-    let allAnnotationsHtml = ''
+    const allAnnotationsHtml = ''
 
     let continentSelector
     let countrySelector
@@ -162,11 +162,10 @@ export default function (widgetParams) {
         cb(null)
       },
       function setTmpl (cb) {
+        let countrySpecificAnnotations = ''
         allAnnotations.forEach(annot => {
-          allAnnotationsHtml +=
-          `<sup>${annot.number})</sup>&nbsp;${annot.annotation}` + '\n\n'
+          countrySpecificAnnotations += `<sup>${annot.number})</sup>&nbsp;${annot.annotation}` + '\n\n'
         })
-        allAnnotationsHtml += footerAnnotations
 
         tmpl = `
       <h4>${tableTitle}</h4>
@@ -199,15 +198,39 @@ export default function (widgetParams) {
         </thead>
       </table>
       <div class="nrcstat-table-widget-annotations">
-        <div class="accordion">
-          <div class="accordion-title">Footnotes</div>
-          ${allAnnotationsHtml}
+        <div class="accordion accordion-closed">
+          <div class="accordion-title" style="font-size: 18px; color: #ff7602; cursor: pointer;"><i class="fa fa-plus-square-o" aria-hidden="true"></i>&nbsp;${t('footnotes.title.countrySpecificNotes')}</div>
+          <div class="accordion-body" style="font-size: 14px; color: #474747; white-space: pre-line;">
+            ${countrySpecificAnnotations}
+          </div>
         </div>
+        <div class="accordion accordion-closed">
+          <div class="accordion-title" style="font-size: 18px; color: #ff7602; cursor: pointer;"><i class="fa fa-plus-square-o" aria-hidden="true"></i>&nbsp;${t('footnotes.title.generalNotes')}</div>
+          <div class="accordion-body" style="font-size: 14px; color: #474747; white-space: pre-line;">
+            ${footerAnnotations}
+          </div>
+        </div
       </div>
       `
 
         widgetEl = $(tmpl)
         widgetEl.appendTo($(targetSelector))
+
+        $(targetSelector).find('.accordion-title').on('click', function () {
+          const accordionEl = $(this).parents('.accordion')
+          const isClosed = accordionEl.hasClass('accordion-closed')
+          if (isClosed) {
+            accordionEl.removeClass('accordion-closed')
+            accordionEl.addClass('accordion-open')
+            accordionEl.find('.fa').removeClass('fa-plus-square-o')
+            accordionEl.find('.fa').addClass('fa-minus-square-o')
+          } else {
+            accordionEl.addClass('accordion-closed')
+            accordionEl.removeClass('accordion-open')
+            accordionEl.find('.fa').addClass('fa-plus-square-o')
+            accordionEl.find('.fa').removeClass('fa-minus-square-o')
+          }
+        })
 
         continentSelector = widgetEl.find('.continent-selector')
         countrySelector = widgetEl.find('.country-selector')
