@@ -198,7 +198,12 @@ export default function (widgetParams) {
           </tr>
         </thead>
       </table>
-      <div class="nrcstat-table-widget-annotations">${allAnnotationsHtml}</div>
+      <div class="nrcstat-table-widget-annotations">
+        <div class="accordion">
+          <div class="accordion-title">Footnotes</div>
+          ${allAnnotationsHtml}
+        </div>
+      </div>
       `
 
         widgetEl = $(tmpl)

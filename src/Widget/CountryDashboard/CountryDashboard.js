@@ -100,7 +100,7 @@ function CountryDashboard ({ mapboxgl }) {
 
   const { getNsFixedT } = useContext(FixedLocaleContext)
   const widgetParams = useContext(WidgetParamsContext)
-  const { countryCode, year, dataPoints, showMap, containerRef } = widgetParams
+  const { countryCode, year, dataPoints, showMap, containerRef, locale } = widgetParams
   const t = getNsFixedT(['Widget.Static.CountryDashboard', 'GeographicalNames'])
 
   const leonardoCentroid = getCountryCentroid(countryCode)
@@ -180,6 +180,7 @@ function CountryDashboard ({ mapboxgl }) {
     function drawDataBlock (dataBlock, data, t) {
       ReactDOM.render(
         <Dashboard
+          locale={locale}
           countryCode={countryCode}
           data={data}
           dataPointsToShow={dataPoints}
@@ -446,7 +447,7 @@ function CountryDashboard ({ mapboxgl }) {
   return null
 }
 
-function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender, t }) {
+function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender, t, locale }) {
   const [selectedYear, setSelectedYear] = useState(String(YEAR_TO_SHOW_IN_RADIAL_BAR_CHART))
   useEffect(() => {
     onAfterRender()
@@ -490,13 +491,18 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender, t }) {
       label: (options) => t('dataPoint.voluntaryReturnsToCountry', options),
       totalDataPoint: 'voluntaryReturnsToXInYear',
       newInYearXDataPoint: null
-    },
-    {
-      label: (options) => t('dataPoint.asylumSeekersFromCountryToNorway', options),
-      totalDataPoint: 'asylumSeekersFromXToNorwayInYear',
-      newInYearXDataPoint: null
     }
   ]
+  if (locale === 'nb-NO') {
+    TABLE_ROWS.push(
+      {
+        label: (options) => t('dataPoint.asylumSeekersFromCountryToNorway', options),
+        totalDataPoint: 'asylumSeekersFromXToNorwayInYear',
+        newInYearXDataPoint: null
+      }
+    )
+  }
+
   const DATA_POINT_POPULATION = 'population'
   const DATA_POINT_PERCENTAGE_CHILDREN_FLEEING_TO_COUNTRY =
     'percentageChildrenFleeingToCountry'
