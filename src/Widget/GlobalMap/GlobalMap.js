@@ -47,11 +47,11 @@ import { FixedLocaleContext } from '../../services/i18n'
 import { WidgetParamsContext } from '../Widget'
 middleResolutionCountriesGeoJson.features.push(gazaGeoJson.features[0])
 
-const req = require.context('./assets/pre-rendered-radial-bar-charts', false)
+const reqNbNo = require.context('./assets/pre-rendered-radial-bar-charts/nb-NO', false)
 // TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
-const radialBarChartsMap = chain(
-  req.keys().map(file => ({
-    file: req(file),
+const radialBarChartsMapNbNo = chain(
+  reqNbNo.keys().map(file => ({
+    file: reqNbNo(file),
     countryCode: last(file.split('/'))
       .split('.')[0]
       .toUpperCase()
@@ -60,6 +60,25 @@ const radialBarChartsMap = chain(
   .keyBy('countryCode')
   .mapValues('file')
   .value()
+
+const reqEnGb = require.context('./assets/pre-rendered-radial-bar-charts/en-GB', false)
+// TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
+const radialBarChartsMapEnGb = chain(
+  reqEnGb.keys().map(file => ({
+    file: reqEnGb(file),
+    countryCode: last(file.split('/'))
+      .split('.')[0]
+      .toUpperCase()
+  }))
+)
+  .keyBy('countryCode')
+  .mapValues('file')
+  .value()
+
+const radialBarChartsMap = {
+  'en-GB': radialBarChartsMapEnGb,
+  'nb-NO': radialBarChartsMapNbNo
+}
 
 let countryStatsCache = null
 let isFullScreen
@@ -183,7 +202,7 @@ function Loader () {
 function GlobalMap ({ mapboxgl }) {
   const { getNsFixedT } = useContext(FixedLocaleContext)
   const widgetParams = useContext(WidgetParamsContext)
-  const { periodYear, preloadedWidgetData } = widgetParams
+  const { periodYear, preloadedWidgetData, locale } = widgetParams
   const t = getNsFixedT(['Widget.Static.GlobalRadialBarChartDisplacementMap', 'GeographicalNames', 'Widget.Static.GlobalRadialBarChartDisplacementMap.ADMIN-SETTINGS-ONLY-ADMINS-TOUCH-THIS'])
 
   const containerElementRef = useRef(null)
@@ -1249,7 +1268,7 @@ function GlobalMap ({ mapboxgl }) {
       geojson.features.forEach(function (marker) {
         var el = document.createElement('div')
         const iso = marker.properties.iso
-        el.style.backgroundImage = `url(${radialBarChartsMap[iso]})`
+        el.style.backgroundImage = `url(${radialBarChartsMap[locale][iso]})`
         el.style.backgroundSize = 'cover'
         el.style.overflow = 'hidden'
 
