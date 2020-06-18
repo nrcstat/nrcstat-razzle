@@ -43,7 +43,6 @@ import {
 } from 'react-vis'
 
 import 'react-vis/dist/style.css'
-import norwegianCountryNames from '@/Widget/StaticTable/staticTableWidgets/countryCodeNameMapNorwegian.json'
 import horizontalBarBaseImg from './dashboard-horizontal-bar-base.png'
 import middleResolutionCountriesGeoJson from '@/Widget/assets/json/ne_110m_admin_0_countries.json'
 import gazaGeoJson from '@/Widget/assets/json/gaza.json'

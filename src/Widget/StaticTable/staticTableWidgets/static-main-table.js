@@ -8,9 +8,9 @@ import { API_URL, LIB_URL } from '@/config.js'
 import { map, groupBy, find, findIndex, includes, each } from 'lodash'
 import { isServer } from '../../../util/utils'
 const continentColorMap = require('./continentColorMap.json')
-const continentCodeNameMap = require('./continentCodeNameMapNorwegian.json')
-const countryCodeNameMap = require('./countryCodeNameMapNorwegian.json')
 const async = require('async')
+
+const CONTINENTS = ['AF', 'AS', 'EU', 'NA', 'OC', 'SA', 'MISC_AND_STATELESS']
 
 const $ = require('jquery')
 
@@ -354,11 +354,11 @@ export default function (widgetParams) {
       },
 
       function setupSelectors (cb) {
-        each(continentCodeNameMap, (v, k) => {
-          continentSelector.append(`<option value="${k}">${v}</option>`)
+        CONTINENTS.forEach(k => {
+          continentSelector.append(`<option value="${k}">${t(`NRC.Web.StaticTextDictionary.Continents.${k}`)}</option>`)
         })
-        each(countryCodeNameMap, (v, k) => {
-          countrySelector.append(`<option value="${k}">${v}</option>`)
+        CONTINENTS.forEach(k => {
+          countrySelector.append(`<option value="${k}">${t(`NRC.Web.StaticTextDictionary.Continents.${k}`)}</option>`)
         })
 
         continentSelector.on('change', e => {

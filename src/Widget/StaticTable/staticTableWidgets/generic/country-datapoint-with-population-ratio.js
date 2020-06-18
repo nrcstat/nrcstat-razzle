@@ -3,7 +3,6 @@ import { thousandsFormatter, percentFormatter } from '@/util/tableWidgetFormatte
 import { API_URL, LIB_URL } from '@/config.js'
 
 import { isServer } from '../../../../util/utils'
-const countryAnnotations = require('../countryAnnotations2018.json')
 const async = require('async')
 
 const $ = require('jquery')

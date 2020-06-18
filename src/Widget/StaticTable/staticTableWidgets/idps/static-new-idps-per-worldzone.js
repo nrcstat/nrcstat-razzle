@@ -2,9 +2,6 @@
 import { thousandsFormatter } from '@/util/tableWidgetFormatters.js'
 
 import generator from '../generic/generic-table-widget'
-const nrcWorldZoneNameMap = require('@/Widget/StaticTable/staticTableWidgets/nrcWorldZoneNameMapNorwegian.json')
-
-const countryCodeNameMap = require('@/Widget/StaticTable/staticTableWidgets/countryCodeNameMapNorwegian.json')
 
 export default function (widgetParams) {
   const { t, periodYear } = widgetParams

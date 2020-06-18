@@ -12,7 +12,6 @@ export default function (widgetParams) {
   const populationRatioColumnLabel = 'Antall flyktninger i forhold til folketall'
 
   const query = {
-
     where: {
       year: periodYear,
       dataPoint: { inq: ['refugeesInXFromOtherCountriesInYear', 'population'] },

@@ -39,8 +39,6 @@ import refugeesFromIcon from './assets/images/refugeesFrom_small.png'
 import refugeesToIcon from './assets/images/refugeesTo_small.png'
 import idpsIcon from './assets/images/IDP_small.png'
 
-import norwegianCountryNames from '@/Widget/StaticTable/staticTableWidgets/countryCodeNameMapNorwegian.json'
-import countryLinks from './assets/json/country-links.json'
 import gazaGeoJson from './assets/json//gaza.json'
 import middleResolutionCountriesGeoJson from './assets/json/ne_110m_admin_0_countries.json'
 import centroidsRaw from './assets/json/geo_entities_updated_manually.json'
