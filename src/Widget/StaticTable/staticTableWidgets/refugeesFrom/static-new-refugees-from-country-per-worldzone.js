@@ -50,7 +50,10 @@ export default function (widgetParams) {
       return Object.assign(d, { data: d.newRefugeesFromXInYear })
     })
 
-    data = _.sortBy(data, 'place')
+    data = _.sortBy(data, d => {
+      if (d.regionCodeNRC === 'MISC_AND_STATELESS') return 'ZZZZZZ'
+      else return d.place
+    })
 
     const totalFormatted = thousandsFormatter(total)
     data.push({
