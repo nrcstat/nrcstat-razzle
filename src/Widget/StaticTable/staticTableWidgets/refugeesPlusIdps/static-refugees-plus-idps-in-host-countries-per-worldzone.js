@@ -47,7 +47,7 @@ export default function (widgetParams) {
     const total = _.sumBy(data, 'data')
 
     data = _.map(data, d => {
-      return Object.assign(d, { data: d.data / 1000000 })
+      return Object.assign(d, { data: d.data })
     })
 
     data = _.sortBy(data, 'place')
