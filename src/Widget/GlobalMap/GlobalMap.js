@@ -82,66 +82,113 @@ const radialBarChartsMap = {
 
 let countryStatsCache = null
 let isFullScreen
-const nrcCountryIso2 = [
-  'AF',
-  'CD',
-  'CF',
-  'CM',
-  'CO',
-  'DJ',
-  'EC',
-  'ER',
-  'ET',
-  'GR',
-  'HN',
-  'IQ',
-  'IR',
-  'JO',
-  'KE',
-  'LB',
-  'ML',
-  'MM',
-  'NG',
-  'PA',
-  'PS',
-  'SO',
-  'SS',
-  'SY',
-  'TZ',
-  'UA',
-  'UG',
-  'VE',
-  'YE'
-]
-const blueCountryIso2 = [
-  'AT',
-  'AU',
-  'AZ',
-  'BD',
-  'BI',
-  'CA',
-  'CG',
-  'CN',
-  'DE',
-  'EG',
-  'FR',
-  'GM',
-  'IN',
-  'IT',
-  'MX',
-  'NE',
-  'NO',
-  'PH',
-  'PK',
-  'RW',
-  'SD',
-  'SE',
-  'SV',
-  'TD',
-  'TR',
-  'US',
-  'VN'
-]
+const nrcCountryIso2 = {
+  'nb-NO': [
+    'AF',
+    'BD',
+    'BF',
+    'CO',
+    'CF',
+    'DJ',
+    'CD',
+    'EC',
+    'SV',
+    'ER',
+    'ET',
+    'HN',
+    'IQ',
+    'IR',
+    'YE',
+    'JO',
+    'CM',
+    'KE',
+    'LB',
+    'LY',
+    'ML',
+    'MM',
+    'NE',
+    'NG',
+    'PS',
+    'PA',
+    'SO',
+    'SY',
+    'SS',
+    'TZ',
+    'UG',
+    'UA',
+    'VE'
+  ],
+  'en-GB': [
+    'AF',
+    'BD',
+    'BF',
+    'CO',
+    'CF',
+    'DJ',
+    'CD',
+    'EC',
+    'SV',
+    'ER',
+    'ET',
+    'HN',
+    'IQ',
+    'IR',
+    'YE',
+    'JO',
+    'CM',
+    'KE',
+    'LB',
+    'LY',
+    'ML',
+    'MM',
+    'NE',
+    'NG',
+    'PS',
+    'PA',
+    'SO',
+    'SY',
+    'SS',
+    'TZ',
+    'UG',
+    'UA',
+    'VE'
+  ]
+}
+const blueCountryIso2 =
+{
+  'nb-NO': [
+    'AO',
+    'AZ',
+    'AU',
+    'BI',
+    'CA',
+    'EG',
+    'PH',
+    'FR',
+    'GM',
+    'GR',
+    'IN',
+    'IL',
+    'IT',
+    'CN',
+    'CG',
+    'MX',
+    'NO',
+    'PK',
+    'RW',
+    'SD',
+    'SE',
+    'TD',
+    'TR',
+    'DE',
+    'US',
+    'VN',
+    'AT',
+    'ZA'
+  ],
+  'en-GB': []
+}
+
 const toggleFullScreenAnimationDuration = 300
 
 const MIN_ZOOM = 2
@@ -825,7 +872,7 @@ function GlobalMap ({ mapboxgl }) {
       container: ref,
       center: initialCenter,
       zoom: START_ZOOM,
-      style: 'mapbox://styles/nrcmaps/ckbhz9yj30zxx1imwrkxsyii2',
+      style: (locale === 'nb-NO' ? 'mapbox://styles/nrcmaps/ckbhz9yj30zxx1imwrkxsyii2' : 'mapbox://styles/nrcmaps/ckbkyfeyn122k1ip8oxabxgvp'),
       minZoom: MIN_ZOOM,
       maxZoom: MAX_ZOOM
     })
@@ -889,14 +936,14 @@ function GlobalMap ({ mapboxgl }) {
         map.setFilter('countries-highlighted-nrc', [
           '==',
           'iso_a2',
-          _.includes(nrcCountryIso2, hoverCountryIso2) ? hoverCountryIso2 : ''
+          _.includes(nrcCountryIso2[locale], hoverCountryIso2) ? hoverCountryIso2 : ''
         ])
         map.setFilter('countries-highlighted-blue', [
           '==',
           'iso_a2',
-          _.includes(blueCountryIso2, hoverCountryIso2) ? hoverCountryIso2 : ''
+          _.includes(blueCountryIso2[locale], hoverCountryIso2) ? hoverCountryIso2 : ''
         ])
-        const nrcAndBlueIso2 = nrcCountryIso2.concat(blueCountryIso2)
+        const nrcAndBlueIso2 = nrcCountryIso2[locale].concat(blueCountryIso2[locale])
         map.setFilter('countries-highlighted', [
           '==',
           'iso_a2',
