@@ -1065,7 +1065,43 @@ const dataTransformer = (t, locale) => data => {
             xOffsetForDataLabel = 0
             break
         }
-      } else {
+      } else if (locale === 'nb-NO') {
+        switch (countryData.dataPoint) {
+          case 'totalRefugeesFromX':
+            xOffsetForDataLabel = -75
+            break
+
+          case 'refugeesInXFromOtherCountriesInYear':
+            xOffsetForDataLabel = -73
+            break
+
+          case 'idpsInXInYear':
+            xOffsetForDataLabel = -88
+            break
+
+          default:
+            xOffsetForDataLabel = 0
+            break
+        }
+      } else if (locale === 'sv-SE') {
+        switch (countryData.dataPoint) {
+          case 'totalRefugeesFromX':
+            xOffsetForDataLabel = -75
+            break
+
+          case 'refugeesInXFromOtherCountriesInYear':
+            xOffsetForDataLabel = -69
+            break
+
+          case 'idpsInXInYear':
+            xOffsetForDataLabel = -88
+            break
+
+          default:
+            xOffsetForDataLabel = 0
+            break
+        }
+      } else { // This else clause covers the future de-DE locale
         switch (countryData.dataPoint) {
           case 'totalRefugeesFromX':
             xOffsetForDataLabel = -75
