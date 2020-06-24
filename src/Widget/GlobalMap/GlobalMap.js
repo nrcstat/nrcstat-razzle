@@ -26,7 +26,7 @@ import './GlobalMap.scss'
 
 import { loadWidgetData } from './loadWidgetData.js'
 
-import { isServer } from '@/util/utils'
+import { isServer, isClient } from '@/util/utils'
 import loadable from '@loadable/component'
 
 /* Load image assets */
@@ -75,9 +75,24 @@ const radialBarChartsMapEnGb = chain(
   .mapValues('file')
   .value()
 
+const reqSvSe = require.context('./assets/pre-rendered-radial-bar-charts/sv-SE', false)
+// TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
+const radialBarChartsMapSvSe = chain(
+  reqSvSe.keys().map(file => ({
+    file: reqSvSe(file),
+    countryCode: last(file.split('/'))
+      .split('.')[0]
+      .toUpperCase()
+  }))
+)
+  .keyBy('countryCode')
+  .mapValues('file')
+  .value()
+
 const radialBarChartsMap = {
   'en-GB': radialBarChartsMapEnGb,
-  'nb-NO': radialBarChartsMapNbNo
+  'nb-NO': radialBarChartsMapNbNo,
+  'sv-SE': radialBarChartsMapSvSe
 }
 
 let countryStatsCache = null
@@ -152,6 +167,41 @@ const nrcCountryIso2 = {
     'UG',
     'UA',
     'VE'
+  ],
+  'sv-SE': [
+    'AF',
+    'BD',
+    'BF',
+    'CO',
+    'CF',
+    'DJ',
+    'CD',
+    'EC',
+    'SV',
+    'ER',
+    'ET',
+    'HN',
+    'IQ',
+    'IR',
+    'YE',
+    'JO',
+    'CM',
+    'KE',
+    'LB',
+    'LY',
+    'ML',
+    'MM',
+    'NE',
+    'NG',
+    'PS',
+    'PA',
+    'SO',
+    'SY',
+    'SS',
+    'TZ',
+    'UG',
+    'UA',
+    'VE'
   ]
 }
 const blueCountryIso2 =
@@ -186,7 +236,37 @@ const blueCountryIso2 =
     'AT',
     'ZA'
   ],
-  'en-GB': []
+  'en-GB': [],
+  'sv-SE': [
+    'AO',
+    'AZ',
+    'AU',
+    'BI',
+    'CA',
+    'EG',
+    'PH',
+    'FR',
+    'GM',
+    'GR',
+    'IN',
+    'IL',
+    'IT',
+    'CN',
+    'CG',
+    'MX',
+    'NO',
+    'PK',
+    'RW',
+    'SD',
+    'SE',
+    'TD',
+    'TR',
+    'DE',
+    'US',
+    'VN',
+    'AT',
+    'ZA'
+  ]
 }
 
 const toggleFullScreenAnimationDuration = 300
@@ -866,13 +946,23 @@ function GlobalMap ({ mapboxgl }) {
         })
     }
 
+    let mapboxStyle
+    if (locale === 'nb-NO' || locale === 'sv-SE' || locale === 'de-DE') {
+      mapboxStyle = 'mapbox://styles/nrcmaps/ckbhz9yj30zxx1imwrkxsyii2'
+    } else if (locale === 'en-GB') {
+      mapboxStyle = 'mapbox://styles/nrcmaps/ckbkyfeyn122k1ip8oxabxgvp'
+    } else {
+      console.log('locale used with GlobalMap for which no locale is yet defined, talk to Eric')
+      isClient() && window.alert('locale used with GlobalMap for which no locale is yet defined, talk to Eric')
+    }
+
     mapboxElementRef.current = ref
     mapboxgl.accessToken = 'pk.eyJ1IjoibnJjbWFwcyIsImEiOiJjaW5hNTM4MXMwMDB4d2tseWZhbmFxdWphIn0._w6LWU9OWnXak36BkzopcQ'
     var map = new mapboxgl.Map({
       container: ref,
       center: initialCenter,
       zoom: START_ZOOM,
-      style: (locale === 'nb-NO' ? 'mapbox://styles/nrcmaps/ckbhz9yj30zxx1imwrkxsyii2' : 'mapbox://styles/nrcmaps/ckbkyfeyn122k1ip8oxabxgvp'),
+      style: mapboxStyle,
       minZoom: MIN_ZOOM,
       maxZoom: MAX_ZOOM
     })
