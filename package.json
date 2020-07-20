@@ -24,7 +24,7 @@
     "i18next": "^19.4.4",
     "i18next-locize-backend": "^4.0.7",
     "jquery": "3.5.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "mapbox-gl": "^1.9.1",
     "normalize.css": "^8.0.1",
     "razzle": "^3.0.0-alpha.0",
