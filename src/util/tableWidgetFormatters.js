@@ -1,38 +1,30 @@
 
-import { round } from 'lodash'
-import { format } from 'd3'
+import { ENABLED_LOCALES } from '../config'
 
-export function thousandsFormatter (num) {
+export const thousandsFormatter = locale => num => {
   if (typeof num === 'string' && num.indexOf('<strong>') !== -1) return num
+  if (!locale || !ENABLED_LOCALES.includes(locale)) throw new Error('No enabled locale provided')
   if (typeof num === 'string') num = parseFloat(num)
-  if (num == 0 || !num) return '-'
-  return format(',')(num).replace(/,/g, ' ')
+  return new Intl.NumberFormat(locale, { style: 'decimal' }).format(num)
 }
 
-export function thousandsFormatterWithPrecision (precision) {
-  return function (num) {
-    if (typeof num === 'string' && num.indexOf('<strong>') !== -1) return num
-    num = round(num, precision)
-    return thousandsFormatter(num)
-  }
-}
-
-export function percentFormatter (num) {
-  if (typeof num === 'string') num = parseFloat(num)
-  if (num == 0 || !num) return '-'
-  return Math.round(num * 100) + '%'
-}
-
-export function percentFormatterWithPrecision (precision) {
-  return function (num) {
-    if (typeof num === 'string') num = parseFloat(num)
-    if (num == 0 || !num) return '-'
-    return round(num * 100, precision) + '%'
-  }
-}
-
-export function populationNumberFormatter (num) {
+export const thousandsFormatterWithPrecision = locale => precision => num => {
   if (typeof num === 'string' && num.indexOf('<strong>') !== -1) return num
+  if (!locale || !ENABLED_LOCALES.includes(locale)) throw new Error('No enabled locale provided')
   if (typeof num === 'string') num = parseFloat(num)
-  if (typeof num === 'number') { return num.toFixed(1) } else { return num }
+  return new Intl.NumberFormat(locale, { style: 'decimal', maximumFractionDigits: precision }).format(num)
+}
+
+export const percentFormatter = locale => num => {
+  if (typeof num === 'string') num = parseFloat(num)
+  if (!locale || !ENABLED_LOCALES.includes(locale)) throw new Error('No enabled locale provided')
+  if (num == 0 || !num) return '-'
+  return new Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 0 }).format(num)
+}
+
+export const percentFormatterWithPrecision = locale => precision => num => {
+  if (typeof num === 'string') num = parseFloat(num)
+  if (!locale || !ENABLED_LOCALES.includes(locale)) throw new Error('No enabled locale provided')
+  if (num == 0 || !num) return '-'
+  return new Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: precision }).format(num)
 }

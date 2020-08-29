@@ -1,8 +1,9 @@
 
 import generator from '../generic/generic-table-widget'
+import { thousandsFormatter } from '../../../../util/tableWidgetFormatters'
 
 export default function (widgetParams) {
-  const { t, periodYear } = widgetParams
+  const { t, periodYear, locale } = widgetParams
   const title = t('RefugeeReport2020.IDP.RefugeeDataPointPlusIDPDataPoint.OriginCountriesWithMostRefugeesPlusIdps.LongTable.Heading')
 
   const footerAnnotations = t('RefugeeReport2020.IDP.RefugeeDataPointPlusIDPDataPoint.OriginCountriesWithMostRefugeesPlusIdps.LongTable.TableFooterText')
@@ -16,7 +17,7 @@ export default function (widgetParams) {
     }
   }
 
-  return generator(title, t('RefugeeReport2020.MiscSharedLabels.number'), process, query, footerAnnotations)
+  return generator(title, t('RefugeeReport2020.MiscSharedLabels.number'), process, query, footerAnnotations, null, true, thousandsFormatter(locale))
 
   function process (data) {
     data = _(data)

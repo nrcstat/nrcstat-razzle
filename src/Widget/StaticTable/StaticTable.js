@@ -23,13 +23,17 @@ if (isClient()) {
   require('tooltipster/dist/css/tooltipster.bundle.min.css')
 }
 
-export default function StaticTable () {
+export default function StaticTable (props) {
   // TODO: fix to use proper SSR as far as possible
   if (isServer()) return null
 
   const { getNsFixedT } = useContext(FixedLocaleContext)
   const widgetParams = useContext(WidgetParamsContext)
-  const { periodYear, preloadedWidgetData, tableType } = widgetParams
+
+  console.log('props', props)
+  console.log('WidgetParams', widgetParams)
+
+  const { periodYear, preloadedWidgetData, tableType, locale } = widgetParams
   const t = getNsFixedT(['Widget.Static.Table', 'GeographicalNames'])
 
   const fakeWidgetObject = {

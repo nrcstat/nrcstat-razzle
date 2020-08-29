@@ -11,7 +11,6 @@ import '../StaticTable/StaticTable.scss'
 import * as $ from 'jquery'
 import { isClient } from '../../util/utils'
 import {
-  populationNumberFormatter,
   percentFormatter,
   thousandsFormatter
 } from '@/util/tableWidgetFormatters.js'

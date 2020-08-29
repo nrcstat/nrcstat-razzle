@@ -4,7 +4,7 @@ import { thousandsFormatter } from '@/util/tableWidgetFormatters.js'
 import generator from '../generic/generic-table-widget'
 
 export default function (widgetParams) {
-  const { t, periodYear } = widgetParams
+  const { t, periodYear, locale } = widgetParams
   const title = t('RefugeeReport2020.IDP.IdpsPerWorldZone.Heading')
 
   const footerAnnotations = t('RefugeeReport2020.IDP.IdpsPerWorldZone.TableFooterText')
@@ -21,7 +21,7 @@ export default function (widgetParams) {
 
   }
 
-  return generator(title, 'Antall', process, query, footerAnnotations, t('RefugeeReport2020.MiscSharedLabels.worldZone'), false, thousandsFormatter)
+  return generator(title, 'Antall', process, query, footerAnnotations, t('RefugeeReport2020.MiscSharedLabels.worldZone'), false, thousandsFormatter(locale))
 
   function process (data) {
     data = _.groupBy(data, 'regionCodeNRC')

@@ -2,7 +2,7 @@ import { thousandsFormatter, percentFormatterWithPrecision } from '@/util/tableW
 import generator from '../generic/country-datapoint-with-population-ratio'
 
 export default function (widgetParams) {
-  const { t, periodYear } = widgetParams
+  const { t, periodYear, locale } = widgetParams
   const tableTitle = t('RefugeeReport2020.RatioToPopulation.HostCountriesWithMostNewRefugeesInRatioToPopulation.Heading')
 
   const footerAnnotations = t('RefugeeReport2020.RatioToPopulation.HostCountriesWithMostNewRefugeesInRatioToPopulation.TableFooterText')
@@ -51,7 +51,7 @@ export default function (widgetParams) {
       .value()
   }
 
-  const ratioColumnFormatter = percentFormatterWithPrecision(2)
+  const ratioColumnFormatter = percentFormatterWithPrecision(locale)(2)
 
-  return generator(tableTitle, placeColumnLabel, dataPointColumnLabel, populationRatioColumnLabel, footerAnnotations, query, process, thousandsFormatter, ratioColumnFormatter)
+  return generator(tableTitle, placeColumnLabel, dataPointColumnLabel, populationRatioColumnLabel, footerAnnotations, query, process, thousandsFormatter(locale), ratioColumnFormatter)
 }

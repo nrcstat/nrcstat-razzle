@@ -18,7 +18,7 @@ if (isServer()) {
 export default function (dataPointX, regionCodeNRC, countryLimit, title, foooterAnnotations, widgetParams) {
   if (typeof regionCodeNRC === 'string') regionCodeNRC = [regionCodeNRC]
 
-  const { t, periodYear } = widgetParams
+  const { t, periodYear, locale } = widgetParams
 
   const countryAnnotations = buildCountrySpecificFootnotes2019(t)
 
@@ -191,7 +191,7 @@ export default function (dataPointX, regionCodeNRC, countryLimit, title, foooter
             {
               data: 'data',
               render: (data, type, row) => {
-                if (type == 'display') return thousandsFormatter(data)
+                if (type == 'display') return thousandsFormatter(locale)(data)
                 else return data
               }
             }
