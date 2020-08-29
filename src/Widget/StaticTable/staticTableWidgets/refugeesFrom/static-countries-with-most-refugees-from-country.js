@@ -1,5 +1,6 @@
 
 import generator from '../generic/generic-table-widget'
+import { thousandsFormatter } from '../../../../util/tableWidgetFormatters'
 
 export default function (widgetParams) {
   const { t, periodYear, locale } = widgetParams

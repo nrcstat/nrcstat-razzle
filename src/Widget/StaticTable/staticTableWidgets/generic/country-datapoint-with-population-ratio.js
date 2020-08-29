@@ -1,6 +1,6 @@
 import nodeFetch from 'node-fetch'
 import { thousandsFormatter, percentFormatter } from '@/util/tableWidgetFormatters.js'
-import { API_URL, LIB_URL } from '@/config.js'
+import { API_URL } from '@/config.js'
 
 import { isServer } from '../../../../util/utils'
 const async = require('async')

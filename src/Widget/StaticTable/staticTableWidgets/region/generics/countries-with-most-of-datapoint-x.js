@@ -1,6 +1,6 @@
 import nodeFetch from 'node-fetch'
 import { thousandsFormatter } from '@/util/tableWidgetFormatters.js'
-import { API_URL, LIB_URL } from '@/config.js'
+import { API_URL } from '@/config.js'
 import { map, filter, findIndex, includes, find } from 'lodash'
 import { isServer } from '../../../../../util/utils'
 import { buildCountrySpecificFootnotes2019 } from '../../static-main-table'

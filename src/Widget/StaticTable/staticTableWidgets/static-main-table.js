@@ -3,7 +3,7 @@ import {
   percentFormatter,
   thousandsFormatter
 } from '@/util/tableWidgetFormatters.js'
-import { API_URL, LIB_URL } from '@/config.js'
+import { API_URL } from '@/config.js'
 import { map, groupBy, find, findIndex, includes, each } from 'lodash'
 import { isServer } from '../../../util/utils'
 const continentColorMap = require('./continentColorMap.json')
