@@ -30,9 +30,6 @@ export default function StaticTable (props) {
   const { getNsFixedT } = useContext(FixedLocaleContext)
   const widgetParams = useContext(WidgetParamsContext)
 
-  console.log('props', props)
-  console.log('WidgetParams', widgetParams)
-
   const { periodYear, preloadedWidgetData, tableType, locale } = widgetParams
   const t = getNsFixedT(['Widget.Static.Table', 'GeographicalNames'])
 
