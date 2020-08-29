@@ -25,7 +25,6 @@ import { API_URL } from '../../config'
 import {
   formatDataNumber,
   formatDataPercentage,
-  formatNumber,
   isMobileDevice
 } from '@/util/widgetHelpers.js'
 
@@ -535,14 +534,14 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender, t, loc
         <td className='data-cell'>
           {formatDataNumber(
             leftColStat ? leftColStat.data : null,
-            'nb-NO',
+            locale,
             true
           )}
         </td>
         <td className='data-cell'>
           {formatDataNumber(
             rightColStat ? rightColStat.data : null,
-            'nb-NO',
+            locale,
             true
           )}
         </td>
@@ -634,6 +633,7 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender, t, loc
         DATA_POINT_PERCENTAGE_WOMEN_FLEEING_TO_COUNTRY
       ) && (
         <HorizontalBar
+          locale={locale}
           label={t('dataPoint.percentageWomenAmongstRefugeesInCountry')}
           fraction={
             dataPoint_percentageWomenFleeingToCountry
@@ -647,6 +647,7 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender, t, loc
         DATA_POINT_PERCENTAGE_CHILDREN_FLEEING_TO_COUNTRY
       ) && (
         <HorizontalBar
+          locale={locale}
           label={t('dataPoint.percentageChildrenAmongstRefugeesInCountry')}
           fraction={
             dataPoint_percentageChildrenFleeingToCountry
@@ -666,7 +667,7 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender, t, loc
   )
 }
 
-function HorizontalBar ({ label, fraction, style }) {
+function HorizontalBar ({ locale, label, fraction, style }) {
   return (
     <table style={{ ...style, width: '100%' }}>
       <tbody>
@@ -688,7 +689,7 @@ function HorizontalBar ({ label, fraction, style }) {
             }}
             dangerouslySetInnerHTML={{
               __html: !isNull(fraction)
-                ? formatDataPercentage(fraction, 'nb-NO').replace(' ', '&nbsp;')
+                ? formatDataPercentage(fraction, locale).replace(' ', '&nbsp;')
                 : ''
             }}
           />

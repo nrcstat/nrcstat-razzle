@@ -1,199 +1,30 @@
 'use strict'
 
 import { isNull, isUndefined } from 'lodash'
-import * as d3 from 'd3'
+
 export function isMobileDevice () {
   return (typeof window.orientation !== 'undefined') || (navigator.userAgent.indexOf('IEMobile') !== -1)
 };
 
-export function formatDataNumberNorwegian (number, forceFullFormat) {
-  if (isNull(number) || isUndefined(number)) return '-'
-  const num = parseFloat(number)
-  return formatDataNumberEnglishNorwegian(num, 't', 'm', '.', forceFullFormat)
-}
-
-export function formatDataNumberEnglish (number, forceFullFormat) {
-  if (isNull(number) || isUndefined(number)) return 'N/A'
-  const num = parseFloat(number)
-  return formatDataNumberEnglishNorwegian(num, 'k', 'm', ',', forceFullFormat)
-}
-
-export function formatDataNumberEnglishNorwegian (number, charThousand, charMillion, thousandsSeperator, forceFullFormat) {
-  if (number < 1) return Number.parseFloat(number).toFixed(1)
-  if (isMobileDevice() && !forceFullFormat) {
-    // Below 1000
-    if (number < 1000) return number.toString()
-    // Below 1.000.000 (one million)
-    else if (number < 1000 * 1000) return (number / 1000).toFixed(1) + charThousand
-    // Above 1.000.000
-    else return (number / (1000 * 1000)).toFixed(1) + charMillion
-  } else {
-    return d3.format(',')(number).replace(/,/g, thousandsSeperator)
-  }
-}
-
-export function formatDataPercentageNorwegian (percentageAsDecimal) {
-  if (isNull(percentageAsDecimal) || isUndefined(percentageAsDecimal)) return '̶'
-  const num = parseFloat(percentageAsDecimal)
-  return (num * 100).toFixed(1).replace('.', ',') + ' %'
-}
-
-export function formatDataPercentageEnglish (percentageAsDecimal) {
-  if (isNull(percentageAsDecimal) || isUndefined(percentageAsDecimal)) return 'N/A'
-  const num = parseFloat(percentageAsDecimal)
-  return (num * 100).toFixed(1) + ' %'
-}
-
 export function formatDataNumber (number, locale, forceFullFormat = false) {
-  if (locale === 'nb-NO') return formatDataNumberNorwegian(number, forceFullFormat)
-  else return formatDataNumberEnglish(number, forceFullFormat)
+  if (isNull(number) || isUndefined(number)) {
+    return '-'
+  }
+  if (number < 1) {
+    return new Intl.NumberFormat(locale,
+      { style: 'decimal', minimumFractionDigits: 1, maximumFractionDigits: 1 }
+    ).format(number)
+  }
+  return new Intl.NumberFormat(locale,
+    { style: 'decimal', maximumFractionDigits: 0 }
+  ).format(number)
 }
 
 export function formatDataPercentage (percentageAsDecimal, locale) {
-  if (locale === 'nb-NO') return formatDataPercentageNorwegian(percentageAsDecimal)
-  else return formatDataPercentageEnglish(percentageAsDecimal)
-}
-
-export function formatAxisNumber (number) {
-  const num = parseFloat(number)
-  if (isMobileDevice()) {
-    // Below 1000
-    if (num < 1000) return num.toString()
-    // Below 1.000.000 (one million)
-    else if (num < 1000 * 1000) return (num / 1000).toFixed(1) + 'K'
-    // Above 1.000.000
-    else return (num / (1000 * 1000)).toFixed(1) + 'M'
-  } else {
-    return formatNumber(number)
+  if (isNull(percentageAsDecimal) || isUndefined(percentageAsDecimal)) {
+    return '-'
   }
-}
-
-export function formatNumber (number) {
-  const num = parseFloat(number)
-  return d3.format(',')(number).replace(/,/g, ' ')
-}
-
-export function getTextWidth (text, textStyle) {
-  var svg = d3.select('body').append('svg').style('display', 'block')
-  svg.attr({
-    width: '1000',
-    height: '1000'
-  })
-
-  var text = svg.append('text').style('font', textStyle).text(text)
-
-  var bbox = text.node().getBBox()
-
-  svg.remove()
-
-  return bbox.width
-};
-
-export function getTextHeight (text, textStyle) {
-  var svg = d3.select('body').append('svg').style('display', 'block')
-  svg.attr({
-    width: '1000',
-    height: '1000'
-  })
-
-  var text = svg.append('text').style('font', textStyle).text(text)
-
-  var bbox = text.node().getBBox()
-
-  svg.remove()
-
-  return bbox.height
-};
-
-/**
- * Function that takes the arguments {availableWidth, text and textStyle} and returns
- * those lines split into {lines and lineHeight}
- * @param params
- * @returns {{lines: Array, lineHeight: number}}
- */
-
-export function splitTextToLines (params) {
-  function getTextBox (text, textStyle) {
-    var svg = d3.select('body').append('svg').attr('width', avbWidth)
-
-    var text = svg.append('text').style('font', textStyle).text(text)
-
-    var bbox = text.node().getBBox()
-
-    svg.remove()
-
-    return bbox
-  }
-
-  var avbWidth = params.availableWidth
-  var text = params.text
-  var textStyle = params.textStyle
-
-  var words = text.split(' ')
-
-  var lines = []
-  var lineIndex = 0
-  var lineHeight = 0
-
-  for (var i = 0; i < words.length; i++) {
-    if (!lines[lineIndex]) lines[lineIndex] = ''
-    var lineToTest = lines[lineIndex] + (lines[lineIndex] ? ' ' : '') + words[i]
-    var bbox = getTextBox(lineToTest, textStyle)
-    if (bbox.width > avbWidth && lineToTest.split(' ').length > 1) {
-      lines[++lineIndex] = words[i]
-    } else {
-      lines[lineIndex] += (i > 0 ? ' ' : '') + words[i]
-    }
-
-    lineHeight = bbox.height
-  }
-
-  return { lines: lines, lineHeight: lineHeight }
-};
-
-export function evaluateMaxSize (params) {
-  var currentFontPxSize, lastFontPxSize, currentTotalHeight, lastRes, lastStyle, maxWidth
-  currentFontPxSize = lastFontPxSize = currentTotalHeight = maxWidth = 1
-
-  while (currentTotalHeight < params.maxHeight && maxWidth < params.maxWidth) {
-    lastFontPxSize = currentFontPxSize
-    currentFontPxSize++
-    lastStyle = `${currentFontPxSize}px ${params.fontFamily}`
-    lastRes = splitTextToLines({
-      availableWidth: params.maxWidth,
-      text: params.text,
-      textStyle: lastStyle
-    })
-
-    maxWidth = _(lastRes.lines).map(line => getTextWidth(line, lastStyle)).max()
-
-    currentTotalHeight = lastRes.lines.length * lastRes.lineHeight + params.lineSpacing * (lastRes.lines.length - 1)
-  }
-
-  return {
-    lines: lastRes.lines,
-    linePxSize: lastFontPxSize,
-    lineHeight: lastRes.lineHeight,
-    lineSpacing: params.lineSpacing,
-    style: lastStyle
-  }
-}
-
-export function calculateMaxTextWidthFromArray (array, style) {
-  var maxLegendLabelWidth =
-      _.chain(array).map(l => getTextWidth(l, style))
-        .max()
-        .value()
-
-  return maxLegendLabelWidth
-}
-
-export function repairTextPlacements (parentEl) {
-  $(parentEl).find('text.fix-my-tspan-children-position').each((i, v) => {
-    var bbox = v.getBBox()
-    var tspans = $(v).children('tspan')
-    tspans.attr('dy', -bbox.y)
-  })
+  return new Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 1 }).format(percentageAsDecimal)
 }
 
 export function makeIcon (widgetId, wConfig, network, targetElementAttrId) {

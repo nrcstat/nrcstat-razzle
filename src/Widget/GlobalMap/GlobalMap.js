@@ -18,7 +18,6 @@ import { useTranslation } from 'react-i18next'
 import {
   formatDataNumber,
   formatDataPercentage,
-  formatNumber,
   isMobileDevice
 } from '@/util/widgetHelpers.js'
 
