@@ -53,7 +53,7 @@ export default function (widgetParams) {
 
     data = _.sortBy(data, 'place')
 
-    const totalFormatted = thousandsFormatter(total)
+    const totalFormatted = thousandsFormatter(locale)(total)
     data.push({
       place: `<strong>${t('RefugeeReport2020.MiscSharedLabels.worldTotal')}</strong>`,
       data: `<strong>${totalFormatted}</strong>`

@@ -55,7 +55,7 @@ export default function (widgetParams) {
       else return d.place
     })
 
-    const totalFormatted = thousandsFormatter(total)
+    const totalFormatted = thousandsFormatter(locale)(total)
     data.push({
       place: `<strong>${t('RefugeeReport2020.MiscSharedLabels.worldTotal')}</strong>`,
       data: `<strong>${totalFormatted}</strong>`
