@@ -57,3 +57,8 @@ I didn't use the default export. FML. 🤦‍♂️
 
 
 # Deployment
+1. Push to `develop` (perhaps we should stick to using only `master` or `main` in the future)
+2. SSH into razzle.nrcdata.no
+3. `cd` into the razzle directory
+4. Run `yarn build`
+5. Run `forever restartall`
