@@ -46,8 +46,10 @@ export const determineWidgetType = async widget => {
       return { locale, type: 'Line', widgetObject }
     } else if (type === 'custom-table') {
       return { locale, type: 'CustomTable', widgetObject }
+    } else if (type === 'pictogram') {
+      return { locale, type: 'Pictogram', widgetObject }
     } else {
-      return { locale, type: 'Donut', widgetObject }
+      throw new Error('Could not determine widget type')
     }
   }
 }
@@ -58,10 +60,11 @@ async function loadWidgetObject (widgetId) {
 }
 
 function removeLocaleLayer (widgetObject, locale) {
-  if (widgetObject.config.title[locale]) { widgetObject.config.title = widgetObject.config.title[locale] } else { widgetObject.config.title = '' }
-  if (widgetObject.config.subtitle[locale]) { widgetObject.config.subtitle = widgetObject.config.subtitle[locale] } else { widgetObject.config.subtitle = '' }
-  if (widgetObject.config.linkbox[locale]) { widgetObject.config.linkbox = widgetObject.config.linkbox[locale] } else { widgetObject.config.linkbox = '' }
-  if (widgetObject.config.source[locale]) { widgetObject.config.source = widgetObject.config.source[locale] } else { widgetObject.config.source = '' }
+  if (!widgetObject.config) widgetObject.config = {}
+  if (widgetObject && widgetObject.config && widgetObject.config.title && widgetObject.config.title[locale]) { widgetObject.config.title = widgetObject.config.title[locale] } else { widgetObject.config.title = '' }
+  if (widgetObject && widgetObject.config && widgetObject.config.subtitle && widgetObject.config.subtitle[locale]) { widgetObject.config.subtitle = widgetObject.config.subtitle[locale] } else { widgetObject.config.subtitle = '' }
+  if (widgetObject && widgetObject.config && widgetObject.config.linkbox && widgetObject.config.linkbox[locale]) { widgetObject.config.linkbox = widgetObject.config.linkbox[locale] } else { widgetObject.config.linkbox = '' }
+  if (widgetObject && widgetObject.config && widgetObject.config.source && widgetObject.config.source[locale]) { widgetObject.config.source = widgetObject.config.source[locale] } else { widgetObject.config.source = '' }
   if (widgetObject.dataType === 'custom') {
     if (widgetObject.customData[locale]) {
       widgetObject.customData = widgetObject.customData[locale]

@@ -15,6 +15,7 @@ import { determineWidgetType } from './lib/determine-widget-type'
 import Widget from './Widget/Widget'
 
 import { loadWidgetData as loadGlobalMapData } from './Widget/GlobalMap/loadWidgetData.js'
+import { loadWidgetData as loadDonutData } from './Widget/Donut/loadWidgetData.js'
 
 /// import i18n service to initialize it
 import { i18n } from './server-only/locale-service.js'
@@ -35,7 +36,8 @@ const dataPreLoaders = {
       t: () => ''
     }
     return tableTypeToTableWidgetMap[widget.tableType](widgetParams).loadWidgetData(widget)
-  }
+  },
+  Donut: loadDonutData
 }
 
 const server = express()

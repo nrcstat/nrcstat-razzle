@@ -14,19 +14,19 @@ import Pie from './Pie/Pie'
 const GlobalMap = loadable(() => import(/* webpackChunkName: "GlobalMap" */ './GlobalMap/GlobalMap'))
 const Line = loadable(() => import(/* webpackChunkName: "Line" */ './Line/Line'))
 const Donut = loadable(() => import(/* webpackChunkName: "Donut" */ './Donut/Donut'))
-const Pie = loadable(() => import(/* webpackChunkName: "Pie" */ './Pie/Pie'))
 const StaticTable = loadable(() => import(/* webpackChunkName: "StaticTable" */ './StaticTable/StaticTable'))
 const CountryDashboard = loadable(() => import(/* webpackChunkName: "CountryDashboard" */ './CountryDashboard/CountryDashboard'))
 const CustomTable = loadable(() => import(/* webpackChunkName: "CustomTable" */ './CustomTable/CustomTable'))
+const Pictogram = loadable(() => import(/* webpackChunkName: "Pictogram" */ './Pictogram/Pictogram'))
 
 const widgetMap = {
   GlobalMap: GlobalMap,
   Line: Line,
   Donut: Donut,
-  Pie: Pie,
   StaticTable: StaticTable,
   CountryDashboard: CountryDashboard,
-  CustomTable: CustomTable
+  CustomTable: CustomTable,
+  Pictogram: Pictogram
 }
 
 export const WidgetParamsContext = React.createContext()
@@ -34,7 +34,7 @@ export const WidgetParamsContext = React.createContext()
 function Widget (props) {
   const { type, locale } = props
   const SpecificWidget = widgetMap[type]
-  const FixedLocaleContext = buildFixedLocaleContext(locale)
+  const FixedLocaleContext = buildFixedLocaleContext(locale || 'nb-NO')
   const containerRef = React.useRef()
   const onReady = ref => { containerRef.current = ref }
   return (

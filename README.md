@@ -8,12 +8,6 @@
 - Use `yarn`, not `npm`
 
 
-
-
-
-
-
-
 # Get the razzle example running
 
 Steps:
@@ -45,3 +39,21 @@ yarn dev
 yarn build
 yarn start:prod
 ```
+
+
+# Troubleshooting techniques
+
+I spent almost 4-5 hours scratching my head over why the new `Pictogram` widget wouldn't work. In `src/Widget/Pictogram/Pictogram.js`. Turns out that I was doing this...
+```
+export function Pictogram () { blabla }
+```
+instead of the correct this:
+```
+function Pictogram () { blabla }
+export default Pictogram
+```
+
+I didn't use the default export. FML. 🤦‍♂️
+
+
+# Deployment
