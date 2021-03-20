@@ -48,6 +48,8 @@ export const determineWidgetType = async widget => {
       return { locale, type: 'CustomTable', widgetObject }
     } else if (type === 'pictogram') {
       return { locale, type: 'Pictogram', widgetObject }
+    } else if (type === 'timeline') {
+      return { locale, type: 'Timeline', widgetObject }
     } else {
       throw new Error('Could not determine widget type')
     }

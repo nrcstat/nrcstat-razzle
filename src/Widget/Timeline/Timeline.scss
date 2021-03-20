@@ -1,0 +1,95 @@
+.container {
+  
+}
+.container.desktop {
+  max-width: 250px;
+}
+
+.timeline-entry {
+  display: grid;
+  grid-template-areas: 
+    "marker content"
+    "line   content";
+  grid-template-rows: 26px 1fr;
+  grid-template-columns: 26px 1fr;
+  grid-column-gap: 7px;
+
+  .timeline-marker {
+    grid-area: marker;
+    background: #ffdec2;
+    border: 2px solid #ff7602;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+  }
+  .timeline-content-line {
+    grid-area: line;
+    
+    width: 1px;
+    margin: 2px auto;
+    background: #FF7602;
+  }
+
+  .timeline-content {
+    grid-area: content;
+
+    .timeline-entry-title {
+      display: block;
+      font-family: "Roboto Condensed";
+      font-weight: bold;
+      font-size: 18px;
+      line-height: 18px;
+      margin-bottom: 5px;
+    }
+    .timeline-entry-subtitle {
+      display: block;
+      font-family: "Roboto";
+      font-weight: bold;
+      font-size: 18px;
+      line-height: 18px;
+      margin-bottom: 10px;
+    }
+    .timeline-entry-body {
+      display: block;
+      position: relative;
+      font-family: "Roboto";
+      font-weight: 300;
+      font-size: 15px;
+      line-height: 18px;
+
+      // TODO: uncomment to continue implementing max-height and expand/collapse button
+      // max-height: 165px;
+      // overflow-y: hidden;
+
+      // .fade-out-last-line {
+      //   background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
+      //   position: absolute;
+      //   /* important part of the trick: the fade box will only show when the containing div is tall enough */
+      //   top: 150px; 
+      //   width: 100%;
+      //   height: 15px;
+      // }
+      // .past-fade-out-expand-button {
+        
+      //   position: absolute;
+      //   /* important part of the trick: the fade box will only show when the containing div is tall enough */
+      //   top: 190px; 
+      //   left: 50px;
+      //   z-index: 9999;
+      // }
+
+    }
+  }
+}
+
+.timeline-entry:not(:last-child) .timeline-content {
+  margin-bottom: 50px;
+}
+.timeline-entry:last-child {
+  .timeline-content-line {
+    height: calc(100% - 10px);
+  }
+  .timeline-content {
+    margin-bottom: 0px;
+  }
+}
