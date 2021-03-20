@@ -86,7 +86,7 @@ function Pictogram () {
             {section.title && <span className='section-title'>{section.title}</span>}
             {section.icons?.map((icon, key) => {
               const Icon = WidgetIconMap[icon.icon]
-              const fillColor = icon.overrideDataColor ? icon.overrideDataColor : section.dataColor
+              const fillColor = icon.dataColor
               return (
                 <Icon
                   key={key}
