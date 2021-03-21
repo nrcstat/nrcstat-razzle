@@ -1,11 +1,19 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import { isMobileDevice } from '@/util/widgetHelpers.js'
+import { isServer } from '@/util/utils'
 import './Timeline.scss'
+import { WidgetParamsContext } from '../Widget'
 
-const isMobile = isMobileDevice()
+function Timeline () {
+  if (isServer()) return null
 
-function Timeline ({ entries }) {
+  const isMobile = isMobileDevice()
+
+  const { widgetObject } = useContext(WidgetParamsContext)
+
+  const entries = widgetObject.entries
+
   return (
     <div className={`container ${isMobile ? 'mobile' : 'desktop'}`}>
       {entries.map(({ title, subtitle, body }, key) => (
