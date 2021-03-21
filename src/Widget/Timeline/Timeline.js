@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { isMobileDevice } from '@/util/widgetHelpers.js'
-import './Widget.scss'
+import './Timeline.scss'
 
 const isMobile = isMobileDevice()
 
