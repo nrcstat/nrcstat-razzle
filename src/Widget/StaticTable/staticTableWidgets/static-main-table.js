@@ -40,14 +40,14 @@ export default function (widgetParams) {
     'percentageChildrenFleeingToCountry'
   ]
 
-  function loadWidgetData () {
+  function loadWidgetData (_, headers = {}) {
     var q = {
       where: { year: periodYear, continentCode: { nin: ['WORLD'] } }
     }
     var urlQ = encodeURIComponent(JSON.stringify(q))
 
     const url = `${API_URL}/datas?filter=${urlQ}`
-    return fetch(url)
+    return fetch(url, { headers: { nrcstatpassword: widgetParams.nrcstatpassword }})
       .then(resp => resp.json())
   }
 
