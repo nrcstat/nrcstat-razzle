@@ -1,40 +1,52 @@
-
-import generator from '../generic/generic-table-widget'
-import { thousandsFormatter } from '../../../../util/tableWidgetFormatters'
+import generator from "../generic/generic-table-widget";
+import { thousandsFormatter } from "../../../../util/tableWidgetFormatters";
 
 export default function (widgetParams) {
-  const { t, periodYear, locale } = widgetParams
-  const title = t(`RefugeeReport${periodYear + 1}.IDP.CountriesWithMostNewIdps.Heading`)
+  const { t, periodYear, locale } = widgetParams;
+  const title = t(
+    `RefugeeReport${periodYear + 1}.IDP.CountriesWithMostNewIdps.Heading`
+  );
 
-  const footerAnnotations = t(`RefugeeReport${periodYear + 1}.IDP.CountriesWithMostNewIdps.TableFooterText`)
-    .replace('\n', '<br /><br />')
+  const footerAnnotations = t(
+    `RefugeeReport${
+      periodYear + 1
+    }.IDP.CountriesWithMostNewIdps.TableFooterText`
+  ).replace("\n", "<br /><br />");
 
   const query = {
     where: {
       year: periodYear,
-      dataPoint: 'newIdpsInXInYear',
-      continentCode: { nin: ['WORLD'] }
+      dataPoint: "newIdpsInXInYear",
+      continentCode: { nin: ["WORLD"] },
     },
     limit: 30,
-    order: 'data DESC'
+    order: "data DESC",
+  };
 
-  }
+  thousandsFormatter;
 
-  thousandsFormatter
+  return generator(
+    title,
+    t(`RefugeeReport${periodYear + 1}.MiscSharedLabels.numberNewIdps`),
+    process,
+    query,
+    footerAnnotations,
+    t(`RefugeeReport${periodYear + 1}.MiscSharedLabels.country`),
+    true,
+    thousandsFormatter(locale)
+  );
 
-  return generator(title, t(`RefugeeReport${periodYear + 1}.MiscSharedLabels.numberNewIdps`), process, query, footerAnnotations, null, true, thousandsFormatter(locale))
-
-  function process (data) {
+  function process(data) {
     data = _.map(data, (v) => {
       return {
         countryCode: v.countryCode,
-        data: v.data
-      }
-    })
-    data = _.map(data, d => {
-      d.place = t(`NRC.Web.StaticTextDictionary.Contries.${d.countryCode}`)
-      return d
-    })
-    return data
+        data: v.data,
+      };
+    });
+    data = _.map(data, (d) => {
+      d.place = t(`NRC.Web.StaticTextDictionary.Contries.${d.countryCode}`);
+      return d;
+    });
+    return data;
   }
 }
