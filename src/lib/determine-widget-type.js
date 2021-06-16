@@ -83,6 +83,19 @@ function removeLocaleLayer (widgetObject, locale) {
     })
   }
 
+  // Pictogram widget
+  if (widgetObject && widgetObject.type === 'pictogram') {
+    if (widgetObject.title && widgetObject.title[locale]) widgetObject.title = widgetObject.title[locale]
+    if (widgetObject.subtitle && widgetObject.subtitle[locale]) widgetObject.subtitle = widgetObject.subtitle[locale]
+    if (widgetObject.source && widgetObject.source[locale]) widgetObject.source = widgetObject.source[locale]
+    if (widgetObject.sections && widgetObject.sections.length > 0) {
+      widgetObject.sections = widgetObject.sections.map(section => {
+        if (section && section.title && section.title[locale]) section.title = section.title[locale]
+        return section
+      })
+    }
+  }
+
   return widgetObject
 }
 
