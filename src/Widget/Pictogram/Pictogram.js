@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 import { isServer, isClient } from '@/util/utils'
 import { isMobileDevice } from '@/util/widgetHelpers.js'
+import ReactMarkdown from 'react-markdown'
 
 import {
   BackgroundColorKey,
@@ -78,7 +79,7 @@ function Pictogram () {
         sections?.length > 1 ? 'multiple-sections' : 'single-section'
       } background-${backgroundColor}`}
     >
-      {title && <span className='title'>{title}</span>}
+      {title && <span className='title'><ReactMarkdown>{title}</ReactMarkdown></span>}
       {subtitle && <span className='subtitle'>{subtitle}</span>}
       {sections &&
         sections.map((section, key) => (

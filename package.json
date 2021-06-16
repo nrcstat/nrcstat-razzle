@@ -41,6 +41,7 @@
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-i18next": "^11.5.0",
+    "react-markdown": "^6.0.2",
     "react-vis": "^1.11.7",
     "recharts": "^1.8.5",
     "sass-loader": "^8.0.2",
