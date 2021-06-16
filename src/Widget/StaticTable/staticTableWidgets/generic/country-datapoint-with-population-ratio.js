@@ -21,10 +21,10 @@ export default function (tableTitle, placeColumnLabel, dataPointColumnLabel, pop
   orderingEnabled = true) {
 // module.exports = function (title, dataColumnName, dataProcessingFunction, queryObject, foooterAnnotations, placeColumnName = "Land", orderingEnabled = true, dataColumnFormatter = thousandsFormatter) {
 
-  function loadWidgetData () {
+  function loadWidgetData (widgetObject, headers = {}) {
     var urlQ = encodeURIComponent(JSON.stringify(queryObject))
     const url = `${API_URL}/datas?filter=${urlQ}`
-    return fetch(url)
+    return fetch(url, { headers: { nrcstatpassword: widgetObject.nrcstatpassword }})
       .then(resp => resp.json())
   }
 

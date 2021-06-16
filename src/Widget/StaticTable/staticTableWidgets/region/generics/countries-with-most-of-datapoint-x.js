@@ -22,7 +22,7 @@ export default function (dataPointX, regionCodeNRC, countryLimit, title, foooter
 
   const countryAnnotations = buildCountrySpecificFootnotes2019(t)
 
-  function loadWidgetData () {
+  function loadWidgetData (widgetObject, headers = {}) {
     var q = {
       where: { year: periodYear, dataPoint: dataPointX, regionCodeNRC: { inq: regionCodeNRC } },
       limit: countryLimit,
@@ -30,7 +30,7 @@ export default function (dataPointX, regionCodeNRC, countryLimit, title, foooter
     }
     var urlQ = encodeURIComponent(JSON.stringify(q))
     const url = `${API_URL}/datas?filter=${urlQ}`
-    return fetch(url)
+    return fetch(url, { headers: { nrcstatpassword: widgetObject.nrcstatpassword } })
       .then(resp => resp.json())
   }
 

@@ -62,13 +62,16 @@ server
       const widget = enrichedQueue[i]
       const dataLoader = dataPreLoaders[widget.type]
       if (dataLoader) {
-        if (dataCache[widget.widgetId]) {
-          widget.preloadedWidgetData = dataCache[widget.widgetId]
-        } else {
-          const data = await dataLoader(widget)
-          widget.preloadedWidgetData = data
-          dataCache[widget.widgetId] = data
-        }
+        widget.nrcstatpassword = req.headers.nrcstatpassword
+        const data = await dataLoader(widget, { nrcstatpassword: req.headers.nrcstatpassword, foo: 'bar' })
+        widget.preloadedWidgetData = data
+      // DATA CACHING TURNED OFF BECAUSE OF AUTHENTICATION REQUIREMENT. UNCOMMENT AFTER LAUNCH.
+      // if (dataCache[widget.widgetId]) {
+      //   widget.preloadedWidgetData = dataCache[widget.widgetId]
+      // } else {
+      //   const data = await dataLoader(widget)
+      //   widget.preloadedWidgetData = data
+      //   dataCache[widget.widgetId] = data
       }
     }
 
