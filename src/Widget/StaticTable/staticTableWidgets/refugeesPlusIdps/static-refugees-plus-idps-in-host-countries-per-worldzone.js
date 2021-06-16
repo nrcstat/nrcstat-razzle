@@ -5,9 +5,9 @@ import generator from '../generic/generic-table-widget'
 
 export default function (widgetParams) {
   const { t, periodYear, locale } = widgetParams
-  const title = t('RefugeeReport2020.IDP.RefugeeDataPointPlusIDPDataPoint.RefugeesPlusIdpsInHostCountriesPerWorldZone.Heading')
+  const title = t(`RefugeeReport${periodYear + 1}.IDP.RefugeeDataPointPlusIDPDataPoint.RefugeesPlusIdpsInHostCountriesPerWorldZone.Heading`)
 
-  const footerAnnotations = t('RefugeeReport2020.IDP.RefugeeDataPointPlusIDPDataPoint.RefugeesPlusIdpsInHostCountriesPerWorldZone.TableFooterText')
+  const footerAnnotations = t(`RefugeeReport${periodYear + 1}.IDP.RefugeeDataPointPlusIDPDataPoint.RefugeesPlusIdpsInHostCountriesPerWorldZone.TableFooterText`)
 
   const query = {
     where: {
@@ -39,7 +39,7 @@ export default function (widgetParams) {
     })
 
     data.push({
-      place: t('RefugeeReport2020.MiscSharedLabels.asiaIncludedMiddleEastAndOceania'),
+      place: t(`RefugeeReport${periodYear + 1}.MiscSharedLabels.asiaIncludedMiddleEastAndOceania`),
       data: asiaPlusMiddleEastOceaniaSum
     })
 
@@ -53,7 +53,7 @@ export default function (widgetParams) {
 
     const totalFormatted = thousandsFormatter(locale)(total)
     data.push({
-      place: `<strong>${t('RefugeeReport2020.MiscSharedLabels.worldTotal')}</strong>`,
+      place: `<strong>${t(`RefugeeReport${periodYear + 1}.MiscSharedLabels.worldTotal`)}</strong>`,
       data: `<strong>${totalFormatted}</strong>`
     })
     return data

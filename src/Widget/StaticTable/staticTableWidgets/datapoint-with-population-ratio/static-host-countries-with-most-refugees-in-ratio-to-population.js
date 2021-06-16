@@ -3,13 +3,13 @@ import generator from '../generic/country-datapoint-with-population-ratio'
 
 export default function (widgetParams) {
   const { t, periodYear, locale } = widgetParams
-  const tableTitle = t('RefugeeReport2020.RatioToPopulation.HostCountriesWithMostRefugeesInRatioToPopulation.Heading')
+  const tableTitle = t(`RefugeeReport${periodYear + 1}.RatioToPopulation.HostCountriesWithMostRefugeesInRatioToPopulation.Heading`)
 
-  const footerAnnotations = t('RefugeeReport2020.RatioToPopulation.HostCountriesWithMostRefugeesInRatioToPopulation.TableFooterText')
+  const footerAnnotations = t(`RefugeeReport${periodYear + 1}.RatioToPopulation.HostCountriesWithMostRefugeesInRatioToPopulation.TableFooterText`)
 
-  const placeColumnLabel = t('RefugeeReport2020.MiscSharedLabels.country')
-  const dataPointColumnLabel = t('RefugeeReport2020.MiscSharedLabels.numberRefugees')
-  const populationRatioColumnLabel = t('RefugeeReport2020.MiscSharedLabels.numberRefugeesInRatioToPopulation')
+  const placeColumnLabel = t(`RefugeeReport${periodYear + 1}.MiscSharedLabels.country`)
+  const dataPointColumnLabel = t(`RefugeeReport${periodYear + 1}.MiscSharedLabels.numberRefugees`)
+  const populationRatioColumnLabel = t(`RefugeeReport${periodYear + 1}.MiscSharedLabels.numberRefugeesInRatioToPopulation`)
 
   const query = {
     where: {

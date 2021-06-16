@@ -5,9 +5,9 @@ import generator from '../generic/generic-table-widget'
 
 export default function (widgetParams) {
   const { t, periodYear, locale } = widgetParams
-  const title = t('RefugeeReport2020.IDP.IdpsPerWorldZone.Heading')
+  const title = t(`RefugeeReport${periodYear + 1}.IDP.IdpsPerWorldZone.Heading`)
 
-  const footerAnnotations = t('RefugeeReport2020.IDP.IdpsPerWorldZone.TableFooterText')
+  const footerAnnotations = t(`RefugeeReport${periodYear + 1}.IDP.IdpsPerWorldZone.TableFooterText`)
     .replace('\n', '<br /><br />')
 
   const query = {
@@ -21,7 +21,7 @@ export default function (widgetParams) {
 
   }
 
-  return generator(title, 'Antall', process, query, footerAnnotations, t('RefugeeReport2020.MiscSharedLabels.worldZone'), false, thousandsFormatter(locale))
+  return generator(title, 'Antall', process, query, footerAnnotations, t(`RefugeeReport${periodYear + 1}.MiscSharedLabels.worldZone`), false, thousandsFormatter(locale))
 
   function process (data) {
     data = _.groupBy(data, 'regionCodeNRC')
@@ -42,7 +42,7 @@ export default function (widgetParams) {
       return Object.assign(d, { place: t(`NRC.Web.StaticTextDictionary.Continents.${d.regionCodeNRC}`) })
     })
     data.push({
-      place: t('RefugeeReport2020.MiscSharedLabels.asiaIncludedMiddleEastAndOceania'),
+      place: t(`RefugeeReport${periodYear + 1}.MiscSharedLabels.asiaIncludedMiddleEastAndOceania`),
       idpsInXInYear: asiaPlusMiddleEastOceaniaSum
     })
 
@@ -55,7 +55,7 @@ export default function (widgetParams) {
 
     const totalFormatted = thousandsFormatter(locale)(total)
     data.push({
-      place: `<strong>${t('RefugeeReport2020.MiscSharedLabels.worldTotal')}</strong>`,
+      place: `<strong>${t(`RefugeeReport${periodYear + 1}.MiscSharedLabels.worldTotal`)}</strong>`,
       data: `<strong>${totalFormatted}</strong>`
     })
     return data

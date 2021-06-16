@@ -19,7 +19,7 @@ export default function (title, dataColumnName, dataProcessingFunction, queryObj
   function loadWidgetData (widgetObject, headers = {}) {
     var urlQ = encodeURIComponent(JSON.stringify(queryObject))
     const url = `${API_URL}/datas?filter=${urlQ}`
-    return fetch(url, { headers: { nrcstatpassword } })
+    return fetch(url, { headers: { nrcstatpassword: widgetObject.nrcstatpassword } })
       .then(resp => resp.json())
   }
 

@@ -3,9 +3,9 @@ import { thousandsFormatter } from '../../../../util/tableWidgetFormatters'
 
 export default function (widgetParams) {
   const { t, periodYear, locale } = widgetParams
-  const title = t('RefugeeReport2020.VoluntaryReturn.CountriesWithMostVoluntaryReturns.Heading')
+  const title = t(`RefugeeReport${periodYear + 1}.VoluntaryReturn.CountriesWithMostVoluntaryReturns.Heading`)
 
-  const footerAnnotations = t('RefugeeReport2020.VoluntaryReturn.CountriesWithMostVoluntaryReturns.TableFooterText')
+  const footerAnnotations = t(`RefugeeReport${periodYear + 1}.VoluntaryReturn.CountriesWithMostVoluntaryReturns.TableFooterText`)
 
   const query = {
     where: {
@@ -18,7 +18,7 @@ export default function (widgetParams) {
 
   }
 
-  return generator(title, t('RefugeeReport2020.MiscSharedLabels.number'), process, query, footerAnnotations, null, true, thousandsFormatter(locale))
+  return generator(title, t(`RefugeeReport${periodYear + 1}.MiscSharedLabels.number`), process, query, footerAnnotations, null, true, thousandsFormatter(locale))
 
   function process (data) {
     data = _.map(data, (v) => {
