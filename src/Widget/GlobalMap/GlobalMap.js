@@ -88,10 +88,57 @@ const radialBarChartsMapSvSe = chain(
   .mapValues('file')
   .value()
 
+const reqNbNo2020 = require.context('./assets/pre-rendered-radial-bar-charts-2020/nb-NO', false)
+// TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
+const radialBarChartsMapNbNo2020 = chain(
+  reqNbNo2020.keys().map(file => ({
+    file: reqNbNo2020(file),
+    countryCode: last(file.split('/'))
+      .split('.')[0]
+      .toUpperCase()
+  }))
+)
+  .keyBy('countryCode')
+  .mapValues('file')
+  .value()
+
+const reqEnGb2020 = require.context('./assets/pre-rendered-radial-bar-charts-2020/en-GB', false)
+// TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
+const radialBarChartsMapEnGb2020 = chain(
+  reqEnGb2020.keys().map(file => ({
+    file: reqEnGb2020(file),
+    countryCode: last(file.split('/'))
+      .split('.')[0]
+      .toUpperCase()
+  }))
+)
+  .keyBy('countryCode')
+  .mapValues('file')
+  .value()
+
+const reqSvSe2020 = require.context('./assets/pre-rendered-radial-bar-charts-2020/sv-SE', false)
+// TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
+const radialBarChartsMapSvSe2020 = chain(
+  reqSvSe2020.keys().map(file => ({
+    file: reqSvSe2020(file),
+    countryCode: last(file.split('/'))
+      .split('.')[0]
+      .toUpperCase()
+  }))
+)
+  .keyBy('countryCode')
+  .mapValues('file')
+  .value()
+
 const radialBarChartsMap = {
   'en-GB': radialBarChartsMapEnGb,
   'nb-NO': radialBarChartsMapNbNo,
   'sv-SE': radialBarChartsMapSvSe
+}
+const radialBarChartsMap2020 = {
+  'en-GB': radialBarChartsMapEnGb2020,
+  'nb-NO': radialBarChartsMapNbNo2020,
+  'sv-SE': radialBarChartsMapSvSe2020
 }
 
 let countryStatsCache = null
@@ -1403,11 +1450,13 @@ function GlobalMap ({ mapboxgl }) {
         hoverPopup.css({ display: 'none' })
       }
 
+      const radialBarChartsToUse = periodYear === 2020 ? radialBarChartsMap2020 : radialBarChartsMap
+
       // TODO: this is likely to be a bottleneck
       geojson.features.forEach(function (marker) {
         var el = document.createElement('div')
         const iso = marker.properties.iso
-        el.style.backgroundImage = `url(${radialBarChartsMap[locale][iso]})`
+        el.style.backgroundImage = `url(${radialBarChartsToUse[locale][iso]})`
         el.style.backgroundSize = 'cover'
         el.style.overflow = 'hidden'
 
