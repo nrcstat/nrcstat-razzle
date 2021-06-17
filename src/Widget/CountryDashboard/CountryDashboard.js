@@ -102,6 +102,8 @@ function CountryDashboard ({ mapboxgl }) {
   const { countryCode, year, dataPoints, showMap, containerRef, locale } = widgetParams
   const t = getNsFixedT(['Widget.Static.CountryDashboard', 'GeographicalNames'])
 
+  console.log(widgetParams)
+
   const leonardoCentroid = getCountryCentroid(countryCode)
   const leonardoBoundingBox = leonardoCentroid.boundingbox
 
@@ -122,7 +124,7 @@ function CountryDashboard ({ mapboxgl }) {
       drawDataBlock(dataBlock, data, t)
       drawMapBlock(
         mapBlock,
-        data.filter(d => d.year === YEAR_TO_SHOW_IN_RADIAL_BAR_CHART)
+        data.filter(d => d.year === year)
       )
     })
 
@@ -179,6 +181,7 @@ function CountryDashboard ({ mapboxgl }) {
     function drawDataBlock (dataBlock, data, t) {
       ReactDOM.render(
         <Dashboard
+          year={year}
           locale={locale}
           countryCode={countryCode}
           data={data}
@@ -379,7 +382,7 @@ function CountryDashboard ({ mapboxgl }) {
             data: getCountryStat(
               countryCode,
               'idpsInXInYear',
-              YEAR_TO_SHOW_IN_RADIAL_BAR_CHART
+              year
             ).data
           },
           {
@@ -387,7 +390,7 @@ function CountryDashboard ({ mapboxgl }) {
             data: getCountryStat(
               countryCode,
               'totalRefugeesFromX',
-              YEAR_TO_SHOW_IN_RADIAL_BAR_CHART
+              year
             ).data
           },
           {
@@ -395,7 +398,7 @@ function CountryDashboard ({ mapboxgl }) {
             data: getCountryStat(
               countryCode,
               'newRefugeesInXFromOtherCountriesInYear',
-              YEAR_TO_SHOW_IN_RADIAL_BAR_CHART
+              year
             ).data
           }
         ]
@@ -446,8 +449,8 @@ function CountryDashboard ({ mapboxgl }) {
   return null
 }
 
-function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender, t, locale }) {
-  const [selectedYear, setSelectedYear] = useState(String(YEAR_TO_SHOW_IN_RADIAL_BAR_CHART))
+function Dashboard ({ year, data, countryCode, dataPointsToShow, onAfterRender, t, locale }) {
+  const [selectedYear, setSelectedYear] = useState(String(year))
   useEffect(() => {
     onAfterRender()
   })
@@ -470,6 +473,13 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender, t, loc
       value: '2019'
     }
   ]
+  if (year === 2020 || year === '2020') {
+    COL_SELECT_OPTIONS.push({
+      label: '2020',
+      value: '2020'
+    })
+  }
+
   const TABLE_ROWS = [
     {
       label: (options) => t('dataPoint.refugeesFromCountry', options),
@@ -553,20 +563,20 @@ function Dashboard ({ data, countryCode, dataPointsToShow, onAfterRender, t, loc
     data,
     countryCode,
     DATA_POINT_POPULATION,
-    YEAR_TO_SHOW_IN_RADIAL_BAR_CHART
+    parseInt(year)
   ).data
 
   const dataPoint_percentageWomenFleeingToCountry = getCountryStat(
     data,
     countryCode,
     DATA_POINT_PERCENTAGE_WOMEN_FLEEING_TO_COUNTRY,
-    YEAR_TO_SHOW_IN_RADIAL_BAR_CHART
+    parseInt(year)
   )
   const dataPoint_percentageChildrenFleeingToCountry = getCountryStat(
     data,
     countryCode,
     DATA_POINT_PERCENTAGE_CHILDREN_FLEEING_TO_COUNTRY,
-    YEAR_TO_SHOW_IN_RADIAL_BAR_CHART
+    parseInt(year)
   )
 
   return (
