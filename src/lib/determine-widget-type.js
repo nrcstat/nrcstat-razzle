@@ -78,21 +78,21 @@ function removeLocaleLayer (widgetObject, locale) {
   // Timeline widget
   if (widgetObject && widgetObject.entries) {
     widgetObject.entries = widgetObject.entries.map(entry => {
-      if (entry.title && entry.title[locale]) entry.title = entry.title[locale]
-      if (entry.subtitle && entry.subtitle[locale]) entry.subtitle = entry.subtitle[locale]
-      if (entry.body && entry.body[locale]) entry.body = entry.body[locale]
+      entry.title = entry.title?.[locale]
+      entry.subtitle = entry.subtitle?.[locale]
+      entry.body = entry.body?.[locale]
       return entry
     })
   }
 
   // Pictogram widget
   if (widgetObject && widgetObject.type === 'pictogram') {
-    if (widgetObject.title && widgetObject.title[locale]) widgetObject.title = widgetObject.title[locale]
-    if (widgetObject.subtitle && widgetObject.subtitle[locale]) widgetObject.subtitle = widgetObject.subtitle[locale]
-    if (widgetObject.source && widgetObject.source[locale]) widgetObject.source = widgetObject.source[locale]
+    widgetObject.title = widgetObject.title?.[locale]
+    widgetObject.subtitle = widgetObject.subtitle?.[locale]
+    widgetObject.source = widgetObject.source?.[locale]
     if (widgetObject.sections && widgetObject.sections.length > 0) {
       widgetObject.sections = widgetObject.sections.map(section => {
-        if (section && section.title && section.title[locale]) section.title = section.title[locale]
+        section.title = section.title?.[locale]
         return section
       })
     }
