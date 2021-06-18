@@ -109,13 +109,16 @@ function Pictogram () {
               const Icon = WidgetIconMap[icon.icon]
               const fillColor = icon.dataColor
               return (
-                <Icon
-                  key={key}
-                  data={icon.data}
-                  iconBaseColor={iconBaseColor}
-                  fillColor={fillColor}
-                />
-              )
+                (Icon && fillColor)
+                  ? <Icon
+                    key={key}
+                    data={icon.data}
+                    iconBaseColor={iconBaseColor}
+                    fillColor={fillColor}
+                  />
+                  : null
+                )
+              
             })}
           </div>
         ))}
