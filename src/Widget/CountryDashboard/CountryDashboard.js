@@ -136,7 +136,7 @@ function CountryDashboard({ mapboxgl }) {
         drawDataBlock(dataBlock, data, t);
         drawMapBlock(
           mapBlock,
-          data.filter((d) => d.year === year)
+          data.filter((d) => d.year == year)
         );
       }
     );
@@ -549,8 +549,6 @@ function Dashboard({
       row.totalDataPoint,
       parseInt(selectedYear)
     );
-
-    console.log(t(`NRC.Web.StaticTextDictionary.Contries.${countryCode}`));
 
     return (
       <tr>
