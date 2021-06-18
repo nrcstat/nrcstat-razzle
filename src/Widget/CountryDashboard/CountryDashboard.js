@@ -136,7 +136,7 @@ function CountryDashboard({ mapboxgl }) {
         drawDataBlock(dataBlock, data, t);
         drawMapBlock(
           mapBlock,
-          data.filter((d) => d.year === year)
+          data.filter((d) => d.year == year)
         );
       }
     );
@@ -898,6 +898,7 @@ class RadialBarChart extends React.Component {
   }
 
   data() {
+    console.log(this.props.data)
     const maxFigure = Math.max(...this.props.data.map((v) => v.figure));
     return this.props.data
       .sort((a, b) => a.figure - b.figure)
