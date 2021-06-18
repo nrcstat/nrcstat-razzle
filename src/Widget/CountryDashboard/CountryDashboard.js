@@ -550,8 +550,6 @@ function Dashboard({
       parseInt(selectedYear)
     );
 
-    console.log(t(`NRC.Web.StaticTextDictionary.Contries.${countryCode}`));
-
     return (
       <tr>
         <td>
@@ -898,7 +896,6 @@ class RadialBarChart extends React.Component {
   }
 
   data() {
-    console.log(this.props.data)
     const maxFigure = Math.max(...this.props.data.map((v) => v.figure));
     return this.props.data
       .sort((a, b) => a.figure - b.figure)
