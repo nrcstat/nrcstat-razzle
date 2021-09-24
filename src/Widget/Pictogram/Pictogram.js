@@ -41,7 +41,9 @@ import { WidgetParamsContext } from '../Widget'
 
 import { StylesProvider, createGenerateClassName } from '@mui/styles'
 
-import { SpeedDial, SpeedDialAction } from '@mui/material'
+import IconButton from '@mui/material/IconButton'
+import SpeedDial from '@mui/material/SpeedDial'
+import SpeedDialAction from '@mui/material/SpeedDialAction'
 
 import Share from '@mui/icons-material/Share'
 import Facebook from '@mui/icons-material/Facebook'
@@ -89,6 +91,7 @@ function Pictogram() {
   const { locale, widgetObject } = useContext(WidgetParamsContext)
 
   const {
+    id,
     title,
     subtitle,
     source,
@@ -165,7 +168,7 @@ function Pictogram() {
             }}
             // FabProps={{ style: { width: '20px', height: '20px' } }}
           >
-            <SpeedDialAction
+            {/* <SpeedDialAction
               icon={
                 <a
                   href="https://github.com/"
@@ -177,7 +180,13 @@ function Pictogram() {
               tooltipTitle="Facebook"
             />
 
-            <SpeedDialAction icon={<FacebookIcon />} tooltipTitle="Facebook" />
+            <SpeedDialAction icon={<Facebook />} tooltipTitle="Facebook" /> */}
+            <SpeedDialAction
+              icon={
+                <FacebookShareButton urlToShare={shareableUrlForWidget(id)} />
+              }
+              tooltipTitle="Facebook"
+            />
             {/* <SpeedDialAction
               icon={<InstagramIcon />}
               tooltipTitle="Instagram"
@@ -189,6 +198,24 @@ function Pictogram() {
       </div>
     </div>
   )
+}
+
+const IconAnchor = React.forwardRef((props, ref) => <a {...props} ref={ref} />)
+function FacebookShareButton({ urlToShare }) {
+  return (
+    <IconButton
+      component={IconAnchor}
+      href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+        urlToShare
+      )}`}
+    >
+      <Facebook />
+    </IconButton>
+  )
+}
+
+function shareableUrlForWidget(widgetId) {
+  return `https://share.nrcdata.no/${widgetId}.html`
 }
 
 export default Pictogram
