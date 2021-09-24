@@ -39,19 +39,17 @@ import {
 } from './icons/index.js'
 import { WidgetParamsContext } from '../Widget'
 
+import { StylesProvider, createGenerateClassName } from '@mui/styles'
+
+import { SpeedDial, SpeedDialAction } from '@mui/material'
+
 import {
-  StylesProvider,
-  createGenerateClassName,
-} from '@material-ui/core/styles'
-
-import SpeedDial from '@material-ui/lab/SpeedDial'
-import SpeedDialAction from '@material-ui/lab/SpeedDialAction'
-
-import ShareIcon from '@material-ui/icons/Share'
-import FacebookIcon from '@material-ui/icons/Facebook'
-import InstagramIcon from '@material-ui/icons/Instagram'
-import LinkedInIcon from '@material-ui/icons/LinkedIn'
-import TwitterIcon from '@material-ui/icons/Twitter'
+  Share,
+  Facebook,
+  InstagramIcon,
+  LinkedInIcon,
+  TwitterIcon,
+} from '@mui/icons-material'
 
 import './Pictogram.scss'
 
@@ -147,21 +145,50 @@ function Pictogram() {
           </div>
         ))}
       <span className="source">{source}</span>
+
       <div className="share-button-wrapper">
         <StylesProvider generateClassName={generateClassName}>
           <SpeedDial
             ariaLabel="SpeedDial example"
-            icon={<ShareIcon />}
+            icon={
+              <Share
+                style={{ color: 'white' }}
+
+                // FabProps={{
+                //   component: ({ children }) => (
+                //     <a href="https://github.com/">{children}</a>
+                //   ),
+                // }}
+              />
+            }
             open={socialMediaOpen}
             onClick={() => setSocialMediaOpen((open) => !open)}
+            FabProps={{
+              color: 'default',
+              size: 'small',
+              style: { boxShadow: 'none' },
+            }}
+            // FabProps={{ style: { width: '20px', height: '20px' } }}
           >
-            <SpeedDialAction icon={<FacebookIcon />} tooltipTitle="Facebook" />
             <SpeedDialAction
+              icon={
+                <a
+                  href="https://github.com/"
+                  style={{ color: 'none', lineHeight: '0' }}
+                >
+                  <Facebook />
+                </a>
+              }
+              tooltipTitle="Facebook"
+            />
+
+            <SpeedDialAction icon={<FacebookIcon />} tooltipTitle="Facebook" />
+            {/* <SpeedDialAction
               icon={<InstagramIcon />}
               tooltipTitle="Instagram"
             />
             <SpeedDialAction icon={<LinkedInIcon />} tooltipTitle="LinkedIn" />
-            <SpeedDialAction icon={<TwitterIcon />} tooltipTitle="Twitter" />
+            <SpeedDialAction icon={<TwitterIcon />} tooltipTitle="Twitter" /> */}
           </SpeedDial>
         </StylesProvider>
       </div>
