@@ -11,6 +11,8 @@
     "@babel/preset-env": "^7.9.6",
     "@babel/preset-react": "^7.9.4",
     "@babel/runtime": "^7.1.5",
+    "@emotion/react": "^11.4.1",
+    "@emotion/styled": "^11.3.0",
     "@loadable/component": "^5.10.2",
     "@loadable/server": "^5.10.2",
     "@mui/icons-material": "^5.0.1",
