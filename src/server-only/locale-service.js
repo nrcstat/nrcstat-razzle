@@ -13,15 +13,16 @@ const options = {
 
     // the reference language of your project
     referenceLng: 'nb-NO',
-    version: 'latest'
+    version: 'latest',
   },
   preload: ENABLED_LOCALES,
   fallbackLng: 'en-GB',
+
   debug: false,
-  ns: ALL_LOCALE_NAMESPACES
+  ns: ALL_LOCALE_NAMESPACES,
 }
 
-async function initializeI18n () {
+async function initializeI18n() {
   await i18next.use(Locize).init(options)
   console.log('> Languages loaded from Locize')
 }
