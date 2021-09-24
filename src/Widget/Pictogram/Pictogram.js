@@ -43,13 +43,8 @@ import { StylesProvider, createGenerateClassName } from '@mui/styles'
 
 import { SpeedDial, SpeedDialAction } from '@mui/material'
 
-import {
-  Share,
-  Facebook,
-  InstagramIcon,
-  LinkedInIcon,
-  TwitterIcon,
-} from '@mui/icons-material'
+import Share from '@mui/icons-material/Share'
+import Facebook from '@mui/icons-material/Facebook'
 
 import './Pictogram.scss'
 
