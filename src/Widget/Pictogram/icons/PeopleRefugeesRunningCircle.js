@@ -1,14 +1,13 @@
-import React from "react";
-import "./all-icons-style.scss";
-import { Icon } from "./Icon.js";
-import { IconBar } from "./IconBar";
+import React from 'react'
+import './all-icons-style.scss'
+import { Icon } from './Icon.js'
+import { IconBar } from './IconBar'
 
 export const PeopleRefugeesRunningCircle = IconBar(
   PeopleRefugeesRunningCircleIcon
-);
+)
 
 function PeopleRefugeesRunningCircleIcon(props) {
-  console.log("te");
   return (
     <Icon {...props}>
       <g id="children_circle">
@@ -72,5 +71,5 @@ function PeopleRefugeesRunningCircleIcon(props) {
         </g>
       </g>
     </Icon>
-  );
+  )
 }

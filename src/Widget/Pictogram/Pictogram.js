@@ -86,8 +86,6 @@ const WidgetIconMap = {
 function Pictogram() {
   if (isServer()) return null
 
-  const tmp = useContext(WidgetParamsContext)
-  console.log(tmp)
   const { locale, widgetObject } = useContext(WidgetParamsContext)
 
   const {

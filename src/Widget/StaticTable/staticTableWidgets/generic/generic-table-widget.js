@@ -13,17 +13,27 @@ if (isServer()) {
   fetch = window.fetch
 }
 
-export default function (title, dataColumnName, dataProcessingFunction, queryObject, foooterAnnotations, placeColumnName = 'Land', orderingEnabled = true, dataColumnFormatter = thousandsFormatter) {
+export default function (
+  title,
+  dataColumnName,
+  dataProcessingFunction,
+  queryObject,
+  foooterAnnotations,
+  placeColumnName = 'Land',
+  orderingEnabled = true,
+  dataColumnFormatter = thousandsFormatter
+) {
   if (typeof regionCodeNRC === 'string') regionCodeNRC = [regionCodeNRC]
 
-  function loadWidgetData (widgetObject, headers = {}) {
+  function loadWidgetData(widgetObject, headers = {}) {
     var urlQ = encodeURIComponent(JSON.stringify(queryObject))
     const url = `${API_URL}/datas?filter=${urlQ}`
-    return fetch(url, { headers: { nrcstatpassword: widgetObject.nrcstatpassword } })
-      .then(resp => resp.json())
+    return fetch(url, {
+      headers: { nrcstatpassword: widgetObject.nrcstatpassword },
+    }).then((resp) => resp.json())
   }
 
-  function render (widgetObject, widgetData, targetSelector, languageObject, t) {
+  function render(widgetObject, widgetData, targetSelector, languageObject, t) {
     const wObject = widgetObject
     const wData = widgetData
     const wConfig = widgetObject.config
@@ -43,12 +53,12 @@ export default function (title, dataColumnName, dataProcessingFunction, queryObj
     let allAnnotations
 
     async.waterfall([
-      function setContainerWidth (cb) {
+      function setContainerWidth(cb) {
         $(targetSelector).css('max-width', '600px')
         cb()
       },
 
-      async function loadData (cb) {
+      async function loadData(cb) {
         let data
         if (widgetData) {
           data = widgetData
@@ -102,7 +112,7 @@ export default function (title, dataColumnName, dataProcessingFunction, queryObj
         cb(null)
       },
       */
-      function setTmpl (cb) {
+      function setTmpl(cb) {
         const annotations = foooterAnnotations
         tmpl = `
         <h4>${title}</h4>
@@ -118,7 +128,9 @@ export default function (title, dataColumnName, dataProcessingFunction, queryObj
         
         <div class="nrcstat-table-widget-annotations">
           <div class="accordion accordion-closed">
-            <div class="accordion-title" style="font-size: 16px; color: #474747; font-family: Roboto; font-weight: 200; cursor: pointer;"><i class="fa fa-plus-square-o" style="color: #ff7602;"></i>&nbsp;${t('footnotes.title')}</div>
+            <div class="accordion-title" style="font-size: 16px; color: #474747; font-family: Roboto; font-weight: 200; cursor: pointer;"><i class="fa fa-plus-square-o" style="color: #ff7602;"></i>&nbsp;${t(
+              'footnotes.title'
+            )}</div>
             <div class="accordion-body" style="font-size: 12px; color: #474747; white-space: pre-line;">
               ${annotations}
             </div>
@@ -129,25 +141,27 @@ export default function (title, dataColumnName, dataProcessingFunction, queryObj
         widgetEl = $(tmpl)
         widgetEl.appendTo($(targetSelector))
 
-        $(targetSelector).find('.accordion-title').on('click', function () {
-          const accordionEl = $(this).parents('.accordion')
-          const isClosed = accordionEl.hasClass('accordion-closed')
-          if (isClosed) {
-            accordionEl.removeClass('accordion-closed')
-            accordionEl.addClass('accordion-open')
-            accordionEl.find('.fa').removeClass('fa-plus-square-o')
-            accordionEl.find('.fa').addClass('fa-minus-square-o')
-          } else {
-            accordionEl.addClass('accordion-closed')
-            accordionEl.removeClass('accordion-open')
-            accordionEl.find('.fa').addClass('fa-plus-square-o')
-            accordionEl.find('.fa').removeClass('fa-minus-square-o')
-          }
-        })
+        $(targetSelector)
+          .find('.accordion-title')
+          .on('click', function () {
+            const accordionEl = $(this).parents('.accordion')
+            const isClosed = accordionEl.hasClass('accordion-closed')
+            if (isClosed) {
+              accordionEl.removeClass('accordion-closed')
+              accordionEl.addClass('accordion-open')
+              accordionEl.find('.fa').removeClass('fa-plus-square-o')
+              accordionEl.find('.fa').addClass('fa-minus-square-o')
+            } else {
+              accordionEl.addClass('accordion-closed')
+              accordionEl.removeClass('accordion-open')
+              accordionEl.find('.fa').addClass('fa-plus-square-o')
+              accordionEl.find('.fa').removeClass('fa-minus-square-o')
+            }
+          })
 
         cb()
       },
-      function setupTable (cb) {
+      function setupTable(cb) {
         ft = $(`#datatable${id}`).DataTable({
           columns: [
             { data: () => '' },
@@ -165,33 +179,35 @@ export default function (title, dataColumnName, dataProcessingFunction, queryObj
                 } else {
                   return data
                 }
-              }
+              },
             },
             {
               data: 'data',
               render: (data, type, row) => {
                 if (type == 'display') return dataColumnFormatter(data)
                 else return data
-              }
-            }
+              },
+            },
           ],
           language: languageObject,
           responsive: {
             details: {
-              type: 'column'
-            }
+              type: 'column',
+            },
           },
-          columnDefs: [{
-            className: 'control',
-            orderable: false,
-            targets: 0
-          }],
+          columnDefs: [
+            {
+              className: 'control',
+              orderable: false,
+              targets: 0,
+            },
+          ],
           searching: true,
           info: true,
           paging: tableData.length > 10,
           ordering: orderingEnabled,
-          colReorder: true,
-          fixedHeader: true
+          // colReorder: true, // Disabled on 29 Sep 2021 due to strange error message coming out of nowhere.
+          fixedHeader: true,
         })
         ft.on('draw.dt', () => initTooltipster())
         ft.on('responsive-display', () => initTooltipster())
@@ -201,25 +217,24 @@ export default function (title, dataColumnName, dataProcessingFunction, queryObj
         }
         cb()
       },
-      function setupTooltips (cb) {
+      function setupTooltips(cb) {
         initTooltipster()
         cb(null)
-      }
-
+      },
     ])
 
-    function initTooltipster () {
+    function initTooltipster() {
       target.find('.nrcstat-widget-tooltip').tooltipster({
         interactive: true,
         delay: 100,
         animation: 'fade',
-        maxWidth: 300
+        maxWidth: 300,
       })
     }
   }
 
   return {
     loadWidgetData,
-    render
+    render,
   }
 }

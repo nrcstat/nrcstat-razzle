@@ -12,7 +12,7 @@ import * as $ from 'jquery'
 import { isClient } from '../../util/utils'
 import {
   percentFormatter,
-  thousandsFormatter
+  thousandsFormatter,
 } from '@/util/tableWidgetFormatters.js'
 
 if (isClient()) {
@@ -27,7 +27,7 @@ if (isClient()) {
   require('tooltipster/dist/css/tooltipster.bundle.min.css')
 }
 
-function CustomTable () {
+function CustomTable() {
   const { getNsFixedT } = useContext(FixedLocaleContext)
   const t = getNsFixedT(['Widget.Static.Table'])
 
@@ -35,47 +35,52 @@ function CustomTable () {
 
   const widgetParams = useContext(WidgetParamsContext)
   const { widgetObject, locale } = widgetParams
-  const { widgetObject: { tableColumns, tableData } } = widgetParams
+  const {
+    widgetObject: { tableColumns, tableData },
+  } = widgetParams
 
-  const onReady = tableElement => {
+  const onReady = (tableElement) => {
     $(tableElement).parents('.nrcstat-block').css('height', 'auto')
     const ft = $(tableElement).DataTable({
       columns: [
         { data: () => '' },
-        ...tableColumns.map(column => {
+        ...tableColumns.map((column) => {
           return {
             data: column.data,
             render: (data, type, row) => {
-              if (column.type === 'numeric' && type === 'display') return thousandsFormatter(data)
+              if (column.type === 'numeric' && type === 'display')
+                return thousandsFormatter(data)
               else return data
-            }
+            },
           }
-        })
+        }),
       ],
       language: languageObject,
       responsive: {
         details: {
-          type: 'column'
-        }
+          type: 'column',
+        },
       },
-      columnDefs: [{
-        className: 'control',
-        orderable: false,
-        targets: 0
-      }],
+      columnDefs: [
+        {
+          className: 'control',
+          orderable: false,
+          targets: 0,
+        },
+      ],
       searching: true,
       info: true,
       paging: tableData.length > 10,
       ordering: true,
-      colReorder: true,
-      fixedHeader: true
+      // colReorder: true, // Disabled on 29 Sep 2021 due to strange error message coming out of nowhere.
+      fixedHeader: true,
     })
     const adaptedData = tableData
-      .filter(row => {
-        return Object.values(row).some(val => Boolean(val))
+      .filter((row) => {
+        return Object.values(row).some((val) => Boolean(val))
       })
-      .map(row => {
-        tableColumns.forEach(col => {
+      .map((row) => {
+        tableColumns.forEach((col) => {
           const colKey = col.data
           if (typeof row[colKey] === 'undefined') {
             row[colKey] = null
@@ -87,9 +92,13 @@ function CustomTable () {
   }
 
   return (
-    <div className='nrcstat__static-table__container'>
-      <div className='nrcstat-table-widget'>
-        <table ref={onReady} className='display responsive no-wrap row-border cell-border stripe hover order-column' style={{ width: '100%' }}>
+    <div className="nrcstat__static-table__container">
+      <div className="nrcstat-table-widget">
+        <table
+          ref={onReady}
+          className="display responsive no-wrap row-border cell-border stripe hover order-column"
+          style={{ width: '100%' }}
+        >
           <thead>
             <tr>
               <th />
@@ -106,8 +115,8 @@ function CustomTable () {
 
 export default CustomTable
 
-function translateCustomData (customData) {
+function translateCustomData(customData) {
   return customData
-    .map(item => ({ name: item.hoverLabel, value: item.value }))
-    .filter(item => Boolean(item.value))
+    .map((item) => ({ name: item.hoverLabel, value: item.value }))
+    .filter((item) => Boolean(item.value))
 }
