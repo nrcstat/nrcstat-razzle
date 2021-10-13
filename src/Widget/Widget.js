@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import './Widget.scss'
 import { isServer } from '../util/utils'
 import loadable from '@loadable/component'
@@ -11,14 +10,32 @@ import Line from './Line/Line'
 import Donut from './Donut/Donut'
 import Pie from './Pie/Pie'
 */
-const GlobalMap = loadable(() => import(/* webpackChunkName: "GlobalMap" */ './GlobalMap/GlobalMap'))
-const Line = loadable(() => import(/* webpackChunkName: "Line" */ './Line/Line'))
-const Donut = loadable(() => import(/* webpackChunkName: "Donut" */ './Donut/Donut'))
-const StaticTable = loadable(() => import(/* webpackChunkName: "StaticTable" */ './StaticTable/StaticTable'))
-const CountryDashboard = loadable(() => import(/* webpackChunkName: "CountryDashboard" */ './CountryDashboard/CountryDashboard'))
-const CustomTable = loadable(() => import(/* webpackChunkName: "CustomTable" */ './CustomTable/CustomTable'))
-const Pictogram = loadable(() => import(/* webpackChunkName: "Pictogram" */ './Pictogram/Pictogram'))
-const Timeline = loadable(() => import(/* webpackChunkName: "Timeline" */ './Timeline/Timeline'))
+const GlobalMap = loadable(() =>
+  import(/* webpackChunkName: "GlobalMap" */ './GlobalMap/GlobalMap')
+)
+const Line = loadable(() =>
+  import(/* webpackChunkName: "Line" */ './Line/Line')
+)
+const Donut = loadable(() =>
+  import(/* webpackChunkName: "Donut" */ './Donut/Donut')
+)
+const StaticTable = loadable(() =>
+  import(/* webpackChunkName: "StaticTable" */ './StaticTable/StaticTable')
+)
+const CountryDashboard = loadable(() =>
+  import(
+    /* webpackChunkName: "CountryDashboard" */ './CountryDashboard/CountryDashboard'
+  )
+)
+const CustomTable = loadable(() =>
+  import(/* webpackChunkName: "CustomTable" */ './CustomTable/CustomTable')
+)
+const Pictogram = loadable(() =>
+  import(/* webpackChunkName: "Pictogram" */ './Pictogram/Pictogram')
+)
+const Timeline = loadable(() =>
+  import(/* webpackChunkName: "Timeline" */ './Timeline/Timeline')
+)
 
 const widgetMap = {
   GlobalMap: GlobalMap,
@@ -28,21 +45,21 @@ const widgetMap = {
   CountryDashboard: CountryDashboard,
   CustomTable: CustomTable,
   Pictogram: Pictogram,
-  Timeline: Timeline
+  Timeline: Timeline,
 }
 
 export const WidgetParamsContext = React.createContext()
 
-function Widget (props) {
+function Widget(props) {
   const { type, locale } = props
   const SpecificWidget = widgetMap[type]
   const FixedLocaleContext = buildFixedLocaleContext(locale || 'nb-NO')
-  const containerRef = React.useRef()
-  const onReady = ref => { containerRef.current = ref }
+  // const containerRef = React.useRef()
+  // const onReady = ref => { containerRef.current = ref }
   return (
     <FixedLocaleContext>
-      <WidgetParamsContext.Provider value={{ ...props, containerRef }}>
-        <div className='nrcstat__rootwidget' ref={onReady}>
+      <WidgetParamsContext.Provider value={{ ...props }}>
+        <div className="nrcstat__rootwidget">
           <SpecificWidget />
         </div>
       </WidgetParamsContext.Provider>
