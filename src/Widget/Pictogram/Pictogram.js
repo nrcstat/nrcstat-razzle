@@ -47,6 +47,8 @@ import SpeedDialAction from '@mui/material/SpeedDialAction'
 
 import Share from '@mui/icons-material/Share'
 import Facebook from '@mui/icons-material/Facebook'
+import LinkedIn from '@mui/icons-material/LinkedIn'
+import Twitter from '@mui/icons-material/Twitter'
 
 import './Pictogram.scss'
 
@@ -185,12 +187,18 @@ function Pictogram() {
               }
               tooltipTitle="Facebook"
             />
-            {/* <SpeedDialAction
-              icon={<InstagramIcon />}
-              tooltipTitle="Instagram"
+            <SpeedDialAction
+              icon={
+                <LinkedInShareButton urlToShare={shareableUrlForWidget(id)} />
+              }
+              tooltipTitle="LinkedIn"
             />
-            <SpeedDialAction icon={<LinkedInIcon />} tooltipTitle="LinkedIn" />
-            <SpeedDialAction icon={<TwitterIcon />} tooltipTitle="Twitter" /> */}
+            <SpeedDialAction
+              icon={
+                <TwitterShareButton urlToShare={shareableUrlForWidget(id)} />
+              }
+              tooltipTitle="Twitter"
+            />
           </SpeedDial>
         </StylesProvider>
       </div>
@@ -208,6 +216,30 @@ function FacebookShareButton({ urlToShare }) {
       )}`}
     >
       <Facebook />
+    </IconButton>
+  )
+}
+function LinkedInShareButton({ urlToShare }) {
+  return (
+    <IconButton
+      component={IconAnchor}
+      href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+        urlToShare
+      )}`}
+    >
+      <LinkedIn />
+    </IconButton>
+  )
+}
+function TwitterShareButton({ urlToShare }) {
+  return (
+    <IconButton
+      component={IconAnchor}
+      href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
+        urlToShare
+      )}`}
+    >
+      <Twitter />
     </IconButton>
   )
 }
