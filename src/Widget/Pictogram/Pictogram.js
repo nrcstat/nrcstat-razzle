@@ -214,6 +214,7 @@ function FacebookShareButton({ urlToShare }) {
       href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
         urlToShare
       )}`}
+      target="_blank"
     >
       <Facebook />
     </IconButton>
@@ -236,6 +237,7 @@ function TwitterShareButton({ urlToShare }) {
       href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
         urlToShare
       )}`}
+      target="_blank"
     >
       <Twitter />
     </IconButton>
