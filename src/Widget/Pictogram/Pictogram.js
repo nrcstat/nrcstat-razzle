@@ -187,12 +187,12 @@ function Pictogram() {
               }
               tooltipTitle="Facebook"
             />
-            <SpeedDialAction
+            {/* <SpeedDialAction
               icon={
                 <LinkedInShareButton urlToShare={shareableUrlForWidget(id)} />
               }
               tooltipTitle="LinkedIn"
-            />
+            /> */}
             <SpeedDialAction
               icon={
                 <TwitterShareButton urlToShare={shareableUrlForWidget(id)} />
@@ -220,13 +220,11 @@ function FacebookShareButton({ urlToShare }) {
   )
 }
 function LinkedInShareButton({ urlToShare }) {
+  const link = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+    urlToShare
+  )}`
   return (
-    <IconButton
-      component={IconAnchor}
-      href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-        urlToShare
-      )}`}
-    >
+    <IconButton component={IconAnchor} href={link}>
       <LinkedIn />
     </IconButton>
   )
@@ -245,7 +243,9 @@ function TwitterShareButton({ urlToShare }) {
 }
 
 function shareableUrlForWidget(widgetId) {
-  return `https://share.nrcdata.no/${widgetId}.html`
+  return `https://share.nrcdata.no/${widgetId}.html?sharedFromUrl=${encodeURIComponent(
+    window.location.href
+  )}`
 }
 
 export default Pictogram
