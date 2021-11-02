@@ -54,8 +54,6 @@ function Widget(props) {
   const { type, locale } = props
   const SpecificWidget = widgetMap[type]
   const FixedLocaleContext = buildFixedLocaleContext(locale || 'nb-NO')
-  // const containerRef = React.useRef()
-  // const onReady = ref => { containerRef.current = ref }
   return (
     <FixedLocaleContext>
       <WidgetParamsContext.Provider value={{ ...props }}>

@@ -92,29 +92,37 @@ const Mapboxgl = loadable.lib(() => import('mapbox-gl/dist/mapbox-gl.js'), {
 function Loader() {
   return (
     <Mapboxgl>
-      {({ default: mapboxgl }) => <CountryDashboard mapboxgl={mapboxgl} />}
+      {({ default: mapboxgl }) => (
+        <CountryDashboardWrapper mapboxgl={mapboxgl} />
+      )}
     </Mapboxgl>
   )
 }
 
 export default Loader
 
-function CountryDashboard({ mapboxgl }) {
+function CountryDashboardWrapper(props) {
+  const [ref, setRef] = useState()
+  return (
+    <div ref={setRef}>
+      {ref ? <CountryDashboard {...props} containerElement={ref} /> : null}
+    </div>
+  )
+}
+
+function CountryDashboard({ mapboxgl, containerElement }) {
   // TODO: fix to use proper SSR as far as possible
   if (isServer()) return null
 
   const { getNsFixedT } = useContext(FixedLocaleContext)
   const widgetParams = useContext(WidgetParamsContext)
-  const { countryCode, year, dataPoints, showMap, containerRef, locale } =
-    widgetParams
+  const { countryCode, year, dataPoints, showMap, locale } = widgetParams
   const t = getNsFixedT(['Widget.Static.CountryDashboard', 'GeographicalNames'])
 
   const leonardoCentroid = getCountryCentroid(countryCode)
   const leonardoBoundingBox = leonardoCentroid.boundingbox
 
   useEffect(() => {
-    const targetSelector = containerRef.current
-
     clearWidgetContainer()
     const { dataBlock, mapBlock } = drawWidgetContainer()
 
@@ -137,28 +145,28 @@ function CountryDashboard({ mapboxgl }) {
     )
 
     function clearWidgetContainer() {
-      $(targetSelector).empty()
+      $(containerElement).empty()
     }
 
     function drawWidgetContainer() {
-      $(targetSelector).addClass('nrcstat-country-dashboard')
+      $(containerElement).addClass('nrcstat-country-dashboard')
 
       // ZERO OUT css written by EpiServer
-      $(targetSelector).css({
+      $(containerElement).css({
         width: '100%',
         height: 'auto',
         display: 'inline-block',
       })
-      $(targetSelector).parent('.nrcstat__rootwidget').css({
+      $(containerElement).parent('.nrcstat__rootwidget').css({
         width: '100%',
         height: 'auto',
         display: 'inline-block',
       })
-      $(targetSelector).parents('.nrcstat-block').css({
+      $(containerElement).parents('.nrcstat-block').css({
         display: 'table',
       })
 
-      $(targetSelector).html(
+      $(containerElement).html(
         `
       <div class="nrcstat-country-dashboard-wrapper">
         <div class="nrcstat-country-dashboard-data-block">
@@ -174,10 +182,10 @@ function CountryDashboard({ mapboxgl }) {
         </div>
       </div>`
       )
-      const dataBlock = $(targetSelector).find(
+      const dataBlock = $(containerElement).find(
         '.nrcstat-country-dashboard-data-block__inner'
       )
-      const mapBlock = $(targetSelector).find(
+      const mapBlock = $(containerElement).find(
         '.nrcstat-country-dashboard-map-block'
       )
 
@@ -327,14 +335,16 @@ function CountryDashboard({ mapboxgl }) {
         var selectedCountry = event.features[0].properties
 
         if (mobileLegendActive || mobileShareMenuActive) {
-          $(targetSelector).find('.legend-container').css('display', 'none')
-          $(targetSelector)
+          $(containerElement).find('.legend-container').css('display', 'none')
+          $(containerElement)
             .find('#legend-button')
             .removeClass('legend-button-closed legend-button-open')
             .addClass('legend-button-closed')
-          setLegendState(targetSelector)
-          $(targetSelector).find('.share-menu-container').css('display', 'none')
-          setShareMenuState(targetSelector)
+          setLegendState(containerElement)
+          $(containerElement)
+            .find('.share-menu-container')
+            .css('display', 'none')
+          setShareMenuState(containerElement)
           isCountryInfoPopupOrPopoverActive = false
         } else {
           // insert Kosovo country code (has "name" but no "iso_a2" in natural earth data)
@@ -346,7 +356,7 @@ function CountryDashboard({ mapboxgl }) {
           if (countryInfo__hasData(selectedCountry.iso_a2)) {
             if (isMobileDevice() && selectedCountry.iso_a2 != -99) {
               isCountryInfoPopupOrPopoverActive = true
-              countryInfo__showPopover(targetSelector, event)
+              countryInfo__showPopover(containerElement, event)
             } else if (selectedCountry.iso_a2 != -99) {
               isCountryInfoPopupOrPopoverActive = true
               countryInfo__showPopup(event, map)
@@ -359,14 +369,16 @@ function CountryDashboard({ mapboxgl }) {
       map.on('click', function (event) {
         hideTooltip()
         if (mobileLegendActive || mobileShareMenuActive) {
-          $(targetSelector).find('.legend-container').css('display', 'none')
-          $(targetSelector)
+          $(containerElement).find('.legend-container').css('display', 'none')
+          $(containerElement)
             .find('#legend-button')
             .removeClass('legend-button-closed legend-button-open')
             .addClass('legend-button-closed')
-          setLegendState(targetSelector)
-          $(targetSelector).find('.share-menu-container').css('display', 'none')
-          setShareMenuState(targetSelector)
+          setLegendState(containerElement)
+          $(containerElement)
+            .find('.share-menu-container')
+            .css('display', 'none')
+          setShareMenuState(containerElement)
           isCountryInfoPopupOrPopoverActive = false
         }
       })
@@ -440,7 +452,7 @@ function CountryDashboard({ mapboxgl }) {
     var mobileShareMenuActive = false
     let isCountryInfoPopupOrPopoverActive = false
 
-    addLegend(targetSelector)
+    addLegend(containerElement)
   }, [])
 
   return null
