@@ -252,9 +252,11 @@ function shareableUrlForWidget(widgetId) {
 }
 
 function findElementEpiServerAncestorResetHeight(element) {
+  let isParentNotNrcstatBlock
   do {
-    element = element.parentNode
-  } while (element && !element.classList.contains('nrcstat-block'))
+    element = element?.parentNode
+    isParentNotNrcstatBlock = !element?.classList?.contains('nrcstat-block')
+  } while (element && isParentNotNrcstatBlock)
 
   // The element is non-null and has a class of nrcstat-block
   if (element) {
