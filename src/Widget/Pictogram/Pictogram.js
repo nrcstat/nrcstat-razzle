@@ -115,6 +115,7 @@ function Pictogram() {
       className={`container ${isMobile ? 'mobile' : 'desktop'} ${
         sections?.length > 1 ? 'multiple-sections' : 'single-section'
       } background-${backgroundColor}`}
+      ref={findElementEpiServerAncestorResetHeight}
     >
       {title && (
         <span className="title">
@@ -248,6 +249,17 @@ function shareableUrlForWidget(widgetId) {
   return `https://share.nrcdata.no/${widgetId}.html?sharedFromUrl=${encodeURIComponent(
     window.location.href
   )}`
+}
+
+function findElementEpiServerAncestorResetHeight(element) {
+  do {
+    element = element.parentNode
+  } while (element && !element.classList.contains('nrcstat-block'))
+
+  // The element is non-null and has a class of nrcstat-block
+  if (element) {
+    element.style.setProperty('height', 'auto')
+  }
 }
 
 export default Pictogram
