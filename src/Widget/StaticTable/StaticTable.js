@@ -1,9 +1,7 @@
 import React, { useRef, useContext, useCallback } from 'react'
-import {
-  map as _map
-} from 'lodash'
+import { map as _map } from 'lodash'
 
-import './StaticTable.scss'
+import c from './StaticTable.scss'
 import { FixedLocaleContext } from '../../services/i18n'
 import { WidgetParamsContext } from '../Widget'
 import { isClient, isServer } from '../../util/utils'
@@ -23,7 +21,7 @@ if (isClient()) {
   require('tooltipster/dist/css/tooltipster.bundle.min.css')
 }
 
-export default function StaticTable (props) {
+export default function StaticTable(props) {
   // TODO: fix to use proper SSR as far as possible
   if (isServer()) return null
 
@@ -34,27 +32,30 @@ export default function StaticTable (props) {
   const t = getNsFixedT(['Widget.Static.Table', 'GeographicalNames'])
 
   const fakeWidgetObject = {
-    id: widgetParams.widgetId
+    id: widgetParams.widgetId,
   }
 
   const languageObject = buildTableLanguageObject(t)
 
-  const renderFn = tableTypeToTableWidgetMap[tableType]({ ...widgetParams, t }).render
+  const renderFn = tableTypeToTableWidgetMap[tableType]({
+    ...widgetParams,
+    t,
+  }).render
 
   const elementRef = useRef(null)
-  const onReady = useCallback(element => {
+  const onReady = useCallback((element) => {
     elementRef.current = element
     $(element).parents('.nrcstat-block').css('height', 'auto')
     renderFn(fakeWidgetObject, preloadedWidgetData, element, languageObject, t)
   })
   return (
-    <div className='nrcstat__static-table__container'>
-      <div className='nrcstat-table-widget' ref={onReady} />
+    <div className={c['nrcstat__static-table__container']}>
+      <div className={c['nrcstat-table-widget']} ref={onReady} />
     </div>
   )
 }
 
-export function buildTableLanguageObject (t) {
+export function buildTableLanguageObject(t) {
   return {
     sEmptyTable: t('noDataAvailable'),
     sInfo: t('pagination.showingXToYOfZEntries'),
@@ -71,11 +72,11 @@ export function buildTableLanguageObject (t) {
       sFirst: t('pagination.first '),
       sLast: t('pagination.last'),
       sNext: t('pagination.next'),
-      sPrevious: t('pagination.previous')
+      sPrevious: t('pagination.previous'),
     },
     oAria: {
       sSortAscending: ': activate to sort column ascending',
-      sSortDescending: ': activate to sort column descending'
-    }
+      sSortDescending: ': activate to sort column descending',
+    },
   }
 }

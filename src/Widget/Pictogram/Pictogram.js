@@ -50,7 +50,7 @@ import Facebook from '@mui/icons-material/Facebook'
 import LinkedIn from '@mui/icons-material/LinkedIn'
 import Twitter from '@mui/icons-material/Twitter'
 
-import './Pictogram.scss'
+import c from './Pictogram.module.scss'
 
 const generateClassName = createGenerateClassName({
   seed: 'App1',
@@ -112,22 +112,22 @@ function Pictogram() {
 
   return (
     <div
-      className={`container ${isMobile ? 'mobile' : 'desktop'} ${
-        sections?.length > 1 ? 'multiple-sections' : 'single-section'
+      className={`${c.container} ${isMobile ? c.mobile : c.desktop} ${
+        sections?.length > 1 ? c['multiple-sections'] : c['single-section']
       } background-${backgroundColor}`}
       ref={findElementEpiServerAncestorResetHeight}
     >
       {title && (
-        <span className="title">
+        <span className={c['title']}>
           <ReactMarkdown>{title}</ReactMarkdown>
         </span>
       )}
-      {subtitle && <span className="subtitle">{subtitle}</span>}
+      {subtitle && <span className={c['subtitle']}>{subtitle}</span>}
       {sections &&
         sections.map((section, key) => (
-          <div className="section" key={key}>
+          <div className={c['section']} key={key}>
             {section.title && (
-              <span className="section-title">{section.title}</span>
+              <span className={c['section-title']}>{section.title}</span>
             )}
             {section.icons?.map((icon, key) => {
               const Icon = WidgetIconMap[icon.icon]
@@ -143,9 +143,9 @@ function Pictogram() {
             })}
           </div>
         ))}
-      <span className="source">{source}</span>
+      <span className={c['source']}>{source}</span>
 
-      <div className="share-button-wrapper">
+      <div className={c['share-button-wrapper']}>
         <StylesProvider generateClassName={generateClassName}>
           <SpeedDial
             ariaLabel="SpeedDial example"

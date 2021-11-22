@@ -92,11 +92,15 @@ function CustomTable() {
   }
 
   return (
-    <div className="nrcstat__static-table__container">
-      <div className="nrcstat-table-widget">
+    <div className={c['nrcstat__static-table__container']}>
+      <div className={c['nrcstat-table-widget']}>
         <table
           ref={onReady}
-          className="display responsive no-wrap row-border cell-border stripe hover order-column"
+          className={
+            c[
+              'display responsive no-wrap row-border cell-border stripe hover order-column'
+            ]
+          }
           style={{ width: '100%' }}
         >
           <thead>

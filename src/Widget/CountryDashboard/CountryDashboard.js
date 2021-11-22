@@ -22,7 +22,6 @@ import {
   isNull,
 } from 'lodash'
 
-import './CountryDashboard.scss'
 import { FixedLocaleContext } from '../../services/i18n'
 import { WidgetParamsContext } from '../Widget'
 import { isClient, isServer } from '../../util/utils'
@@ -53,6 +52,8 @@ import middleResolutionCountriesGeoJson from '@/Widget/assets/json/ne_110m_admin
 import gazaGeoJson from '@/Widget/assets/json/gaza.json'
 
 import centroidsRaw from '@/Widget/assets/json/geo_entities_updated_manually'
+
+import './CountryDashboard.scss'
 
 middleResolutionCountriesGeoJson.features.push(gazaGeoJson.features[0])
 

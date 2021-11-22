@@ -1,5 +1,5 @@
 import React from 'react'
-import './Widget.scss'
+import c from './Widget.module.scss'
 import { isServer } from '../util/utils'
 import loadable from '@loadable/component'
 import { buildFixedLocaleContext } from '../services/i18n'
@@ -57,7 +57,7 @@ function Widget(props) {
   return (
     <FixedLocaleContext>
       <WidgetParamsContext.Provider value={{ ...props }}>
-        <div className="nrcstat__rootwidget">
+        <div className={c['nrcstat__rootwidget']}>
           <SpecificWidget />
         </div>
       </WidgetParamsContext.Provider>

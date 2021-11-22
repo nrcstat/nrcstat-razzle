@@ -1,7 +1,17 @@
 import { useMouse, useEventListener } from '@umijs/hooks'
 import React, { useContext, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
-import { Cell, Label, Pie, PieChart, ResponsiveContainer, Tooltip, Legend, Text as SvgText, Customized } from 'recharts'
+import {
+  Cell,
+  Label,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  Legend,
+  Text as SvgText,
+  Customized,
+} from 'recharts'
 import { FixedLocaleContext } from '../../services/i18n'
 import { WidgetParamsContext } from '../Widget'
 import './Donut.scss'
@@ -11,17 +21,17 @@ import { isClient } from '../../util/utils'
 
 const colours = ['#FF9C48', '#47A3B5', '#FED769', '#70A873', '#E5735F']
 
-function DonutRerenderOnResize () {
+function DonutRerenderOnResize() {
   const [show, setShow] = useState(true)
   useEventListener('resize', () => {
     setShow(false)
     setInterval(() => setShow(true))
   })
-  if (show) return (<Donut />)
+  if (show) return <Donut />
   else return null
 }
 
-function Donut () {
+function Donut() {
   const [viewBox, setViewBox] = useState(null)
   const widgetParams = useContext(WidgetParamsContext)
   const { widgetObject } = widgetParams
@@ -34,16 +44,26 @@ function Donut () {
         <ResponsiveContainer>
           <PieChart>
             <Pie
-              dataKey='value'
+              dataKey="value"
               startAngle={0}
-              innerRadius='60%'
+              innerRadius="60%"
               endAngle={-360}
               data={data}
-              fill='#8884d8'
+              fill="#8884d8"
               paddingAngle={0}
             >
-              {data.map((d, i) => <Cell key={`cell-${i}`} fill={colours[i % colours.length]} stroke={colours[i % colours.length]} />)}
-              <Label position='center' content={<DonutTitle setViewBox={setViewBox} />} value={widgetObject.config.title} />
+              {data.map((d, i) => (
+                <Cell
+                  key={`cell-${i}`}
+                  fill={colours[i % colours.length]}
+                  stroke={colours[i % colours.length]}
+                />
+              ))}
+              <Label
+                position="center"
+                content={<DonutTitle setViewBox={setViewBox} />}
+                value={widgetObject.config.title}
+              />
             </Pie>
 
             <Tooltip
@@ -54,11 +74,44 @@ function Donut () {
           </PieChart>
         </ResponsiveContainer>
       </div>
-      {viewBox &&
-        <div style={{ width: viewBox.outerRadius * 2, margin: '0 auto', textAlign: 'center', position: 'relative', top: (-(450 / 2 - viewBox.outerRadius)) }}>
-          <p style={{ fontFamily: 'Roboto', color: '#474747', fontSize: '22px', fontWeight: '400', margin: 0, padding: 0, marginTop: '30px' }}>{widgetObject.config.subtitle}</p>
-          <p style={{ fontFamily: 'Roboto', color: '#474747', fontSize: '16px', fontWeight: '300', margin: 0, padding: 0, marginTop: '10px' }}>{widgetObject.config.source}</p>
-        </div>}
+      {viewBox && (
+        <div
+          style={{
+            width: viewBox.outerRadius * 2,
+            margin: '0 auto',
+            textAlign: 'center',
+            position: 'relative',
+            top: -(450 / 2 - viewBox.outerRadius),
+          }}
+        >
+          <p
+            style={{
+              fontFamily: 'Roboto',
+              color: '#474747',
+              fontSize: '22px',
+              fontWeight: '400',
+              margin: 0,
+              padding: 0,
+              marginTop: '30px',
+            }}
+          >
+            {widgetObject.config.subtitle}
+          </p>
+          <p
+            style={{
+              fontFamily: 'Roboto',
+              color: '#474747',
+              fontSize: '16px',
+              fontWeight: '300',
+              margin: 0,
+              padding: 0,
+              marginTop: '10px',
+            }}
+          >
+            {widgetObject.config.source}
+          </p>
+        </div>
+      )}
     </div>
   )
 }
@@ -69,10 +122,10 @@ class DonutTitle extends React.Component {
   state = {
     scale: 0,
     x: 0,
-    y: 0
+    y: 0,
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.setViewBox(this.props.viewBox)
     // Calculate scale transformation
     const textElement = this.textRef.current
@@ -81,7 +134,8 @@ class DonutTitle extends React.Component {
     const boundingBoxWidthHeight = enclosingCircleRadius * 2 * Math.SQRT1_2
     var widthTransform = boundingBoxWidthHeight / bb.width
     var heightTransform = boundingBoxWidthHeight / bb.height
-    var scale = widthTransform < heightTransform ? widthTransform : heightTransform
+    var scale =
+      widthTransform < heightTransform ? widthTransform : heightTransform
 
     // Calculate (x,y) translate
     const { cx, cy } = this.props.viewBox
@@ -92,10 +146,19 @@ class DonutTitle extends React.Component {
     this.setState({ scale, x, y })
   }
 
-  render () {
+  render() {
     return (
       <g transform={`translate(${this.state.x}, ${this.state.y})`}>
-        <text fontFamily='Roboto' fill='#474747' fontWeight='bold' textAnchor='middle' transform={`scale(${this.state.scale})`} ref={this.textRef}>{this.props.value}</text>
+        <text
+          fontFamily="Roboto"
+          fill="#474747"
+          fontWeight="bold"
+          textAnchor="middle"
+          transform={`scale(${this.state.scale})`}
+          ref={this.textRef}
+        >
+          {this.props.value}
+        </text>
       </g>
     )
   }
@@ -103,10 +166,10 @@ class DonutTitle extends React.Component {
 
 export default DonutRerenderOnResize
 
-function translateCustomData (customData) {
+function translateCustomData(customData) {
   return customData
-    .map(item => ({ name: item.hoverLabel, value: item.value }))
-    .filter(item => Boolean(item.value))
+    .map((item) => ({ name: item.hoverLabel, value: item.value }))
+    .filter((item) => Boolean(item.value))
 }
 
 const CustomTooltip = ({ active, payload }) => {
@@ -118,7 +181,7 @@ const CustomTooltip = ({ active, payload }) => {
     const bounds = containerElementRef.current?.getBoundingClientRect()
     const style = {
       position: 'fixed',
-      display: 'block'
+      display: 'block',
     }
     if (bounds) {
       const { width, height } = bounds
@@ -127,10 +190,16 @@ const CustomTooltip = ({ active, payload }) => {
       style.top = `${clientY - height}px`
     }
     return (
-      <div className='nrcstat-d3-tip' style={style} ref={element => { containerElementRef.current = element }}>
-        <span className='year'>{name}</span>
-        <hr className='ruler' />
-        <span className='number'>{formatDataNumber(value)}</span>
+      <div
+        className="nrcstat-d3-tip"
+        style={style}
+        ref={(element) => {
+          containerElementRef.current = element
+        }}
+      >
+        <span className="year">{name}</span>
+        <hr className="ruler" />
+        <span className="number">{formatDataNumber(value)}</span>
       </div>
     )
   }

@@ -29,7 +29,7 @@ function Timeline() {
             <span className={c['timeline-entry-body']}>
               {body}
               <div className={c['fade-out-last-line']} />
-              {/* <button className="past-fade-out-expand-button">expand</button> */}
+              {/* <button className={c['past-fade-out-expand-button']}>expand</button> */}
             </span>
           </div>
         </div>
