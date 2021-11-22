@@ -39,7 +39,7 @@ function Donut() {
   const data = translateCustomData(widgetObject.customData)
 
   return (
-    <div>
+    <div ref={fixEpiServerAncestorBlockHeight}>
       <div style={{ width: '100%', height: '450px' }}>
         <ResponsiveContainer>
           <PieChart>
@@ -205,4 +205,17 @@ const CustomTooltip = ({ active, payload }) => {
   }
 
   return null
+}
+
+function findElementEpiServerAncestorResetHeight(element) {
+  let isParentNotNrcstatBlock
+  do {
+    element = element?.parentNode
+    isParentNotNrcstatBlock = !element?.classList?.contains('nrcstat-block')
+  } while (element && isParentNotNrcstatBlock)
+
+  // The element is non-null and has a class of nrcstat-block
+  if (element) {
+    element.style.setProperty('height', 'auto')
+  }
 }
