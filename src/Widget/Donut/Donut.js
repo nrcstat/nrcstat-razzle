@@ -39,7 +39,7 @@ function Donut() {
   const data = translateCustomData(widgetObject.customData)
 
   return (
-    <div ref={fixEpiServerAncestorBlockHeight}>
+    <div ref={findElementEpiServerAncestorResetHeight}>
       <div style={{ width: '100%', height: '450px' }}>
         <ResponsiveContainer>
           <PieChart>
