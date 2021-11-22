@@ -18,7 +18,10 @@ function Timeline() {
   const entries = widgetObject.entries
 
   return (
-    <div className={`${c.container} ${isMobile ? c.mobile : c.desktop}`}>
+    <div
+      className={`${c.container} ${isMobile ? c.mobile : c.desktop}`}
+      ref={findElementEpiServerAncestorResetHeight}
+    >
       {entries.map(({ title, subtitle, body }, key) => (
         <div className={c['timeline-entry']} key={key}>
           <div className={c['timeline-marker']} />
@@ -36,6 +39,19 @@ function Timeline() {
       ))}
     </div>
   )
+}
+
+function findElementEpiServerAncestorResetHeight(element) {
+  let isParentNotNrcstatBlock
+  do {
+    element = element?.parentNode
+    isParentNotNrcstatBlock = !element?.classList?.contains('nrcstat-block')
+  } while (element && isParentNotNrcstatBlock)
+
+  // The element is non-null and has a class of nrcstat-block
+  if (element) {
+    element.style.setProperty('height', 'auto')
+  }
 }
 
 export default Timeline
