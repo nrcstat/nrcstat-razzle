@@ -112,7 +112,7 @@ function Pictogram() {
 
   return (
     <div
-      className={`${c.container} ${isMobile ? c.mobile : c.desktop} ${
+      className={`container ${c.container} ${isMobile ? c.mobile : c.desktop} ${
         sections?.length > 1 ? c['multiple-sections'] : c['single-section']
       } background-${backgroundColor}`}
       ref={findElementEpiServerAncestorResetHeight}
