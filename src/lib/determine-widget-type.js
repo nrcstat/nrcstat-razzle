@@ -1,14 +1,16 @@
 import { ENABLED_LOCALES, DEFAULT_LOCALE, API_URL } from '../config.js'
 import nodeFetch from 'node-fetch'
 
-export const determineWidgetType = async widget => {
+export const determineWidgetType = async (widget) => {
   const { widgetId } = widget
   let locale, widgetIdParam
 
   const localesPipeDelimited = ENABLED_LOCALES.join('|')
-  const localeSpecificMatch = widgetId.match(`^(${localesPipeDelimited})-(\\S+)$`)
+  const localeSpecificMatch = widgetId.match(
+    `^(${localesPipeDelimited})-(\\S+)$`
+  )
   if (localeSpecificMatch) {
-    [, locale, widgetIdParam] = localeSpecificMatch
+    ;[, locale, widgetIdParam] = localeSpecificMatch
   } else {
     locale = DEFAULT_LOCALE
     widgetIdParam = widgetId
@@ -16,9 +18,13 @@ export const determineWidgetType = async widget => {
 
   if (widgetIdParam === 'global-displacement-radial-bar-chart-map-2019-0.1') {
     return { locale, type: 'GlobalMap', periodYear: 2018 }
-  } else if (widgetIdParam === 'global-displacement-radial-bar-chart-map-2020-0.1') {
+  } else if (
+    widgetIdParam === 'global-displacement-radial-bar-chart-map-2020-0.1'
+  ) {
     return { locale, type: 'GlobalMap', periodYear: 2019 }
-  } else if (widgetIdParam === 'global-displacement-radial-bar-chart-map-2021-0.1') {
+  } else if (
+    widgetIdParam === 'global-displacement-radial-bar-chart-map-2021-0.1'
+  ) {
     return { locale, type: 'GlobalMap', periodYear: 2020 }
   } else if (/static/.test(widgetIdParam)) {
     const [, periodYearString = '2019'] = widgetIdParam.match(/^(\d*)-.+/) || []
@@ -31,7 +37,11 @@ export const determineWidgetType = async widget => {
     const [, tableType] = widgetIdParam.match(/static-(.+)/)
     return { locale, type: 'StaticTable', periodYear, tableType }
   } else if (/dynamic_country_dashboard_/.test(widgetId)) {
-    return { locale, type: 'CountryDashboard', ...parseDynamicCountryDashboardWidgetId(widgetId) }
+    return {
+      locale,
+      type: 'CountryDashboard',
+      ...parseDynamicCountryDashboardWidgetId(widgetId),
+    }
   } else {
     let widgetObject
     if (/widget-wizard/.test(widgetId)) {
@@ -58,17 +68,52 @@ export const determineWidgetType = async widget => {
   }
 }
 
-async function loadWidgetObject (widgetId) {
-  return nodeFetch(`${API_URL}/widgets/${widgetId}`)
-    .then(resp => resp.json())
+async function loadWidgetObject(widgetId) {
+  return nodeFetch(`${API_URL}/widgets/${widgetId}`).then((resp) => resp.json())
 }
 
-function removeLocaleLayer (widgetObject, locale) {
+function removeLocaleLayer(widgetObject, locale) {
   if (!widgetObject.config) widgetObject.config = {}
-  if (widgetObject && widgetObject.config && widgetObject.config.title && widgetObject.config.title[locale]) { widgetObject.config.title = widgetObject.config.title[locale] } else { widgetObject.config.title = '' }
-  if (widgetObject && widgetObject.config && widgetObject.config.subtitle && widgetObject.config.subtitle[locale]) { widgetObject.config.subtitle = widgetObject.config.subtitle[locale] } else { widgetObject.config.subtitle = '' }
-  if (widgetObject && widgetObject.config && widgetObject.config.linkbox && widgetObject.config.linkbox[locale]) { widgetObject.config.linkbox = widgetObject.config.linkbox[locale] } else { widgetObject.config.linkbox = '' }
-  if (widgetObject && widgetObject.config && widgetObject.config.source && widgetObject.config.source[locale]) { widgetObject.config.source = widgetObject.config.source[locale] } else { widgetObject.config.source = '' }
+  if (
+    widgetObject &&
+    widgetObject.config &&
+    widgetObject.title &&
+    widgetObject.title[locale]
+  ) {
+    widgetObject.title = widgetObject.title[locale]
+  } else {
+    widgetObject.title = ''
+  }
+  if (
+    widgetObject &&
+    widgetObject.config &&
+    widgetObject.config.subtitle &&
+    widgetObject.config.subtitle[locale]
+  ) {
+    widgetObject.config.subtitle = widgetObject.config.subtitle[locale]
+  } else {
+    widgetObject.config.subtitle = ''
+  }
+  if (
+    widgetObject &&
+    widgetObject.config &&
+    widgetObject.config.linkbox &&
+    widgetObject.config.linkbox[locale]
+  ) {
+    widgetObject.config.linkbox = widgetObject.config.linkbox[locale]
+  } else {
+    widgetObject.config.linkbox = ''
+  }
+  if (
+    widgetObject &&
+    widgetObject.config &&
+    widgetObject.config.source &&
+    widgetObject.config.source[locale]
+  ) {
+    widgetObject.config.source = widgetObject.config.source[locale]
+  } else {
+    widgetObject.config.source = ''
+  }
   if (widgetObject.dataType === 'custom') {
     if (widgetObject.customData[locale]) {
       widgetObject.customData = widgetObject.customData[locale]
@@ -77,7 +122,7 @@ function removeLocaleLayer (widgetObject, locale) {
 
   // Timeline widget
   if (widgetObject && widgetObject.entries) {
-    widgetObject.entries = widgetObject.entries.map(entry => {
+    widgetObject.entries = widgetObject.entries.map((entry) => {
       entry.title = entry.title?.[locale]
       entry.subtitle = entry.subtitle?.[locale]
       entry.body = entry.body?.[locale]
@@ -91,7 +136,7 @@ function removeLocaleLayer (widgetObject, locale) {
     widgetObject.subtitle = widgetObject.subtitle?.[locale]
     widgetObject.source = widgetObject.source?.[locale]
     if (widgetObject.sections && widgetObject.sections.length > 0) {
-      widgetObject.sections = widgetObject.sections.map(section => {
+      widgetObject.sections = widgetObject.sections.map((section) => {
         section.title = section.title?.[locale]
         return section
       })
@@ -101,9 +146,10 @@ function removeLocaleLayer (widgetObject, locale) {
   return widgetObject
 }
 
-function parseDynamicCountryDashboardWidgetId (widgetId) {
+function parseDynamicCountryDashboardWidgetId(widgetId) {
   const patternCountryYear = /dynamic_country_dashboard_([A-Z]{2})_(\d{4})/
-  const patternCountryYearDataPoints = /dynamic_country_dashboard_([A-Z]{2})_(\d{4})_([A-Za-z,]+)/
+  const patternCountryYearDataPoints =
+    /dynamic_country_dashboard_([A-Z]{2})_(\d{4})_([A-Za-z,]+)/
 
   let countryCode
   let year
@@ -118,7 +164,7 @@ function parseDynamicCountryDashboardWidgetId (widgetId) {
     'asylumSeekersFromXToNorwayInYear',
     'population',
     'percentageWomenFleeingToCountry',
-    'percentageChildrenFleeingToCountry'
+    'percentageChildrenFleeingToCountry',
   ]
   let showMap = true
 

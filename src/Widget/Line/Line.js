@@ -28,7 +28,8 @@ function LineWidget() {
     locale,
     widgetObject: {
       customData,
-      config: { title = '', subtitle = '', linkbox = '', source = '' },
+      title = '',
+      config: { subtitle = '', linkbox = '', source = '' },
     },
   } = useContext(WidgetParamsContext)
 
@@ -37,6 +38,12 @@ function LineWidget() {
   }
 
   const yAxisWidth = isMobileDevice() ? 50 : 85
+
+  const widgetBuiltByNewWidgetBuilder = customData.columns && customData.data
+  const widgetBuiltByDeprecatedWidgetWizard = !widgetBuiltByNewWidgetBuilder
+  const data = widgetBuiltByDeprecatedWidgetWizard
+    ? translateCustomData_deprecated(customData)
+    : translateCustomData(customData)
 
   return (
     <div ref={fixEpiServerAncestorBlockHeight}>
@@ -151,10 +158,10 @@ function LineWidget() {
               }}
               label={{ fontFamily: 'Roboto Condensed' }}
             />
-            {customData.map((s, i) => (
+            {data.map((s, i) => (
               <Line
                 dataKey="value"
-                data={cleanSeries(s.seriesData)}
+                data={s.seriesData}
                 name={s.seriesLegend}
                 key={s.seriesLegend}
                 stroke={colours[i % colours.length]}
@@ -189,6 +196,26 @@ function SourceLabel({ width, height, source }) {
   )
 }
 
-function cleanSeries(seriesData) {
-  return seriesData.filter((d) => Boolean(d.date))
+// TODO: this translator matches the "pre-2022" way of storing
+// the custom data in the widget object, as created by the
+// widget wizard. Eventually we'll want to move to the new way.
+function translateCustomData_deprecated(customData) {
+  return customData.map((series) => {
+    series.seriesData = series.seriesData.filter((d) => Boolean(d.date))
+    return series
+  })
+}
+function translateCustomData(customData) {
+  const dateKey = customData.columns[0].data
+  return customData.columns.slice(1).map((column) => {
+    return {
+      seriesLegend: column.columnLabel,
+      seriesData: customData.data
+        .map((d) => ({
+          date: d[dateKey],
+          value: d[column.data],
+        }))
+        .filter((d) => Boolean(d.value)),
+    }
+  })
 }

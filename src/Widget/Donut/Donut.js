@@ -36,7 +36,12 @@ function Donut() {
   const widgetParams = useContext(WidgetParamsContext)
   const { widgetObject } = widgetParams
 
-  const data = translateCustomData(widgetObject.customData)
+  const widgetBuiltByNewWidgetBuilder =
+    widgetObject.customData.columns && widgetObject.customData.data
+  const widgetBuiltByDeprecatedWidgetWizard = !widgetBuiltByNewWidgetBuilder
+  const data = widgetBuiltByDeprecatedWidgetWizard
+    ? translateCustomData_deprecated(widgetObject.customData)
+    : translateCustomData(widgetObject.customData)
 
   return (
     <div ref={findElementEpiServerAncestorResetHeight}>
@@ -62,7 +67,7 @@ function Donut() {
               <Label
                 position="center"
                 content={<DonutTitle setViewBox={setViewBox} />}
-                value={widgetObject.config.title}
+                value={widgetObject.title}
               />
             </Pie>
 
@@ -166,9 +171,19 @@ class DonutTitle extends React.Component {
 
 export default DonutRerenderOnResize
 
-function translateCustomData(customData) {
+// TODO: this translator matches the "pre-2022" way of storing
+// the custom data in the widget object, as created by the
+// widget wizard. Eventually we'll want to move to the new way.
+function translateCustomData_deprecated(customData) {
   return customData
     .map((item) => ({ name: item.hoverLabel, value: item.value }))
+    .filter((item) => Boolean(item.value))
+}
+function translateCustomData(customData) {
+  const nameProperty = customData.columns[0].data
+  const valueProperty = customData.columns[1].data
+  return customData.data
+    .map((item) => ({ name: item[nameProperty], value: item[valueProperty] }))
     .filter((item) => Boolean(item.value))
 }
 
