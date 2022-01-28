@@ -19,6 +19,7 @@ const Line = loadable(() =>
 const Donut = loadable(() =>
   import(/* webpackChunkName: "Donut" */ './Donut/Donut')
 )
+const Bar = loadable(() => import(/* webpackChunkName: "Bar" */ './Bar/Bar'))
 const StaticTable = loadable(() =>
   import(/* webpackChunkName: "StaticTable" */ './StaticTable/StaticTable')
 )
@@ -41,6 +42,7 @@ const widgetMap = {
   GlobalMap: GlobalMap,
   Line: Line,
   Donut: Donut,
+  Bar: Bar,
   StaticTable: StaticTable,
   CountryDashboard: CountryDashboard,
   CustomTable: CustomTable,

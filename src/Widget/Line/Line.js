@@ -11,7 +11,7 @@ import {
   ResponsiveContainer,
   Customized,
 } from 'recharts'
-import { isServer, isClient } from '../../util/utils'
+import { isServer } from '../../util/utils'
 import { formatDataNumber, isMobileDevice } from '@/util/widgetHelpers.js'
 
 import * as $ from 'jquery'
@@ -84,7 +84,7 @@ function LineWidget() {
           <LineChart
             margin={{ top: 5, right: source ? 18 : 5, bottom: 5, left: 5 }}
           >
-            <CartesianGrid vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="date"
               allowDuplicatedCategory={false}

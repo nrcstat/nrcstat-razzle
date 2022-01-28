@@ -10,12 +10,13 @@ import { ChunkExtractor, ChunkExtractorManager } from '@loadable/server'
 import { transform } from '@babel/core'
 import { mapValues } from 'lodash'
 import App from './App'
-import { determineWidgetType } from './lib/determine-widget-type'
+import { determineWidgetType } from './lib/determine-widget-type'
 
 import Widget from './Widget/Widget'
 
 import { loadWidgetData as loadGlobalMapData } from './Widget/GlobalMap/loadWidgetData.js'
 import { loadWidgetData as loadDonutData } from './Widget/Donut/loadWidgetData.js'
+import { loadWidgetData as loadBarData } from './Widget/Bar/loadWidgetData.js'
 
 /// import i18n service to initialize it
 import { i18n } from './server-only/locale-service.js'
@@ -33,11 +34,14 @@ const dataPreLoaders = {
     // just create a mocked one
     const widgetParams = {
       ...widget,
-      t: () => ''
+      t: () => '',
     }
-    return tableTypeToTableWidgetMap[widget.tableType](widgetParams).loadWidgetData(widget)
+    return tableTypeToTableWidgetMap[widget.tableType](
+      widgetParams
+    ).loadWidgetData(widget)
   },
-  Donut: loadDonutData
+  Donut: loadDonutData,
+  Bar: loadBarData,
 }
 
 const server = express()
@@ -63,42 +67,48 @@ server
       const dataLoader = dataPreLoaders[widget.type]
       if (dataLoader) {
         widget.nrcstatpassword = req.headers.nrcstatpassword
-        const data = await dataLoader(widget, { nrcstatpassword: req.headers.nrcstatpassword, foo: 'bar' })
+        const data = await dataLoader(widget, {
+          nrcstatpassword: req.headers.nrcstatpassword,
+          foo: 'bar',
+        })
         widget.preloadedWidgetData = data
-      // DATA CACHING TURNED OFF BECAUSE OF AUTHENTICATION REQUIREMENT. UNCOMMENT AFTER LAUNCH.
-      // if (dataCache[widget.widgetId]) {
-      //   widget.preloadedWidgetData = dataCache[widget.widgetId]
-      // } else {
-      //   const data = await dataLoader(widget)
-      //   widget.preloadedWidgetData = data
-      //   dataCache[widget.widgetId] = data
+        // DATA CACHING TURNED OFF BECAUSE OF AUTHENTICATION REQUIREMENT. UNCOMMENT AFTER LAUNCH.
+        // if (dataCache[widget.widgetId]) {
+        //   widget.preloadedWidgetData = dataCache[widget.widgetId]
+        // } else {
+        //   const data = await dataLoader(widget)
+        //   widget.preloadedWidgetData = data
+        //   dataCache[widget.widgetId] = data
       }
     }
 
     const extractor = new ChunkExtractor({
       statsFile: pathLib.resolve('build/loadable-stats.json'),
-      entrypoints: ['client']
+      entrypoints: ['client'],
     })
 
     renderToString(
       <ChunkExtractorManager extractor={extractor}>
-        {enrichedQueue.map((props) =>
+        {enrichedQueue.map((props) => (
           <Widget key={props.widgetId} {...props} />
-        )}
+        ))}
       </ChunkExtractorManager>
     )
 
     const languageLocaleData = mapValues(
       i18n.getDataByLanguage(enrichedQueue[0].locale),
-      namespace => mapNestedObjectToPathKeyedObject(namespace)
+      (namespace) => mapNestedObjectToPathKeyedObject(namespace)
     )
 
     const payload = {
-      localeTranslation: { [enrichedQueue[0].locale]: languageLocaleData, ...languageLocaleData },
+      localeTranslation: {
+        [enrichedQueue[0].locale]: languageLocaleData,
+        ...languageLocaleData,
+      },
       __LOADABLE_REQUIRED_CHUNKS__: null,
       widgetQueue: enrichedQueue,
       scripts: [],
-      links: []
+      links: [],
     }
 
     const js = extractor.getScriptTags((attrs) => {
@@ -106,12 +116,14 @@ server
         const scriptUrl = attrs.url
         payload.scripts.push({
           'data-chunk': attrs.chunk,
-          src: scriptUrl
+          src: scriptUrl,
         })
       }
       return attrs || {}
     })
-    payload.__LOADABLE_REQUIRED_CHUNKS__ = JSON.parse(/<script.+>(.+)<\/script>/g.exec(js)[1])
+    payload.__LOADABLE_REQUIRED_CHUNKS__ = JSON.parse(
+      /<script.+>(.+)<\/script>/g.exec(js)[1]
+    )
 
     const css = extractor.getStyleTags((attrs) => {
       if (attrs) {
