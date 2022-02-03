@@ -35,6 +35,8 @@ function BarViz() {
     ? translateCustomData_deprecated(widgetObject.customData)
     : translateCustomData(widgetObject.customData)
 
+  console.log(data)
+
   return (
     <div ref={findElementEpiServerAncestorResetHeight}>
       <div style={{ width: '100%', height: '450px' }}>
@@ -43,6 +45,7 @@ function BarViz() {
             // width={500}
             // height={300}
             data={data}
+            maxBarSize={40}
             // margin={{
             //   top: 5,
             //   right: 30,
@@ -50,9 +53,9 @@ function BarViz() {
             //   bottom: 5,
             // }}
           >
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid strokeDasharray="1" vertical={false} />
             <XAxis
-              dataKey="date"
+              dataKey="name"
               allowDuplicatedCategory={false}
               tick
               axisLine={{ strokeWidth: 2, stroke: 'rgb(188,188,188)' }}
@@ -80,6 +83,7 @@ function BarViz() {
               type="number"
               width={yAxisWidth}
               tickFormatter={(d) => formatDataNumber(d, locale)}
+              allowDecimals={false}
               tickMargin={5}
               tickLine={{ stroke: 'rgb(188,188,188)' }}
               tick={{
@@ -88,75 +92,33 @@ function BarViz() {
                 fill: '#474747',
               }}
             />
-            <Tooltip />
-            <Legend />
+            <Tooltip
+              formatter={(d, hoverLabel) => [
+                formatDataNumber(d, locale),
+                hoverLabel,
+              ]}
+              contentStyle={{
+                padding: '10px',
+                border: '1px solid #474747',
+                borderRadius: '3px',
+              }} // text box
+              labelStyle={{
+                fontFamily: 'Roboto Condensed',
+                fontSize: '22px',
+                color: '#474747',
+                marginBottom: '10px',
+                fontWeight: 'bold',
+              }} //  year
+              itemStyle={{
+                paddingBottom: '5px',
+                fontFamily: 'Roboto Condensed',
+                fontSize: '16px',
+              }}
+            />
             <Bar dataKey="value" fill="#FED769" />
           </BarChart>
-          {/* <PieChart>
-            <Pie
-              dataKey="value"
-              startAngle={0}
-              innerRadius="60%"
-              endAngle={-360}
-              data={data}
-              fill="#8884d8"
-              paddingAngle={0}
-            >
-              {data.map((d, i) => (
-                <Cell
-                  key={`cell-${i}`}
-                  fill={colours[i % colours.length]}
-                  stroke={colours[i % colours.length]}
-                />
-              ))}
-            </Pie>
-
-            <Tooltip
-              active
-              content={<CustomTooltip />}
-              wrapperStyle={{ visibility: 'visible', foo: 'bar' }}
-            />
-          </PieChart> */}
         </ResponsiveContainer>
       </div>
-      {viewBox && (
-        <div
-          style={{
-            width: viewBox.outerRadius * 2,
-            margin: '0 auto',
-            textAlign: 'center',
-            position: 'relative',
-            top: -(450 / 2 - viewBox.outerRadius),
-          }}
-        >
-          <p
-            style={{
-              fontFamily: 'Roboto',
-              color: '#474747',
-              fontSize: '22px',
-              fontWeight: '400',
-              margin: 0,
-              padding: 0,
-              marginTop: '30px',
-            }}
-          >
-            {widgetObject.config.subtitle}
-          </p>
-          <p
-            style={{
-              fontFamily: 'Roboto',
-              color: '#474747',
-              fontSize: '16px',
-              fontWeight: '300',
-              margin: 0,
-              padding: 0,
-              marginTop: '10px',
-            }}
-          >
-            {widgetObject.config.source}
-          </p>
-        </div>
-      )}
     </div>
   )
 }
