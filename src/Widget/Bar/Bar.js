@@ -6,6 +6,7 @@ import {
   BarChart,
   CartesianGrid,
   Label,
+  LabelList,
   Legend,
   ResponsiveContainer,
   Tooltip,
@@ -45,7 +46,8 @@ function BarViz() {
             // width={500}
             // height={300}
             data={data}
-            maxBarSize={40}
+            // maxBarSize={40}
+            barCategoryGap={10}
             // margin={{
             //   top: 5,
             //   right: 30,
@@ -53,31 +55,11 @@ function BarViz() {
             //   bottom: 5,
             // }}
           >
-            <CartesianGrid strokeDasharray="1" vertical={false} />
-            <XAxis
-              dataKey="name"
-              allowDuplicatedCategory={false}
-              tick
-              axisLine={{ strokeWidth: 2, stroke: 'rgb(188,188,188)' }}
-              tickMargin={5}
-              padding={{ left: 10 }}
-              tick={{
-                fontFamily: 'Roboto Condensed',
-                fontSize: '14px',
-                fill: '#474747',
-              }}
-            >
-              <Label
-                value=""
-                offset={30}
-                position="insideTopRight"
-                style={{
-                  fontFamily: 'Roboto Condensed',
-                  fontSize: '14px',
-                  fill: '#919191',
-                }}
-              />
-            </XAxis>
+            <CartesianGrid
+              strokeDasharray="1"
+              vertical={false}
+              strokeWidth={2}
+            />
             <YAxis
               dataKey="value"
               type="number"
@@ -93,10 +75,12 @@ function BarViz() {
               }}
             />
             <Tooltip
-              formatter={(d, hoverLabel) => [
-                formatDataNumber(d, locale),
-                hoverLabel,
-              ]}
+              formatter={(d, _, info) => {
+                return [formatDataNumber(d, locale)]
+              }}
+              labelFormatter={(a, b, c, d) => {
+                return b[0]?.payload?.name
+              }}
               contentStyle={{
                 padding: '10px',
                 border: '1px solid #474747',
@@ -114,8 +98,24 @@ function BarViz() {
                 fontFamily: 'Roboto Condensed',
                 fontSize: '16px',
               }}
+              cursor={{ fill: 'none' }}
             />
-            <Bar dataKey="value" fill="#FED769" />
+            <Bar dataKey="value" fill="#FED769">
+              <LabelList
+                dataKey="name"
+                position="insideBottom"
+                angle={270}
+                offset={20}
+                style={{
+                  fontFamily: 'Roboto Condensed',
+                  fontSize: '22px',
+                  color: '#474747',
+                  marginBottom: '10px',
+                  fontWeight: 'bold',
+                }}
+                dominantBaseline="middle"
+              />
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -134,10 +134,15 @@ function translateCustomData_deprecated(customData) {
     .filter((item) => Boolean(item.value))
 }
 function translateCustomData(customData) {
+  const label = customData.columns[0].columnLabel
   const nameProperty = customData.columns[0].data
   const valueProperty = customData.columns[1].data
   return customData.data
-    .map((item) => ({ name: item[nameProperty], value: item[valueProperty] }))
+    .map((item) => ({
+      label,
+      name: item[nameProperty],
+      value: item[valueProperty],
+    }))
     .filter((item) => Boolean(item.value))
 }
 
