@@ -71,10 +71,7 @@ function BarViz() {
         <ResponsiveContainer>
           <BarChart
             layout={{ bar: 'vertical', column: 'horizontal' }[type]}
-            // width={500}
-            // height={300}
             data={data}
-            // maxBarSize={40}
             barCategoryGap={10}
             // margin={{
             //   top: 5,
@@ -103,7 +100,7 @@ function BarViz() {
                 fill: '#474747',
               }}
             />
-            <OtherAxis hide axisLine={false} type="number" />
+            <OtherAxis hide axisLine={false} type="category" />
             <Tooltip
               formatter={(d, _, info) => {
                 return [formatDataNumber(d, locale)]
@@ -131,10 +128,10 @@ function BarViz() {
               cursor={{ fill: 'none' }}
             />
             <Bar dataKey="value" fill="#FED769">
-              {/* <LabelList
+              <LabelList
                 dataKey="name"
-                position="insideBottom"
-                angle={270}
+                position={{ bar: 'insideLeft', column: 'insideBottom' }[type]}
+                angle={{ bar: 0, column: 270 }[type]}
                 offset={20}
                 style={{
                   fontFamily: 'Roboto Condensed',
@@ -144,7 +141,7 @@ function BarViz() {
                   fontWeight: 'bold',
                 }}
                 dominantBaseline="middle"
-              /> */}
+              />
             </Bar>
           </BarChart>
         </ResponsiveContainer>
@@ -207,41 +204,6 @@ function translateCustomData(customData) {
       value: item[valueProperty],
     }))
     .filter((item) => Boolean(item.value))
-}
-
-const CustomTooltip = ({ active, payload }) => {
-  const containerElementRef = useRef(null)
-  const { formatDataNumber } = useContext(FixedLocaleContext)
-  const { clientX, clientY, screenX, screenY, pageX, pageY } = useMouse()
-  if (active) {
-    const { name, value } = payload[0]
-    const bounds = containerElementRef.current?.getBoundingClientRect()
-    const style = {
-      position: 'fixed',
-      display: 'block',
-    }
-    if (bounds) {
-      const { width, height } = bounds
-      style.visibility = 'visible'
-      style.left = `${clientX - width / 2}px`
-      style.top = `${clientY - height}px`
-    }
-    return (
-      <div
-        className="nrcstat-d3-tip"
-        style={style}
-        ref={(element) => {
-          containerElementRef.current = element
-        }}
-      >
-        <span className="year">{name}</span>
-        <hr className="ruler" />
-        <span className="number">{formatDataNumber(value)}</span>
-      </div>
-    )
-  }
-
-  return null
 }
 
 function findElementEpiServerAncestorResetHeight(element) {
