@@ -82,6 +82,9 @@ function Pictogram() {
 
   const isMobile = isMobileDevice()
 
+  // NOTE: the `container` class (NOT the css moduels c.container) is added so that
+  // nrcstat-monorepo/libs/widget-social-media-sharing/src/lib/index.ts:useRenderWidgetThumbnailBlob
+  // can accurately target the container to render into a thumbnail image,
   return (
     <div
       className={`container ${c.container} ${isMobile ? c.mobile : c.desktop} ${

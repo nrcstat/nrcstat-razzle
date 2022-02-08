@@ -1,6 +1,5 @@
-import { useMouse, useEventListener } from '@umijs/hooks'
+import { useEventListener, useMouse } from '@umijs/hooks'
 import React, { useContext, useRef, useState } from 'react'
-import ReactDOM from 'react-dom'
 import {
   Cell,
   Label,
@@ -8,16 +7,11 @@ import {
   PieChart,
   ResponsiveContainer,
   Tooltip,
-  Legend,
-  Text as SvgText,
-  Customized,
 } from 'recharts'
 import { FixedLocaleContext } from '../../services/i18n'
+import ShareButton from '../ShareButton'
 import { WidgetParamsContext } from '../Widget'
 import './Donut.scss'
-
-import * as $ from 'jquery'
-import { isClient } from '../../util/utils'
 
 const colours = ['#FF9C48', '#47A3B5', '#FED769', '#70A873', '#E5735F']
 
@@ -89,6 +83,9 @@ function Donut() {
             top: -(450 / 2 - viewBox.outerRadius),
           }}
         >
+          <div style={{ position: 'absolute', right: '0', bottom: '0.25em' }}>
+            <ShareButton widgetId={widgetObject.id} />
+          </div>
           <p
             style={{
               fontFamily: 'Roboto',

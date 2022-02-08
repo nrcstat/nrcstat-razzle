@@ -11,7 +11,9 @@ import {
   YAxis,
 } from 'recharts'
 import { isServer } from '../../util/utils'
+import ShareButton from '../ShareButton'
 import { WidgetParamsContext } from '../Widget'
+import c from './Bar.module.scss'
 
 function BarViz() {
   if (isServer()) return null
@@ -32,6 +34,7 @@ function BarViz() {
     : translateCustomData(widgetObject.customData)
 
   const {
+    id,
     type,
     title,
     config: { subtitle, source },
@@ -40,8 +43,14 @@ function BarViz() {
   const Axis = { bar: XAxis, column: YAxis }[type]
   const OtherAxis = { bar: YAxis, column: XAxis }[type]
 
+  // NOTE: the `container` class (NOT the css moduels c.container) is added so that
+  // nrcstat-monorepo/libs/widget-social-media-sharing/src/lib/index.ts:useRenderWidgetThumbnailBlob
+  // can accurately target the container to render into a thumbnail image,
   return (
-    <div ref={findElementEpiServerAncestorResetHeight}>
+    <div
+      className={`container ${c.container}`}
+      ref={findElementEpiServerAncestorResetHeight}
+    >
       <div style={{ marginLeft: '10px', textAlign: 'center' }}>
         {title && (
           <p
@@ -138,7 +147,13 @@ function BarViz() {
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <div style={{ marginLeft: '10px', textAlign: 'center' }}>
+      {/* min-height to create a vertical space for the share button, even if no subtitle or source */}
+      <div
+        style={{ marginLeft: '10px', textAlign: 'center', minHeight: '3em' }}
+      >
+        <div className={c['share-button-wrapper']}>
+          <ShareButton widgetId={id} />
+        </div>
         {subtitle && (
           <p
             style={{

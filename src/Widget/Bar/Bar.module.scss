@@ -1,0 +1,21 @@
+.container {
+  position: relative;
+}
+
+/* 
+.container.desktop .share-button-wrapper {
+  position: absolute;
+  right: 100px;
+  bottom: 20px;
+}
+.container.mobile .share-button-wrapper {
+  position: absolute;
+  right: 1em;
+  bottom: 1em;
+} */
+
+.container .share-button-wrapper {
+  position: absolute;
+  right: 0em;
+  bottom: 0.25em;
+}

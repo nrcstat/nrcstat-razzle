@@ -1,23 +1,22 @@
-import React, { useContext, useEffect } from 'react'
+import { formatDataNumber, isMobileDevice } from '@/util/widgetHelpers.js'
+import * as $ from 'jquery'
+import React, { useContext } from 'react'
 import {
-  LineChart,
-  Line,
-  XAxis,
-  Label,
-  YAxis,
   CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
   Customized,
+  Label,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from 'recharts'
 import { isServer } from '../../util/utils'
-import { formatDataNumber, isMobileDevice } from '@/util/widgetHelpers.js'
-
-import * as $ from 'jquery'
-
-import './Line.scss'
+import ShareButton from '../ShareButton'
 import { WidgetParamsContext } from '../Widget'
+import './Line.scss'
 
 const colours = ['#FF9C48', '#47A3B5', '#FED769', '#70A873', '#E5735F']
 
@@ -27,6 +26,7 @@ function LineWidget() {
   const {
     locale,
     widgetObject: {
+      id,
       customData,
       title = '',
       config: { subtitle = '', linkbox = '', source = '' },
@@ -82,7 +82,7 @@ function LineWidget() {
           </p>
         )}
       </div>
-      <div style={{ width: '100%', height: '450px' }}>
+      <div style={{ width: '100%', height: '450px', position: 'relative' }}>
         <ResponsiveContainer>
           <LineChart
             margin={{ top: 5, right: source ? 18 : 5, bottom: 5, left: 5 }}
@@ -176,6 +176,9 @@ function LineWidget() {
             <Customized component={<SourceLabel source={source} />} />
           </LineChart>
         </ResponsiveContainer>
+        <div style={{ position: 'absolute', right: '0', bottom: '-0.8em' }}>
+          <ShareButton widgetId={id} />
+        </div>
       </div>
     </div>
   )
