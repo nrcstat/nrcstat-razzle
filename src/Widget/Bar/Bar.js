@@ -27,6 +27,9 @@ function BarViz() {
   const widgetParams = useContext(WidgetParamsContext)
   const { locale, widgetObject } = widgetParams
 
+  // This nubmer has been determined by multiple eyeball tests. When the y axis
+  // shows low numbers (e.g. 50, 100, 200) there's a lot of whitespace available.
+  // This margin is necessary to show numbers in the millions, e.g. 50 000 000.
   const yAxisWidth = isMobileDevice() ? 50 : 85
 
   const widgetBuiltByNewWidgetBuilder =
@@ -36,10 +39,30 @@ function BarViz() {
     ? translateCustomData_deprecated(widgetObject.customData)
     : translateCustomData(widgetObject.customData)
 
-  console.log(data)
+  const {
+    title,
+    config: { subtitle, source },
+  } = widgetObject
 
   return (
     <div ref={findElementEpiServerAncestorResetHeight}>
+      <div style={{ marginLeft: '10px', textAlign: 'center' }}>
+        {title && (
+          <p
+            style={{
+              fontFamily: 'Roboto Condensed',
+              color: '#474747',
+              fontSize: '24px',
+              fontWeight: '400',
+              margin: 0,
+              padding: 0,
+              marginBottom: '12px',
+            }}
+          >
+            {title}
+          </p>
+        )}
+      </div>
       <div style={{ width: '100%', height: '450px' }}>
         <ResponsiveContainer>
           <BarChart
@@ -118,6 +141,39 @@ function BarViz() {
             </Bar>
           </BarChart>
         </ResponsiveContainer>
+      </div>
+      <div style={{ marginLeft: '10px', textAlign: 'center' }}>
+        {subtitle && (
+          <p
+            style={{
+              fontFamily: 'Roboto Condensed',
+              color: '#919191',
+              fontSize: '20px',
+              fontWeight: '400',
+              margin: 0,
+              padding: 0,
+              marginTop: '10px',
+              marginBottom: '10px',
+            }}
+          >
+            {subtitle}
+          </p>
+        )}
+        {source && (
+          <p
+            style={{
+              fontFamily: 'Roboto',
+              color: '#474747',
+              fontSize: '14px',
+              fontWeight: '300',
+              margin: 0,
+              padding: 0,
+              marginTop: '10px',
+            }}
+          >
+            {source}
+          </p>
+        )}
       </div>
     </div>
   )

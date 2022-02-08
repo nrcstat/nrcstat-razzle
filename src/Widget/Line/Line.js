@@ -37,6 +37,9 @@ function LineWidget() {
     $(element).parents('.nrcstat-block').css('height', 'auto')
   }
 
+  // This nubmer has been determined by multiple eyeball tests. When the y axis
+  // shows low numbers (e.g. 50, 100, 200) there's a lot of whitespace available.
+  // This margin is necessary to show numbers in the millions, e.g. 50 000 000.
   const yAxisWidth = isMobileDevice() ? 50 : 85
 
   const widgetBuiltByNewWidgetBuilder = customData.columns && customData.data
