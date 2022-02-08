@@ -87,7 +87,7 @@ function LineWidget() {
           <LineChart
             margin={{ top: 5, right: source ? 18 : 5, bottom: 5, left: 5 }}
           >
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid vertical={false} />
             <XAxis
               dataKey="date"
               allowDuplicatedCategory={false}
