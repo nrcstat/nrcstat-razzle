@@ -1,46 +1,39 @@
-import React, { useContext, useState } from 'react'
-import { isServer, isClient } from '@/util/utils'
+import { isServer } from '@/util/utils'
 import { isMobileDevice } from '@/util/widgetHelpers.js'
+import React, { useContext } from 'react'
 import ReactMarkdown from 'react-markdown'
-
-import {
-  BackgroundColorKey,
-  BackgroundColorToIconBaseColorMap,
-  DataColor,
-  IconBaseColor,
-} from './config'
+import ShareButton from '../ShareButton'
+import { WidgetParamsContext } from '../Widget'
+import { BackgroundColorKey, BackgroundColorToIconBaseColorMap } from './config'
 import {
   Camp,
   Education,
   Food,
   Legal,
-  Shelter,
-  WASH,
-  PeopleFemale,
-  PeopleMale,
-  PeopleLittleBoy,
-  PeopleLittleGirl,
-  PeopleSchoolGirl,
-  PeopleSchoolBoy,
   PeopleChildren,
+  PeopleChildrenCircle,
+  PeopleFemale,
+  PeopleFemaleCircle,
+  PeopleLittleBoy,
+  PeopleLittleBoyCircle,
+  PeopleLittleGirl,
+  PeopleLittleGirlCircle,
+  PeopleMale,
+  PeopleMaleCircle,
   PeopleRefugeeFamily,
   PeopleRefugeeFamilyAlt,
-  PeopleRefugeesRunning,
-  PeopleFemaleCircle,
-  PeopleMaleCircle,
-  PeopleLittleBoyCircle,
-  PeopleLittleGirlCircle,
-  PeopleSchoolGirlCircle,
-  PeopleSchoolBoyCircle,
-  PeopleChildrenCircle,
-  PeopleRefugeeFamilyCircle,
   PeopleRefugeeFamilyAltCircle,
+  PeopleRefugeeFamilyCircle,
+  PeopleRefugeesRunning,
   PeopleRefugeesRunningCircle,
+  PeopleSchoolBoy,
+  PeopleSchoolBoyCircle,
+  PeopleSchoolGirl,
+  PeopleSchoolGirlCircle,
+  Shelter,
+  WASH,
 } from './icons/index.js'
-import { WidgetParamsContext } from '../Widget'
-
 import c from './Pictogram.module.scss'
-import ShareButton from '../ShareButton'
 
 const WidgetIconMap = {
   PeopleFemale,
@@ -74,7 +67,7 @@ const WidgetIconMap = {
 function Pictogram() {
   if (isServer()) return null
 
-  const { locale, widgetObject } = useContext(WidgetParamsContext)
+  const { widgetObject } = useContext(WidgetParamsContext)
 
   const {
     id,
@@ -85,16 +78,9 @@ function Pictogram() {
     sections,
   } = widgetObject
 
-  // TODO: remove?
-  // const fixEpiServerAncestorBlockHeight = (element) => {
-  //   $(element).parents('.nrcstat-block').css('height', 'auto')
-  // }
-
   const iconBaseColor = BackgroundColorToIconBaseColorMap[backgroundColor]
 
   const isMobile = isMobileDevice()
-
-  const [socialMediaOpen, setSocialMediaOpen] = useState(false)
 
   return (
     <div
