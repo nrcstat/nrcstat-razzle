@@ -43,6 +43,7 @@ const widgetMap = {
   Line: Line,
   Donut: Donut,
   Bar: Bar,
+  Column: Bar,
   StaticTable: StaticTable,
   CountryDashboard: CountryDashboard,
   CustomTable: CustomTable,

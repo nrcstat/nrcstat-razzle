@@ -56,6 +56,8 @@ export const determineWidgetType = async (widget) => {
       return { locale, type: 'Donut', widgetObject }
     } else if (type === 'bar') {
       return { locale, type: 'Bar', widgetObject }
+    } else if (type === 'column') {
+      return { locale, type: 'Column', widgetObject }
     } else if (type === 'line') {
       return { locale, type: 'Line', widgetObject }
     } else if (type === 'custom-table') {

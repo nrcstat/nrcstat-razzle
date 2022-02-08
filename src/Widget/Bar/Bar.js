@@ -40,9 +40,13 @@ function BarViz() {
     : translateCustomData(widgetObject.customData)
 
   const {
+    type,
     title,
     config: { subtitle, source },
   } = widgetObject
+
+  const Axis = { bar: XAxis, column: YAxis }[type]
+  const OtherAxis = { bar: YAxis, column: XAxis }[type]
 
   return (
     <div ref={findElementEpiServerAncestorResetHeight}>
@@ -66,6 +70,7 @@ function BarViz() {
       <div style={{ width: '100%', height: '450px' }}>
         <ResponsiveContainer>
           <BarChart
+            layout={{ bar: 'vertical', column: 'horizontal' }[type]}
             // width={500}
             // height={300}
             data={data}
@@ -80,10 +85,11 @@ function BarViz() {
           >
             <CartesianGrid
               strokeDasharray="1"
-              vertical={false}
+              vertical={type === 'bar'}
+              horizontal={type === 'column'}
               strokeWidth={2}
             />
-            <YAxis
+            <Axis
               dataKey="value"
               type="number"
               width={yAxisWidth}
@@ -97,6 +103,7 @@ function BarViz() {
                 fill: '#474747',
               }}
             />
+            <OtherAxis hide axisLine={false} type="number" />
             <Tooltip
               formatter={(d, _, info) => {
                 return [formatDataNumber(d, locale)]
@@ -124,7 +131,7 @@ function BarViz() {
               cursor={{ fill: 'none' }}
             />
             <Bar dataKey="value" fill="#FED769">
-              <LabelList
+              {/* <LabelList
                 dataKey="name"
                 position="insideBottom"
                 angle={270}
@@ -137,7 +144,7 @@ function BarViz() {
                   fontWeight: 'bold',
                 }}
                 dominantBaseline="middle"
-              />
+              /> */}
             </Bar>
           </BarChart>
         </ResponsiveContainer>
