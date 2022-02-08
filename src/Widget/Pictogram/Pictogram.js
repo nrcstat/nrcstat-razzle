@@ -39,22 +39,8 @@ import {
 } from './icons/index.js'
 import { WidgetParamsContext } from '../Widget'
 
-import { StylesProvider, createGenerateClassName } from '@mui/styles'
-
-import IconButton from '@mui/material/IconButton'
-import SpeedDial from '@mui/material/SpeedDial'
-import SpeedDialAction from '@mui/material/SpeedDialAction'
-
-import Share from '@mui/icons-material/Share'
-import Facebook from '@mui/icons-material/Facebook'
-import LinkedIn from '@mui/icons-material/LinkedIn'
-import Twitter from '@mui/icons-material/Twitter'
-
 import c from './Pictogram.module.scss'
-
-const generateClassName = createGenerateClassName({
-  seed: 'App1',
-})
+import ShareButton from '../ShareButton'
 
 const WidgetIconMap = {
   PeopleFemale,
@@ -146,109 +132,10 @@ function Pictogram() {
       <span className={c['source']}>{source}</span>
 
       <div className={c['share-button-wrapper']}>
-        <StylesProvider generateClassName={generateClassName}>
-          <SpeedDial
-            ariaLabel="SpeedDial example"
-            icon={
-              <Share
-                style={{ color: 'white' }}
-
-                // FabProps={{
-                //   component: ({ children }) => (
-                //     <a href="https://github.com/">{children}</a>
-                //   ),
-                // }}
-              />
-            }
-            open={socialMediaOpen}
-            onClick={() => setSocialMediaOpen((open) => !open)}
-            FabProps={{
-              color: 'default',
-              size: 'small',
-              style: { boxShadow: 'none' },
-            }}
-            // FabProps={{ style: { width: '20px', height: '20px' } }}
-          >
-            {/* <SpeedDialAction
-              icon={
-                <a
-                  href="https://github.com/"
-                  style={{ color: 'none', lineHeight: '0' }}
-                >
-                  <Facebook />
-                </a>
-              }
-              tooltipTitle="Facebook"
-            />
-
-            <SpeedDialAction icon={<Facebook />} tooltipTitle="Facebook" /> */}
-            <SpeedDialAction
-              icon={
-                <FacebookShareButton urlToShare={shareableUrlForWidget(id)} />
-              }
-              tooltipTitle="Facebook"
-            />
-            {/* <SpeedDialAction
-              icon={
-                <LinkedInShareButton urlToShare={shareableUrlForWidget(id)} />
-              }
-              tooltipTitle="LinkedIn"
-            /> */}
-            <SpeedDialAction
-              icon={
-                <TwitterShareButton urlToShare={shareableUrlForWidget(id)} />
-              }
-              tooltipTitle="Twitter"
-            />
-          </SpeedDial>
-        </StylesProvider>
+        <ShareButton widgetId={id} />
       </div>
     </div>
   )
-}
-
-const IconAnchor = React.forwardRef((props, ref) => <a {...props} ref={ref} />)
-function FacebookShareButton({ urlToShare }) {
-  return (
-    <IconButton
-      component={IconAnchor}
-      href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-        urlToShare
-      )}`}
-      target="_blank"
-    >
-      <Facebook />
-    </IconButton>
-  )
-}
-function LinkedInShareButton({ urlToShare }) {
-  const link = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-    urlToShare
-  )}`
-  return (
-    <IconButton component={IconAnchor} href={link}>
-      <LinkedIn />
-    </IconButton>
-  )
-}
-function TwitterShareButton({ urlToShare }) {
-  return (
-    <IconButton
-      component={IconAnchor}
-      href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
-        urlToShare
-      )}`}
-      target="_blank"
-    >
-      <Twitter />
-    </IconButton>
-  )
-}
-
-function shareableUrlForWidget(widgetId) {
-  return `https://share.nrcdata.no/${widgetId}.html?sharedFromUrl=${encodeURIComponent(
-    window.location.href
-  )}`
 }
 
 function findElementEpiServerAncestorResetHeight(element) {

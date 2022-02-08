@@ -1,29 +1,21 @@
 import { formatDataNumber, isMobileDevice } from '@/util/widgetHelpers.js'
-import { useMouse } from '@umijs/hooks'
-import React, { useContext, useRef, useState } from 'react'
+import React, { useContext } from 'react'
 import {
   Bar,
   BarChart,
   CartesianGrid,
-  Label,
   LabelList,
-  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from 'recharts'
-import { FixedLocaleContext } from '../../services/i18n'
 import { isServer } from '../../util/utils'
 import { WidgetParamsContext } from '../Widget'
-import './Bar.scss'
-
-const colours = ['#FF9C48', '#47A3B5', '#FED769', '#70A873', '#E5735F']
 
 function BarViz() {
   if (isServer()) return null
 
-  const [viewBox, setViewBox] = useState(null)
   const widgetParams = useContext(WidgetParamsContext)
   const { locale, widgetObject } = widgetParams
 
