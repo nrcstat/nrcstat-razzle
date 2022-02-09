@@ -17,6 +17,7 @@ import Widget from './Widget/Widget'
 import { loadWidgetData as loadGlobalMapData } from './Widget/GlobalMap/loadWidgetData.js'
 import { loadWidgetData as loadDonutData } from './Widget/Donut/loadWidgetData.js'
 import { loadWidgetData as loadBarData } from './Widget/Bar/loadWidgetData.js'
+import { loadWidgetData as loadLineData } from './Widget/Line/loadWidgetData.js'
 
 /// import i18n service to initialize it
 import { i18n } from './server-only/locale-service.js'
@@ -42,6 +43,7 @@ const dataPreLoaders = {
   },
   Donut: loadDonutData,
   Bar: loadBarData,
+  Line: loadLineData,
 }
 
 const server = express()
@@ -66,19 +68,20 @@ server
       const widget = enrichedQueue[i]
       const dataLoader = dataPreLoaders[widget.type]
       if (dataLoader) {
-        widget.nrcstatpassword = req.headers.nrcstatpassword
-        const data = await dataLoader(widget, {
-          nrcstatpassword: req.headers.nrcstatpassword,
-          foo: 'bar',
-        })
-        widget.preloadedWidgetData = data
-        // DATA CACHING TURNED OFF BECAUSE OF AUTHENTICATION REQUIREMENT. UNCOMMENT AFTER LAUNCH.
-        // if (dataCache[widget.widgetId]) {
-        //   widget.preloadedWidgetData = dataCache[widget.widgetId]
-        // } else {
-        //   const data = await dataLoader(widget)
-        //   widget.preloadedWidgetData = data
-        //   dataCache[widget.widgetId] = data
+        // Uncomment to restore the password-based data embargo mechanism. Remember that
+        // we last time we turned off the in-memory caching of data, we didn't find a way
+        // to combine it with the password authentication mechanism.
+        // widget.nrcstatpassword = req.headers.nrcstatpassword
+        // const data = await dataLoader(widget, {
+        //   nrcstatpassword: req.headers.nrcstatpassword,
+        // })
+        // widget.preloadedWidgetData = data
+        if (dataCache[widget.widgetId]) {
+          widget.preloadedWidgetData = dataCache[widget.widgetId]
+        } else {
+          const data = await dataLoader(widget)
+          widget.preloadedWidgetData = data
+          dataCache[widget.widgetId] = data
       }
     }
 

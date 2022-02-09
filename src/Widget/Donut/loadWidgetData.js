@@ -10,9 +10,10 @@ if (isServer()) {
   fetch = window.fetch
 }
 
-export function loadWidgetData ({ periodYear, nrcstatpassword }, headers = {}) {
-  const query = { where: { year: periodYear } }
-  const url = `${API_URL}/datas?filter=${encodeURIComponent(JSON.stringify(query))}`
-  return fetch(url, { headers: { nrcstatpassword: nrcstatpassword } })
-    .then(resp => resp.json())
+export function loadWidgetData(widgetObject, headers = {}) {
+  const query = {}
+  // const url = `${API_URL}/datas?filter=${encodeURIComponent(JSON.stringify(query))}`
+  // return fetch(url, { headers: { nrcstatpassword: nrcstatpassword } })
+  //   .then(resp => resp.json())
+  return Promise.resolve(null)
 }
