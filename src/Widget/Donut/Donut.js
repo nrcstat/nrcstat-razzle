@@ -37,8 +37,11 @@ function Donut() {
     ? translateCustomData_deprecated(widgetObject.customData)
     : translateCustomData(widgetObject.customData)
 
+  // NOTE: the `container` class is added so that
+  // nrcstat-monorepo/libs/widget-social-media-sharing/src/lib/index.ts:useRenderWidgetThumbnailBlob
+  // can accurately target the container to render into a thumbnail image.
   return (
-    <div ref={findElementEpiServerAncestorResetHeight}>
+    <div className="container" ref={findElementEpiServerAncestorResetHeight}>
       <div style={{ width: '100%', height: '450px' }}>
         <ResponsiveContainer>
           <PieChart>
