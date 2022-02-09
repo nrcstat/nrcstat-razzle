@@ -82,6 +82,7 @@ server
           const data = await dataLoader(widget)
           widget.preloadedWidgetData = data
           dataCache[widget.widgetId] = data
+        }
       }
     }
 
