@@ -165,6 +165,7 @@ function BarViz() {
               padding: 0,
               marginTop: '10px',
               marginBottom: '10px',
+              textAlign: 'center',
             }}
           >
             {subtitle}
@@ -180,6 +181,7 @@ function BarViz() {
               margin: 0,
               padding: 0,
               marginTop: '10px',
+              textAlign: 'center',
             }}
           >
             {source}

@@ -48,8 +48,11 @@ function LineWidget() {
     ? translateCustomData_deprecated(customData)
     : translateCustomData(customData)
 
+  // NOTE: the `container` class is added so that
+  // nrcstat-monorepo/libs/widget-social-media-sharing/src/lib/index.ts:useRenderWidgetThumbnailBlob
+  // can accurately target the container to render into a thumbnail image.
   return (
-    <div ref={fixEpiServerAncestorBlockHeight}>
+    <div className="container" ref={fixEpiServerAncestorBlockHeight}>
       <div style={{ marginLeft: '10px' }}>
         {title && (
           <p
