@@ -10,6 +10,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { FixedLocaleContext } from '../../services/i18n'
 import { isServer } from '../../util/utils'
 import ShareButton from '../ShareButton'
 import { WidgetParamsContext } from '../Widget'
@@ -19,19 +20,34 @@ function BarViz() {
   if (isServer()) return null
 
   const widgetParams = useContext(WidgetParamsContext)
-  const { locale, widgetObject } = widgetParams
+  const { locale, widgetObject, preloadedWidgetData } = widgetParams
 
-  // This nubmer has been determined by multiple eyeball tests. When the y axis
+  const { getNsFixedT } = useContext(FixedLocaleContext)
+  const t = getNsFixedT(['Glossary', 'GeographicalNames'])
+
+  // This number has been determined by multiple eyeball tests. When the y axis
   // shows low numbers (e.g. 50, 100, 200) there's a lot of whitespace available.
   // This margin is necessary to show numbers in the millions, e.g. 50 000 000.
   const yAxisWidth = isMobileDevice() ? 50 : 85
 
-  const widgetBuiltByNewWidgetBuilder =
-    widgetObject.customData.columns && widgetObject.customData.data
-  const widgetBuiltByDeprecatedWidgetWizard = !widgetBuiltByNewWidgetBuilder
-  const data = widgetBuiltByDeprecatedWidgetWizard
-    ? translateCustomData_deprecated(widgetObject.customData)
-    : translateCustomData(widgetObject.customData)
+  const data = (() => {
+    switch (widgetObject.dataType) {
+      case 'custom':
+        const widgetBuiltByNewWidgetBuilder =
+          widgetObject.customData.columns && widgetObject.customData.data
+        const widgetBuiltByDeprecatedWidgetWizard =
+          !widgetBuiltByNewWidgetBuilder
+        return widgetBuiltByDeprecatedWidgetWizard
+          ? translateCustomData_deprecated(widgetObject.customData)
+          : translateCustomData(widgetObject.customData)
+
+      case 'auto':
+        return translatePreloadedData(preloadedWidgetData, t)
+
+      default:
+        throw new Error('Invalid widget dataType')
+    }
+  })()
 
   const {
     id,
@@ -131,9 +147,11 @@ function BarViz() {
             <Bar dataKey="value" fill="#FED769">
               <LabelList
                 dataKey="name"
-                position={{ bar: 'insideLeft', column: 'insideBottom' }[type]}
+                position={
+                  { bar: 'insideLeft', column: 'insideBottomLeft' }[type]
+                }
                 angle={{ bar: 0, column: 270 }[type]}
-                offset={20}
+                offset={{ bar: 20, column: 30 }[type]}
                 style={{
                   fontFamily: 'Roboto Condensed',
                   fontSize: '22px',
@@ -141,6 +159,11 @@ function BarViz() {
                   marginBottom: '10px',
                   fontWeight: 'bold',
                 }}
+                formatter={(label) =>
+                  // Neat trick! Convert label spaces to non-breaking spaces. Source:
+                  // https://stackoverflow.com/a/52266005/16852998
+                  label.toLocaleString().replace(/ /g, '\u00A0')
+                }
                 dominantBaseline="middle"
               />
             </Bar>
@@ -213,6 +236,51 @@ function translateCustomData(customData) {
       value: item[valueProperty],
     }))
     .filter((item) => Boolean(item.value))
+}
+function translatePreloadedData(data, t) {
+  // What varies? Either we have multiple years, or countries, or dataPoints
+  const variant = identifyVariant(data)
+
+  return data.map((dataItem) => ({
+    label: t(translationKeyForVariant(variant)),
+    name: t(translationKeyForVariantKey(variant, dataItem[variant])),
+    value: dataItem.data,
+  }))
+}
+function identifyVariant(data) {
+  if (data.length <= 1) return 'dataPoint'
+  const variants = ['dataPoint', 'countryCode', 'year']
+  for (let i = 0; i < variants.length; i++) {
+    const variant = variants[i]
+    const firstItem = data[0]
+    const secondITem = data[1]
+    if (firstItem[variant] !== secondITem[variant]) return variant
+  }
+  return 'dataPoint'
+}
+function translationKeyForVariant(variant) {
+  switch (variant) {
+    case 'dataPoint':
+      return 'datapoint'
+    case 'countryCode':
+      return 'Glossary:country'
+    case 'year':
+      return 'year'
+    default:
+      throw new Error('Invalid variant')
+  }
+}
+function translationKeyForVariantKey(variant, key) {
+  switch (variant) {
+    case 'dataPoint':
+      return `Glossary:dataPoint.${key}.shortLabel`
+    case 'countryCode':
+      return `NRC.Web.StaticTextDictionary.Contries.${key}`
+    case 'year':
+      return key
+    default:
+      throw new Error('Invalid variant')
+  }
 }
 
 function findElementEpiServerAncestorResetHeight(element) {

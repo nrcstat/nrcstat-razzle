@@ -1,5 +1,6 @@
 import { formatDataNumber, isMobileDevice } from '@/util/widgetHelpers.js'
 import * as $ from 'jquery'
+import { groupBy } from 'lodash'
 import React, { useContext } from 'react'
 import {
   CartesianGrid,
@@ -13,6 +14,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { FixedLocaleContext } from '../../services/i18n'
 import { isServer } from '../../util/utils'
 import ShareButton from '../ShareButton'
 import { WidgetParamsContext } from '../Widget'
@@ -28,10 +30,15 @@ function LineWidget() {
     widgetObject: {
       id,
       customData,
+      dataType,
       title = '',
       config: { subtitle = '', linkbox = '', source = '' },
     },
+    preloadedWidgetData,
   } = useContext(WidgetParamsContext)
+
+  const { getNsFixedT } = useContext(FixedLocaleContext)
+  const t = getNsFixedT(['Glossary', 'GeographicalNames'])
 
   const fixEpiServerAncestorBlockHeight = (element) => {
     $(element).parents('.nrcstat-block').css('height', 'auto')
@@ -42,11 +49,24 @@ function LineWidget() {
   // This margin is necessary to show numbers in the millions, e.g. 50 000 000.
   const yAxisWidth = isMobileDevice() ? 50 : 85
 
-  const widgetBuiltByNewWidgetBuilder = customData.columns && customData.data
-  const widgetBuiltByDeprecatedWidgetWizard = !widgetBuiltByNewWidgetBuilder
-  const data = widgetBuiltByDeprecatedWidgetWizard
-    ? translateCustomData_deprecated(customData)
-    : translateCustomData(customData)
+  const data = (() => {
+    switch (dataType) {
+      case 'custom':
+        const widgetBuiltByNewWidgetBuilder =
+          customData.columns && customData.data
+        const widgetBuiltByDeprecatedWidgetWizard =
+          !widgetBuiltByNewWidgetBuilder
+        return widgetBuiltByDeprecatedWidgetWizard
+          ? translateCustomData_deprecated(customData)
+          : translateCustomData(customData)
+
+      case 'auto':
+        return translatePreloadedData(preloadedWidgetData, t)
+
+      default:
+        throw new Error('Invalid widget dataType')
+    }
+  })()
 
   // NOTE: the `container` class is added so that
   // nrcstat-monorepo/libs/widget-social-media-sharing/src/lib/index.ts:useRenderWidgetThumbnailBlob
@@ -189,9 +209,14 @@ function LineWidget() {
 
 export default LineWidget
 
-function SourceLabel({ width, height, source }) {
+function SourceLabel({ width, height, source, ...props }) {
+  console.log(props)
   return (
-    <g transform={`translate(${width - 10}, ${height - 100})`}>
+    <g
+      transform={`translate(${width - 10}, ${
+        height - 35 - props.graphicalItems.length * 21
+      })`}
+    >
       <text
         fontFamily="Roboto Condensed"
         fontSize="14px"
@@ -227,4 +252,51 @@ function translateCustomData(customData) {
         .filter((d) => Boolean(d.value)),
     }
   })
+}
+function translatePreloadedData(data, t) {
+  // What varies? The line widget always shows multiple years, which leaves countries or dataPoints
+  const variant = identifyVariant(data)
+
+  const grouped = groupBy(data, variant)
+
+  return Object.entries(grouped).map(([variantKey, data]) => {
+    return {
+      seriesLegend: t(translationKeyForVariantKey(variant, variantKey)),
+      seriesData: data.map((d) => ({
+        date: d.year,
+        value: d.data,
+      })),
+    }
+  })
+}
+function identifyVariant(data) {
+  if (data.length <= 1) return 'dataPoint'
+  const variants = ['dataPoint', 'countryCode']
+  for (let i = 0; i < variants.length; i++) {
+    const variant = variants[i]
+    const firstItem = data[0]
+    const secondITem = data[1]
+    if (firstItem[variant] !== secondITem[variant]) return variant
+  }
+  return 'dataPoint'
+}
+function translationKeyForVariant(variant) {
+  switch (variant) {
+    case 'dataPoint':
+      return 'datapoint'
+    case 'countryCode':
+      return 'Glossary:country'
+    default:
+      throw new Error('Invalid variant')
+  }
+}
+function translationKeyForVariantKey(variant, key) {
+  switch (variant) {
+    case 'dataPoint':
+      return `Glossary:dataPoint.${key}.shortLabel`
+    case 'countryCode':
+      return `NRC.Web.StaticTextDictionary.Contries.${key}`
+    default:
+      throw new Error('Invalid variant')
+  }
 }

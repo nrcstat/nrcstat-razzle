@@ -43,6 +43,7 @@ const dataPreLoaders = {
   },
   Donut: loadDonutData,
   Bar: loadBarData,
+  Column: loadBarData,
   Line: loadLineData,
 }
 
@@ -76,7 +77,11 @@ server
         //   nrcstatpassword: req.headers.nrcstatpassword,
         // })
         // widget.preloadedWidgetData = data
-        if (dataCache[widget.widgetId]) {
+
+        // Special case: if the widget ID is widget-wizard, it comes from the old
+        // widget wizard or the new widget builder. Either way, there is no point
+        // in caching data for these as they're not saved widgets.
+        if (dataCache[widget.widgetId] && widget.widgetId !== 'widget-wizard') {
           widget.preloadedWidgetData = dataCache[widget.widgetId]
         } else {
           const data = await dataLoader(widget)

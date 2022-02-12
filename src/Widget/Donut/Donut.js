@@ -9,6 +9,7 @@ import {
   Tooltip,
 } from 'recharts'
 import { FixedLocaleContext } from '../../services/i18n'
+import { isServer } from '../../util/utils'
 import ShareButton from '../ShareButton'
 import { WidgetParamsContext } from '../Widget'
 import './Donut.scss'
@@ -26,16 +27,35 @@ function DonutRerenderOnResize() {
 }
 
 function Donut() {
+  if (isServer()) return null
+
   const [viewBox, setViewBox] = useState(null)
   const widgetParams = useContext(WidgetParamsContext)
-  const { widgetObject } = widgetParams
+  const { widgetObject, preloadedWidgetData } = widgetParams
 
-  const widgetBuiltByNewWidgetBuilder =
-    widgetObject.customData.columns && widgetObject.customData.data
-  const widgetBuiltByDeprecatedWidgetWizard = !widgetBuiltByNewWidgetBuilder
-  const data = widgetBuiltByDeprecatedWidgetWizard
-    ? translateCustomData_deprecated(widgetObject.customData)
-    : translateCustomData(widgetObject.customData)
+  console.log(preloadedWidgetData)
+
+  const { getNsFixedT } = useContext(FixedLocaleContext)
+  const t = getNsFixedT(['Glossary', 'GeographicalNames'])
+
+  const data = (() => {
+    switch (widgetObject.dataType) {
+      case 'custom':
+        const widgetBuiltByNewWidgetBuilder =
+          widgetObject.customData.columns && widgetObject.customData.data
+        const widgetBuiltByDeprecatedWidgetWizard =
+          !widgetBuiltByNewWidgetBuilder
+        return widgetBuiltByDeprecatedWidgetWizard
+          ? translateCustomData_deprecated(widgetObject.customData)
+          : translateCustomData(widgetObject.customData)
+
+      case 'auto':
+        return translatePreloadedData(preloadedWidgetData, t)
+
+      default:
+        throw new Error('Invalid widget dataType')
+    }
+  })()
 
   // NOTE: the `container` class is added so that
   // nrcstat-monorepo/libs/widget-social-media-sharing/src/lib/index.ts:useRenderWidgetThumbnailBlob
@@ -185,6 +205,51 @@ function translateCustomData(customData) {
   return customData.data
     .map((item) => ({ name: item[nameProperty], value: item[valueProperty] }))
     .filter((item) => Boolean(item.value))
+}
+function translatePreloadedData(data, t) {
+  // What varies? Either we have multiple years, or countries, or dataPoints
+  const variant = identifyVariant(data)
+
+  return data.map((dataItem) => ({
+    label: t(translationKeyForVariant(variant)),
+    name: t(translationKeyForVariantKey(variant, dataItem[variant])),
+    value: dataItem.data,
+  }))
+}
+function identifyVariant(data) {
+  if (data.length <= 1) return 'dataPoint'
+  const variants = ['dataPoint', 'countryCode', 'year']
+  for (let i = 0; i < variants.length; i++) {
+    const variant = variants[i]
+    const firstItem = data[0]
+    const secondITem = data[1]
+    if (firstItem[variant] !== secondITem[variant]) return variant
+  }
+  return 'dataPoint'
+}
+function translationKeyForVariant(variant) {
+  switch (variant) {
+    case 'dataPoint':
+      return 'datapoint'
+    case 'countryCode':
+      return 'Glossary:country'
+    case 'year':
+      return 'year'
+    default:
+      throw new Error('Invalid variant')
+  }
+}
+function translationKeyForVariantKey(variant, key) {
+  switch (variant) {
+    case 'dataPoint':
+      return `Glossary:dataPoint.${key}.shortLabel`
+    case 'countryCode':
+      return `NRC.Web.StaticTextDictionary.Contries.${key}`
+    case 'year':
+      return key
+    default:
+      throw new Error('Invalid variant')
+  }
 }
 
 const CustomTooltip = ({ active, payload }) => {
