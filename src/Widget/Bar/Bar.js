@@ -25,11 +25,6 @@ function BarViz() {
   const { getNsFixedT } = useContext(FixedLocaleContext)
   const t = getNsFixedT(['Glossary', 'GeographicalNames'])
 
-  // This number has been determined by multiple eyeball tests. When the y axis
-  // shows low numbers (e.g. 50, 100, 200) there's a lot of whitespace available.
-  // This margin is necessary to show numbers in the millions, e.g. 50 000 000.
-  const yAxisWidth = isMobileDevice() ? 50 : 85
-
   const data = (() => {
     switch (widgetObject.dataType) {
       case 'custom':
@@ -49,11 +44,17 @@ function BarViz() {
     }
   })()
 
+  const yAxisWidth =
+    measureText14RobotoCondensed(
+      formatDataNumber(Math.max(...data.map((d) => d.value)), locale)
+    ) + 15
+
   const {
     id,
     type,
     title,
     config: { subtitle, source },
+    enableSocialMediaSharing,
   } = widgetObject
 
   const Axis = { bar: XAxis, column: YAxis }[type]
@@ -172,11 +173,17 @@ function BarViz() {
       </div>
       {/* min-height to create a vertical space for the share button, even if no subtitle or source */}
       <div
-        style={{ marginLeft: '10px', textAlign: 'center', minHeight: '3em' }}
+        style={{
+          marginLeft: '10px',
+          textAlign: 'center',
+          minHeight: enableSocialMediaSharing ? '3em' : '0',
+        }}
       >
-        <div className={c['share-button-wrapper']}>
-          <ShareButton widgetId={id} />
-        </div>
+        {enableSocialMediaSharing ? (
+          <div className={c['share-button-wrapper']}>
+            <ShareButton widgetId={id} />
+          </div>
+        ) : null}
         {subtitle && (
           <p
             style={{
@@ -294,4 +301,11 @@ function findElementEpiServerAncestorResetHeight(element) {
   if (element) {
     element.style.setProperty('height', 'auto')
   }
+}
+
+function measureText14RobotoCondensed(text) {
+  const ctx = window.document.createElement('canvas').getContext('2d')
+  ctx.font = "14px 'Roboto Condensed"
+
+  return ctx.measureText(text).width
 }

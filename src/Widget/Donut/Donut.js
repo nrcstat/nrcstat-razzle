@@ -31,7 +31,17 @@ function Donut() {
 
   const [viewBox, setViewBox] = useState(null)
   const widgetParams = useContext(WidgetParamsContext)
-  const { widgetObject, preloadedWidgetData } = widgetParams
+  const {
+    widgetObject: {
+      dataType,
+      customData,
+      title,
+      id,
+      config: { subtitle, source },
+      enableSocialMediaSharing,
+    },
+    preloadedWidgetData,
+  } = widgetParams
 
   console.log(preloadedWidgetData)
 
@@ -39,15 +49,15 @@ function Donut() {
   const t = getNsFixedT(['Glossary', 'GeographicalNames'])
 
   const data = (() => {
-    switch (widgetObject.dataType) {
+    switch (dataType) {
       case 'custom':
         const widgetBuiltByNewWidgetBuilder =
-          widgetObject.customData.columns && widgetObject.customData.data
+          customData.columns && customData.data
         const widgetBuiltByDeprecatedWidgetWizard =
           !widgetBuiltByNewWidgetBuilder
         return widgetBuiltByDeprecatedWidgetWizard
-          ? translateCustomData_deprecated(widgetObject.customData)
-          : translateCustomData(widgetObject.customData)
+          ? translateCustomData_deprecated(customData)
+          : translateCustomData(customData)
 
       case 'auto':
         return translatePreloadedData(preloadedWidgetData, t)
@@ -84,7 +94,7 @@ function Donut() {
               <Label
                 position="center"
                 content={<DonutTitle setViewBox={setViewBox} />}
-                value={widgetObject.title}
+                value={title}
               />
             </Pie>
 
@@ -106,9 +116,12 @@ function Donut() {
             top: -(450 / 2 - viewBox.outerRadius),
           }}
         >
-          <div style={{ position: 'absolute', right: '0', bottom: '0.25em' }}>
-            <ShareButton widgetId={widgetObject.id} />
-          </div>
+          {}
+          {enableSocialMediaSharing ? (
+            <div style={{ position: 'absolute', right: '0', bottom: '0.25em' }}>
+              <ShareButton widgetId={id} />
+            </div>
+          ) : null}
           <p
             style={{
               fontFamily: 'Roboto',
@@ -120,7 +133,7 @@ function Donut() {
               marginTop: '30px',
             }}
           >
-            {widgetObject.config.subtitle}
+            {subtitle}
           </p>
           <p
             style={{
@@ -133,7 +146,7 @@ function Donut() {
               marginTop: '10px',
             }}
           >
-            {widgetObject.config.source}
+            {source}
           </p>
         </div>
       )}

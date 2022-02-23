@@ -1,6 +1,6 @@
 import { formatDataNumber, isMobileDevice } from '@/util/widgetHelpers.js'
 import * as $ from 'jquery'
-import { groupBy } from 'lodash'
+import { flatten, groupBy } from 'lodash'
 import React, { useContext } from 'react'
 import {
   CartesianGrid,
@@ -33,6 +33,7 @@ function LineWidget() {
       dataType,
       title = '',
       config: { subtitle = '', linkbox = '', source = '' },
+      enableSocialMediaSharing,
     },
     preloadedWidgetData,
   } = useContext(WidgetParamsContext)
@@ -47,7 +48,7 @@ function LineWidget() {
   // This nubmer has been determined by multiple eyeball tests. When the y axis
   // shows low numbers (e.g. 50, 100, 200) there's a lot of whitespace available.
   // This margin is necessary to show numbers in the millions, e.g. 50 000 000.
-  const yAxisWidth = isMobileDevice() ? 50 : 85
+  // const yAxisWidth = isMobileDevice() ? 50 : 85
 
   const data = (() => {
     switch (dataType) {
@@ -67,6 +68,18 @@ function LineWidget() {
         throw new Error('Invalid widget dataType')
     }
   })()
+
+  const yAxisWidth =
+    measureText14RobotoCondensed(
+      formatDataNumber(
+        Math.max(
+          ...flatten(data.map(({ seriesData }) => seriesData)).map(
+            (d) => d.value
+          )
+        ),
+        locale
+      )
+    ) + 15
 
   // NOTE: the `container` class is added so that
   // nrcstat-monorepo/libs/widget-social-media-sharing/src/lib/index.ts:useRenderWidgetThumbnailBlob
@@ -199,9 +212,11 @@ function LineWidget() {
             <Customized component={<SourceLabel source={source} />} />
           </LineChart>
         </ResponsiveContainer>
-        <div style={{ position: 'absolute', right: '0', bottom: '-0.8em' }}>
-          <ShareButton widgetId={id} />
-        </div>
+        {enableSocialMediaSharing ? (
+          <div style={{ position: 'absolute', right: '0', bottom: '-0.8em' }}>
+            <ShareButton widgetId={id} />
+          </div>
+        ) : null}
       </div>
     </div>
   )
@@ -210,7 +225,6 @@ function LineWidget() {
 export default LineWidget
 
 function SourceLabel({ width, height, source, ...props }) {
-  console.log(props)
   return (
     <g
       transform={`translate(${width - 10}, ${
@@ -299,4 +313,11 @@ function translationKeyForVariantKey(variant, key) {
     default:
       throw new Error('Invalid variant')
   }
+}
+
+function measureText14RobotoCondensed(text) {
+  const ctx = window.document.createElement('canvas').getContext('2d')
+  ctx.font = "14px 'Roboto Condensed"
+
+  return ctx.measureText(text).width
 }
