@@ -43,8 +43,6 @@ function Donut() {
     preloadedWidgetData,
   } = widgetParams
 
-  console.log(preloadedWidgetData)
-
   const { getNsFixedT } = useContext(FixedLocaleContext)
   const t = getNsFixedT(['Glossary', 'GeographicalNames'])
 
