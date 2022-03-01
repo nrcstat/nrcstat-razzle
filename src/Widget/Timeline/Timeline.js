@@ -19,7 +19,7 @@ function Timeline() {
 
   return (
     <div
-      className={`${c.container} ${isMobile ? c.mobile : c.desktop}`}
+      className={`container ${c.container} ${isMobile ? c.mobile : c.desktop}`}
       ref={findElementEpiServerAncestorResetHeight}
     >
       {entries.map((entry, key) => (
