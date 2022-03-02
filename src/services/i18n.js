@@ -23,26 +23,33 @@ if (isClient()) {
           if (format === 'uppercase') return value.toUpperCase()
           if (value instanceof Date) return moment(value).format(format)
           return value
-        }
+        },
       },
       // react i18next special options (optional)
       react: {
         wait: false,
         bindI18n: 'languageChanged loaded',
         bindStore: 'added removed',
-        nsMode: 'default'
+        nsMode: 'default',
       },
       keySeparator: false,
 
-      resources: window.localeTranslation
+      resources: window.localeTranslation,
     })
 }
 
 export const FixedLocaleContext = React.createContext()
 
-export function buildFixedLocaleContext (locale) {
-  const getNsFixedT = ns => i18n.getFixedT(locale, ns)
+export function buildFixedLocaleContext(locale) {
+  const getNsFixedT = (ns) => i18n.getFixedT(locale, ns)
   const fixedT = i18n.getFixedT(locale)
-  const formatDataNumber = (number, forceFullFormat = true) => _formatDataNumber(number, locale, forceFullFormat)
-  return ({ children }) => <FixedLocaleContext.Provider value={{ fixedT, getNsFixedT, formatDataNumber }}>{children}</FixedLocaleContext.Provider>
+  const formatDataNumber = (number, forceFullFormat = true) =>
+    _formatDataNumber(number, locale, forceFullFormat)
+  return ({ children }) => (
+    <FixedLocaleContext.Provider
+      value={{ fixedT, getNsFixedT, formatDataNumber }}
+    >
+      {children}
+    </FixedLocaleContext.Provider>
+  )
 }
