@@ -119,8 +119,20 @@ function removeLocaleLayer(widgetObject, locale) {
     widgetObject.config.source = ''
   }
   if (widgetObject.dataType === 'custom') {
-    if (widgetObject.customData[locale]) {
-      widgetObject.customData = widgetObject.customData[locale]
+    if (widgetObject.customData) {
+      if (
+        widgetObject.customData.columns &&
+        widgetObject.customData.columns[0]
+      ) {
+        widgetObject.customData.columns = widgetObject.customData.columns.map(
+          (column) => ({ ...column, columnLabel: column.columnLabel[locale] })
+        )
+      }
+      if (widgetObject.customData.data && widgetObject.customData.data[0]) {
+        widgetObject.customData.data = widgetObject.customData.data.map(
+          (item) => ({ ...item, label: item.label[locale] })
+        )
+      }
     }
   }
 
