@@ -124,7 +124,7 @@ function BarViz() {
                 return [formatDataNumber(d, locale)]
               }}
               labelFormatter={(a, b, c, d) => {
-                return b[0]?.payload?.name
+                return b?.[0]?.payload?.name
               }}
               contentStyle={{
                 padding: '10px',

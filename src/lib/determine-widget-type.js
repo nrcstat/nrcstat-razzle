@@ -148,7 +148,6 @@ function removeLocaleLayer(widgetObject, locale) {
 
   // Pictogram widget
   if (widgetObject && widgetObject.type === 'pictogram') {
-    widgetObject.title = widgetObject.title?.[locale]
     widgetObject.subtitle = widgetObject.subtitle?.[locale]
     widgetObject.source = widgetObject.source?.[locale]
     if (widgetObject.sections && widgetObject.sections.length > 0) {
