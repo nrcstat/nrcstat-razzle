@@ -49,13 +49,7 @@ function Donut() {
   const data = (() => {
     switch (dataType) {
       case 'custom':
-        const widgetBuiltByNewWidgetBuilder =
-          customData.columns && customData.data
-        const widgetBuiltByDeprecatedWidgetWizard =
-          !widgetBuiltByNewWidgetBuilder
-        return widgetBuiltByDeprecatedWidgetWizard
-          ? translateCustomData_deprecated(customData)
-          : translateCustomData(customData)
+        return translateCustomData(customData)
 
       case 'auto':
         return translatePreloadedData(preloadedWidgetData, t)
@@ -210,14 +204,6 @@ class DonutTitle extends React.Component {
 
 export default DonutRerenderOnResize
 
-// TODO: this translator matches the "pre-2022" way of storing
-// the custom data in the widget object, as created by the
-// widget wizard. Eventually we'll want to move to the new way.
-function translateCustomData_deprecated(customData) {
-  return customData
-    .map((item) => ({ name: item.hoverLabel, value: item.value }))
-    .filter((item) => Boolean(item.value))
-}
 function translateCustomData(customData) {
   const nameProperty = customData.columns[0].data
   const valueProperty = customData.columns[1].data

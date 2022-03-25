@@ -28,13 +28,7 @@ function BarViz() {
   const data = (() => {
     switch (widgetObject.dataType) {
       case 'custom':
-        const widgetBuiltByNewWidgetBuilder =
-          widgetObject.customData.columns && widgetObject.customData.data
-        const widgetBuiltByDeprecatedWidgetWizard =
-          !widgetBuiltByNewWidgetBuilder
-        return widgetBuiltByDeprecatedWidgetWizard
-          ? translateCustomData_deprecated(widgetObject.customData)
-          : translateCustomData(widgetObject.customData)
+        return translateCustomData(widgetObject.customData)
 
       case 'auto':
         return translatePreloadedData(preloadedWidgetData, t)
@@ -230,14 +224,6 @@ function BarViz() {
 
 export default BarViz
 
-// TODO: this translator matches the "pre-2022" way of storing
-// the custom data in the widget object, as created by the
-// widget wizard. Eventually we'll want to move to the new way.
-function translateCustomData_deprecated(customData) {
-  return customData
-    .map((item) => ({ name: item.hoverLabel, value: item.value }))
-    .filter((item) => Boolean(item.value))
-}
 function translateCustomData(customData) {
   const label = customData.columns[0].columnLabel
   const nameProperty = customData.columns[0].data

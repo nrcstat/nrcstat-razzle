@@ -53,13 +53,7 @@ function LineWidget() {
   const data = (() => {
     switch (dataType) {
       case 'custom':
-        const widgetBuiltByNewWidgetBuilder =
-          customData.columns && customData.data
-        const widgetBuiltByDeprecatedWidgetWizard =
-          !widgetBuiltByNewWidgetBuilder
-        return widgetBuiltByDeprecatedWidgetWizard
-          ? translateCustomData_deprecated(customData)
-          : translateCustomData(customData)
+        return translateCustomData(customData)
 
       case 'auto':
         return translatePreloadedData(preloadedWidgetData, t)
@@ -254,15 +248,6 @@ function SourceLabel({ width, height, source, linkToSource, ...props }) {
   )
 }
 
-// TODO: this translator matches the "pre-2022" way of storing
-// the custom data in the widget object, as created by the
-// widget wizard. Eventually we'll want to move to the new way.
-function translateCustomData_deprecated(customData) {
-  return customData.map((series) => {
-    series.seriesData = series.seriesData.filter((d) => Boolean(d.date))
-    return series
-  })
-}
 function translateCustomData(customData) {
   const dateKey = customData.columns[0].data
   return customData.columns.slice(1).map((column) => {
