@@ -34,6 +34,7 @@ function LineWidget() {
       title = '',
       config: { subtitle = '', linkbox = '', source = '', linkToSource = '' },
       enableSocialMediaSharing,
+      enablePopup,
     },
     preloadedWidgetData,
   } = useContext(WidgetParamsContext)
@@ -155,29 +156,31 @@ function LineWidget() {
                 fill: '#474747',
               }}
             />
-            <Tooltip
-              formatter={(d, hoverLabel) => [
-                formatDataNumber(d, locale),
-                hoverLabel,
-              ]}
-              contentStyle={{
-                padding: '10px',
-                border: '1px solid #474747',
-                borderRadius: '3px',
-              }} // text box
-              labelStyle={{
-                fontFamily: 'Roboto Condensed',
-                fontSize: '22px',
-                color: '#474747',
-                marginBottom: '10px',
-                fontWeight: 'bold',
-              }} //  year
-              itemStyle={{
-                paddingBottom: '5px',
-                fontFamily: 'Roboto Condensed',
-                fontSize: '16px',
-              }}
-            />
+            {enablePopup ? (
+              <Tooltip
+                formatter={(d, hoverLabel) => [
+                  formatDataNumber(d, locale),
+                  hoverLabel,
+                ]}
+                contentStyle={{
+                  padding: '10px',
+                  border: '1px solid #474747',
+                  borderRadius: '3px',
+                }} // text box
+                labelStyle={{
+                  fontFamily: 'Roboto Condensed',
+                  fontSize: '22px',
+                  color: '#474747',
+                  marginBottom: '10px',
+                  fontWeight: 'bold',
+                }} //  year
+                itemStyle={{
+                  paddingBottom: '5px',
+                  fontFamily: 'Roboto Condensed',
+                  fontSize: '16px',
+                }}
+              />
+            ) : null}
             <Legend
               align="center"
               layout="vertical"

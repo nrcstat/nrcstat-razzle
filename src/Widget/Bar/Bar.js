@@ -49,6 +49,7 @@ function BarViz() {
     title,
     config: { subtitle, source, linkToSource },
     enableSocialMediaSharing,
+    enablePopup,
   } = widgetObject
 
   const Axis = { bar: XAxis, column: YAxis }[type]
@@ -113,32 +114,35 @@ function BarViz() {
               }}
             />
             <OtherAxis hide axisLine={false} type="category" />
-            <Tooltip
-              formatter={(d, _, info) => {
-                return [formatDataNumber(d, locale)]
-              }}
-              labelFormatter={(a, b, c, d) => {
-                return b?.[0]?.payload?.name
-              }}
-              contentStyle={{
-                padding: '10px',
-                border: '1px solid #474747',
-                borderRadius: '3px',
-              }} // text box
-              labelStyle={{
-                fontFamily: 'Roboto Condensed',
-                fontSize: '22px',
-                color: '#474747',
-                marginBottom: '10px',
-                fontWeight: 'bold',
-              }} //  year
-              itemStyle={{
-                paddingBottom: '5px',
-                fontFamily: 'Roboto Condensed',
-                fontSize: '16px',
-              }}
-              cursor={{ fill: 'none' }}
-            />
+            {enablePopup ? (
+              <Tooltip
+                formatter={(d, _, info) => {
+                  return [formatDataNumber(d, locale)]
+                }}
+                labelFormatter={(a, b, c, d) => {
+                  return b?.[0]?.payload?.name
+                }}
+                contentStyle={{
+                  padding: '10px',
+                  border: '1px solid #474747',
+                  borderRadius: '3px',
+                }} // text box
+                labelStyle={{
+                  fontFamily: 'Roboto Condensed',
+                  fontSize: '22px',
+                  color: '#474747',
+                  marginBottom: '10px',
+                  fontWeight: 'bold',
+                }} //  year
+                itemStyle={{
+                  paddingBottom: '5px',
+                  fontFamily: 'Roboto Condensed',
+                  fontSize: '16px',
+                }}
+                cursor={{ fill: 'none' }}
+              />
+            ) : null}
+
             <Bar dataKey="value" fill="#FED769">
               <LabelList
                 dataKey="name"

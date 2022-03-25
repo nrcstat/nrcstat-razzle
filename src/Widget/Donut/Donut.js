@@ -39,6 +39,7 @@ function Donut() {
       id,
       config: { subtitle, source, linkToSource },
       enableSocialMediaSharing,
+      enablePopup,
     },
     preloadedWidgetData,
   } = widgetParams
@@ -90,11 +91,12 @@ function Donut() {
               />
             </Pie>
 
-            <Tooltip
-              active
-              content={<CustomTooltip />}
-              wrapperStyle={{ visibility: 'visible', foo: 'bar' }}
-            />
+            {enablePopup ? (
+              <Tooltip
+                content={<CustomTooltip />}
+                wrapperStyle={{ visibility: 'visible', foo: 'bar' }}
+              />
+            ) : null}
           </PieChart>
         </ResponsiveContainer>
       </div>
