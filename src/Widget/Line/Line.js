@@ -32,7 +32,7 @@ function LineWidget() {
       customData,
       dataType,
       title = '',
-      config: { subtitle = '', linkbox = '', source = '' },
+      config: { subtitle = '', linkbox = '', source = '', linkToSource = '' },
       enableSocialMediaSharing,
     },
     preloadedWidgetData,
@@ -209,7 +209,11 @@ function LineWidget() {
                 activeDot={{ r: 10 }}
               />
             ))}
-            <Customized component={<SourceLabel source={source} />} />
+            <Customized
+              component={
+                <SourceLabel source={source} linkToSource={linkToSource} />
+              }
+            />
           </LineChart>
         </ResponsiveContainer>
         {enableSocialMediaSharing ? (
@@ -224,7 +228,7 @@ function LineWidget() {
 
 export default LineWidget
 
-function SourceLabel({ width, height, source, ...props }) {
+function SourceLabel({ width, height, source, linkToSource, ...props }) {
   return (
     <g
       transform={`translate(${width - 10}, ${
@@ -238,7 +242,13 @@ function SourceLabel({ width, height, source, ...props }) {
         transform="rotate(90)"
         textAnchor="end"
       >
-        {source}
+        {linkToSource ? (
+          <a href={linkToSource} target="_blank">
+            {source}
+          </a>
+        ) : (
+          source
+        )}
       </text>
     </g>
   )

@@ -37,7 +37,7 @@ function Donut() {
       customData,
       title,
       id,
-      config: { subtitle, source },
+      config: { subtitle, source, linkToSource },
       enableSocialMediaSharing,
     },
     preloadedWidgetData,
@@ -133,19 +133,27 @@ function Donut() {
           >
             {subtitle}
           </p>
-          <p
-            style={{
-              fontFamily: 'Roboto',
-              color: '#474747',
-              fontSize: '16px',
-              fontWeight: '300',
-              margin: 0,
-              padding: 0,
-              marginTop: '10px',
-            }}
-          >
-            {source}
-          </p>
+          {source ? (
+            <p
+              style={{
+                fontFamily: 'Roboto',
+                color: '#474747',
+                fontSize: '16px',
+                fontWeight: '300',
+                margin: 0,
+                padding: 0,
+                marginTop: '10px',
+              }}
+            >
+              {linkToSource ? (
+                <a href={linkToSource} target="_blank">
+                  {source}
+                </a>
+              ) : (
+                source
+              )}
+            </p>
+          ) : null}
         </div>
       )}
     </div>

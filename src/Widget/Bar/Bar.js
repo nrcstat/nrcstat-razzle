@@ -53,7 +53,7 @@ function BarViz() {
     id,
     type,
     title,
-    config: { subtitle, source },
+    config: { subtitle, source, linkToSource },
     enableSocialMediaSharing,
   } = widgetObject
 
@@ -214,7 +214,13 @@ function BarViz() {
               textAlign: 'center',
             }}
           >
-            {source}
+            {linkToSource ? (
+              <a href={linkToSource} target="_blank">
+                {source}
+              </a>
+            ) : (
+              source
+            )}
           </p>
         )}
       </div>
