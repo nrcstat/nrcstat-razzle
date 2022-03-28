@@ -76,6 +76,7 @@ function Pictogram() {
     source,
     backgroundColor = BackgroundColorKey.White,
     sections,
+    enableSocialMediaSharing,
   } = widgetObject
 
   const iconBaseColor = BackgroundColorToIconBaseColorMap[backgroundColor]
@@ -120,9 +121,11 @@ function Pictogram() {
         ))}
       <span className={c['source']}>{source}</span>
 
-      <div className={c['share-button-wrapper']}>
-        <ShareButton widgetId={id} />
-      </div>
+      {enableSocialMediaSharing ? (
+        <div className={c['share-button-wrapper']}>
+          <ShareButton widgetId={id} />
+        </div>
+      ) : null}
     </div>
   )
 }
