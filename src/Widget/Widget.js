@@ -34,6 +34,11 @@ const CustomTable = loadable(() =>
 const Pictogram = loadable(() =>
   import(/* webpackChunkName: "Pictogram" */ './Pictogram/Pictogram')
 )
+const StaticCountrySidebar = loadable(() =>
+  import(
+    /* webpackChunkName: "StaticCountrySidebar" */ './StaticCountrySidebar/StaticCountrySidebar'
+  )
+)
 const Timeline = loadable(() =>
   import(/* webpackChunkName: "Timeline" */ './Timeline/Timeline')
 )
@@ -48,8 +53,11 @@ const widgetMap = {
   CountryDashboard: CountryDashboard,
   CustomTable: CustomTable,
   Pictogram: Pictogram,
+  StaticCountrySidebar: StaticCountrySidebar,
   Timeline: Timeline,
 }
+
+console.log(StaticCountrySidebar)
 
 export const WidgetParamsContext = React.createContext()
 

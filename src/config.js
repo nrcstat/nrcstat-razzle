@@ -10,5 +10,6 @@ export const ALL_LOCALE_NAMESPACES = [
   'Widget.Static.GlobalRadialBarChartDisplacementMap.ADMIN-SETTINGS-ONLY-ADMINS-TOUCH-THIS',
   'Widget.Static.GlobalRadialBarChartDisplacementMap.ADMIN-SETTINGS-ONLY-ADMINS-TOUCH-THIS',
   'Widget.UserCreated.Timeline',
+  'Widget.Static.CountrySidebar',
 ]
 export const DEFAULT_LOCALE = 'nb-NO'

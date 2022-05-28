@@ -1,5 +1,6 @@
 import { ENABLED_LOCALES, DEFAULT_LOCALE, API_URL } from '../config.js'
 import nodeFetch from 'node-fetch'
+import StaticCountrySidebar from '../Widget/StaticCountrySidebar/StaticCountrySidebar.js'
 
 export const determineWidgetType = async (widget) => {
   const { widgetId } = widget
@@ -40,7 +41,13 @@ export const determineWidgetType = async (widget) => {
     return {
       locale,
       type: 'CountryDashboard',
-      ...parseDynamicCountryDashboardWidgetId(widgetId),
+      ...extractDynamicCountryDashboardWidgetParams(widgetId),
+    }
+  } else if (/country_sidebar_/.test(widgetId)) {
+    return {
+      locale,
+      type: 'StaticCountrySidebar',
+      ...extractStaticCountrySidebarWidgetParams(widgetId),
     }
   } else {
     let widgetObject
@@ -161,7 +168,7 @@ function removeLocaleLayer(widgetObject, locale) {
   return widgetObject
 }
 
-function parseDynamicCountryDashboardWidgetId(widgetId) {
+function extractDynamicCountryDashboardWidgetParams(widgetId) {
   const patternCountryYear = /dynamic_country_dashboard_([A-Z]{2})_(\d{4})/
   const patternCountryYearDataPoints =
     /dynamic_country_dashboard_([A-Z]{2})_(\d{4})_([A-Za-z,]+)/
@@ -199,4 +206,33 @@ function parseDynamicCountryDashboardWidgetId(widgetId) {
   }
 
   return { countryCode, year, dataPoints, showMap }
+}
+
+const DEFAULT_COUNTRY_SIDEBAR_DATA_POINTS = [
+  'idpsInXInYear',
+  'refugeesInXFromOtherCountriesInYear',
+  'totalRefugeesFromX',
+]
+
+function extractStaticCountrySidebarWidgetParams(widgetId) {
+  const patternCountryYear = /country_sidebar_([A-Z]{2})_(\d{4})/
+  const patternCountryYearDataPoints =
+    /country_sidebar_([A-Z]{2})_(\d{4})_([A-Za-z,]+)/
+
+  let countryCode
+  let year
+  let dataPoints = DEFAULT_COUNTRY_SIDEBAR_DATA_POINTS
+
+  if (patternCountryYearDataPoints.test(widgetId)) {
+    const matches = patternCountryYearDataPoints.exec(widgetId)
+    countryCode = matches[1]
+    year = matches[2]
+    dataPoints = matches[3].split(',')
+  } else if (patternCountryYear.test(widgetId)) {
+    const matches = patternCountryYear.exec(widgetId)
+    countryCode = matches[1]
+    year = matches[2]
+  }
+
+  return { countryCode, year, dataPoints }
 }

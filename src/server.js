@@ -18,6 +18,7 @@ import { loadWidgetData as loadGlobalMapData } from './Widget/GlobalMap/loadWidg
 import { loadWidgetData as loadDonutData } from './Widget/Donut/loadWidgetData.js'
 import { loadWidgetData as loadBarData } from './Widget/Bar/loadWidgetData.js'
 import { loadWidgetData as loadLineData } from './Widget/Line/loadWidgetData.js'
+import { loadWidgetData as loadStaticCountrySidebarData } from './Widget/StaticCountrySidebar/loadWidgetData.js'
 
 /// import i18n service to initialize it
 import { i18n } from './server-only/locale-service.js'
@@ -45,6 +46,7 @@ const dataPreLoaders = {
   Bar: loadBarData,
   Column: loadBarData,
   Line: loadLineData,
+  StaticCountrySidebar: loadStaticCountrySidebarData,
 }
 
 const server = express()
