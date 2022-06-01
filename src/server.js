@@ -83,7 +83,10 @@ server
         // Special case: if the widget ID is widget-wizard, it comes from the old
         // widget wizard or the new widget builder. Either way, there is no point
         // in caching data for these as they're not saved widgets.
-        if (dataCache[widget.widgetId] && widget.widgetId !== 'widget-wizard') {
+        if (
+          dataCache[widget.widgetId] &&
+          !/widget-wizard/.test(widget.widgetId)
+        ) {
           widget.preloadedWidgetData = dataCache[widget.widgetId]
         } else {
           const data = await dataLoader(widget)
