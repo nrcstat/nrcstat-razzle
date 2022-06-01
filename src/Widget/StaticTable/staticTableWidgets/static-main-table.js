@@ -470,15 +470,6 @@ export default function (widgetParams) {
           dom: 'Blfrtip',
           buttons: [
             {
-              extend: 'csv',
-              text: t(
-                `RefugeeReport${
-                  periodYear + 1
-                }.MainTable.Actions.dowloadExcelFile`
-              ),
-              title: tableTitle,
-            },
-            {
               extend: 'excel',
               text: t(
                 `RefugeeReport${

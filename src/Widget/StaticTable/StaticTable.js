@@ -12,6 +12,7 @@ const $ = require('jquery')
 if (isClient()) {
   window.$ = window.jQuery = $
   window.tooltipster = require('tooltipster')
+  window.JSZip = require('jszip')
   require('datatables.net')(window, $)
   require('datatables.net-responsive')(window, $)
   require('datatables.net-colreorder')(window, $)
