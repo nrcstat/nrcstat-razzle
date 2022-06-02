@@ -44,31 +44,6 @@ export function CountryMap() {
       style: 'mapbox://styles/nrcmaps/cjwz5szot00y61cpjqq3h9s5p',
       interactive: false,
     })
-    const boundingBox = leonardoCentroid.boundingbox
-    const [west, south, east, north] = boundingBox
-    const fitBounds_bounds = [
-      [south, west],
-      [north, east],
-    ]
-    const fitBounds_config = { padding: 15 }
-
-    const somethingWonderful = map.current.cameraForBounds(
-      fitBounds_bounds,
-      fitBounds_config
-    )
-
-    map.current.fitBounds(fitBounds_bounds, fitBounds_config)
-    map.current.on('resize', () => {
-      console.log('resize')
-      map.current.fitBounds(fitBounds_bounds, fitBounds_config)
-    })
-
-    const el = document.createElement('div')
-    el.className = 'nrcstat-radial-bar-chart'
-
-    new mapboxgl.Marker(el)
-      .setLngLat(somethingWonderful.center.toArray())
-      .addTo(map.current)
 
     ReactDOM.render(
       <RadialBarChart
@@ -78,6 +53,32 @@ export function CountryMap() {
     )
 
     map.current.on('load', () => {
+      const boundingBox = leonardoCentroid.boundingbox
+      const [west, south, east, north] = boundingBox
+      const fitBounds_bounds = [
+        [south, west],
+        [north, east],
+      ]
+      const fitBounds_config = { padding: 15 }
+
+      const somethingWonderful = map.current.cameraForBounds(
+        fitBounds_bounds,
+        fitBounds_config
+      )
+
+      map.current.fitBounds(fitBounds_bounds, fitBounds_config)
+      map.current.on('resize', () => {
+        console.log('resize')
+        map.current.fitBounds(fitBounds_bounds, fitBounds_config)
+      })
+
+      const el = document.createElement('div')
+      el.className = 'nrcstat-radial-bar-chart'
+
+      new mapboxgl.Marker(el)
+        .setLngLat(somethingWonderful.center.toArray())
+        .addTo(map.current)
+
       const singleCountry = clone(middleResolutionCountriesGeoJson)
       singleCountry.features = singleCountry.features.filter(
         (c) =>
