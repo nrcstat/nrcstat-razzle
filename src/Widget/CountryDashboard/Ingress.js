@@ -13,7 +13,9 @@ export function Ingress() {
 
   const t = getNsFixedT(['Widget.Static.CountryDashboard'])
 
-  const ingress = String(t(`countryIngress.${countryCode}`)).trim()
+  let ingress = String(
+    t(`countryIngress.${countryCode}`, { defaultValue: '' })
+  ).trim()
 
   const isEmpty = Boolean(ingress)
 
