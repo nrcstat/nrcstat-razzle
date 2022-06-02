@@ -45,13 +45,6 @@ export function CountryMap() {
       interactive: false,
     })
 
-    ReactDOM.render(
-      <RadialBarChart
-        data={Object.values(dataTransformer(t, locale)(data))[0]}
-      />,
-      el
-    )
-
     map.current.on('load', () => {
       const boundingBox = leonardoCentroid.boundingbox
       const [west, south, east, north] = boundingBox
@@ -78,6 +71,13 @@ export function CountryMap() {
       new mapboxgl.Marker(el)
         .setLngLat(somethingWonderful.center.toArray())
         .addTo(map.current)
+
+      ReactDOM.render(
+        <RadialBarChart
+          data={Object.values(dataTransformer(t, locale)(data))[0]}
+        />,
+        el
+      )
 
       const singleCountry = clone(middleResolutionCountriesGeoJson)
       singleCountry.features = singleCountry.features.filter(
