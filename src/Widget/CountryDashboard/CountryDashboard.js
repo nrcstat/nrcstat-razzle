@@ -73,8 +73,18 @@ export default function Loader() {
   )
 }
 
-function CountryDashboardWrapper(props) {
-  const [ref, setRef] = useState()
+function CountryDashboardWrapper() {
+  const { getNsFixedT } = useContext(FixedLocaleContext)
+  const widgetParams = useContext(WidgetParamsContext)
+  const { countryCode } = widgetParams
+
+  const t = getNsFixedT(['Widget.Static.CountryDashboard'])
+
+  let ingress = String(
+    t(`countryIngress.${countryCode}`, { defaultValue: '' })
+  ).trim()
+  const isIngressNonEmpty = Boolean(ingress)
+
   return (
     <>
       <DashboardHeader />
@@ -82,9 +92,11 @@ function CountryDashboardWrapper(props) {
         <div className={c['map']}>
           <CountryMap />
         </div>
-        <div className={c['ingress']}>
-          <Ingress />
-        </div>
+        {isIngressNonEmpty ? (
+          <div className={c['ingress']}>
+            <Ingress />
+          </div>
+        ) : null}
       </div>
 
       <div className={c['donut-table-wrapper']}>
