@@ -1,0 +1,44 @@
+.dashboard-map-and-ingress-wrapper {
+  display: flex;
+
+  flex-direction: column;
+  @media (min-width: 641px) {
+    flex-direction: row;
+    .map {
+      flex: 1;
+    }
+    .ingress {
+      flex: 2;
+    }
+  }
+
+  margin-bottom: 1em;
+}
+
+.donuts-wrapper {
+  display: flex;
+  flex-direction: row;
+  height: 300px;
+}
+
+.donut-wrapper {
+  flex: 1;
+}
+
+.donut-table-wrapper {
+  display: flex;
+  @media (min-width: 641px) {
+    flex-direction: row;
+    .map {
+      flex: 1;
+    }
+    .ingress {
+      flex: 2;
+    }
+  }
+  flex-direction: column;
+}
+
+.spacer {
+  width: 2em;
+}

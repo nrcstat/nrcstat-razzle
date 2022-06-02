@@ -1,0 +1,66 @@
+@import '@/style/common.scss';
+
+$desktopMarginHorizontal: 1.5em;
+
+.main-data-table-wrapper {
+  margin-left: $desktopMarginHorizontal;
+  margin-right: $desktopMarginHorizontal;
+  @media (min-width: 641px) {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+table.main-data-table {
+  font-family: 'Roboto Condensed';
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2.5em;
+  table-layout: fixed;
+}
+table.main-data-table td {
+  border-top: 1px solid #cccccc;
+  border-bottom: 1px solid #cccccc;
+  padding: 0.7em 0.6em;
+}
+table.main-data-table td:first-child {
+  @media (min-width: 641px) {
+    padding-left: $desktopMarginHorizontal;
+    padding-right: $desktopMarginHorizontal;
+  }
+}
+.data-cell,
+.data-header-cell {
+  text-align: right;
+}
+.data-cell {
+  font-size: 18px;
+}
+
+.year-picker {
+  margin-left: $desktopMarginHorizontal;
+  margin-right: $desktopMarginHorizontal;
+
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 1em;
+
+  .year-button {
+    background: none;
+    border: none;
+    margin: 0 0.5em 0 0;
+    cursor: pointer;
+    color: $text50;
+    font-family: Roboto;
+    font-size: 1.2em;
+    font-weight: 700;
+    line-height: 36px;
+    letter-spacing: 0em;
+
+    &-active {
+      color: $text;
+      text-decoration: underline;
+      text-decoration-color: $nrcOrange;
+    }
+  }
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <script src="/widgetLib.js"></script>
+  </head>
+
+  <body>
+    <style></style>
+
+    <div id="abc111" class="nrcstat-block"></div>
+    <div id="abc222" class="nrcstat-block"></div>
+    <div id="abc333" class="nrcstat-block"></div>
+    <div id="abc444" class="nrcstat-block"></div>
+    <div id="abc555" class="nrcstat-block"></div>
+    <script>
+      NrcStatWidgetLibrary.getInstance().generateWidget({
+        targetSelector: '#abc111',
+        // widgetId: "nb-NO-dynamic_country_dashboard_AF_2018"
+        widgetId: 'nb-NO-dynamic_country_dashboard_AF_2020',
+      })
+      NrcStatWidgetLibrary.getInstance().generateWidget({
+        targetSelector: '#abc222',
+        // widgetId: "nb-NO-dynamic_country_dashboard_AF_2018"
+        widgetId: 'nb-NO-dynamic_country_dashboard_AF_2019',
+      })
+      NrcStatWidgetLibrary.getInstance().generateWidget({
+        targetSelector: '#abc333',
+        // widgetId: "nb-NO-dynamic_country_dashboard_AF_2018"
+        widgetId: 'nb-NO-dynamic_country_dashboard_SY_2020',
+      })
+    </script>
+  </body>
+</html>

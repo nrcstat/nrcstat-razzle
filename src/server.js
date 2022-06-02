@@ -14,6 +14,7 @@ import { determineWidgetType } from './lib/determine-widget-type'
 
 import Widget from './Widget/Widget'
 
+import { loadWidgetData as loadCountryDashboardData } from './Widget/CountryDashboard/loadWidgetData.js'
 import { loadWidgetData as loadGlobalMapData } from './Widget/GlobalMap/loadWidgetData.js'
 import { loadWidgetData as loadDonutData } from './Widget/Donut/loadWidgetData.js'
 import { loadWidgetData as loadBarData } from './Widget/Bar/loadWidgetData.js'
@@ -47,6 +48,7 @@ const dataPreLoaders = {
   Column: loadBarData,
   Line: loadLineData,
   StaticCountrySidebar: loadStaticCountrySidebarData,
+  CountryDashboard: loadCountryDashboardData,
 }
 
 const server = express()

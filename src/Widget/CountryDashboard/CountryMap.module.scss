@@ -1,0 +1,16 @@
+@import url('https://api.tiles.mapbox.com/mapbox-gl-js/v0.45.0/mapbox-gl.css');
+
+.map-container {
+  display: block;
+  height: 450px;
+  // width: 500px
+
+  .source {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    font-family: 'Roboto Condensed';
+    font-size: small;
+    color: grey;
+  }
+}

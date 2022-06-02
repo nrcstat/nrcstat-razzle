@@ -42,6 +42,9 @@ const StaticCountrySidebar = loadable(() =>
 const Timeline = loadable(() =>
   import(/* webpackChunkName: "Timeline" */ './Timeline/Timeline')
 )
+const BlankError = loadable(() =>
+  import(/* webpackChunkName: "BlankError" */ './BlankError/BlankError')
+)
 
 const widgetMap = {
   GlobalMap: GlobalMap,
@@ -55,9 +58,8 @@ const widgetMap = {
   Pictogram: Pictogram,
   StaticCountrySidebar: StaticCountrySidebar,
   Timeline: Timeline,
+  BlankError: BlankError,
 }
-
-console.log(StaticCountrySidebar)
 
 export const WidgetParamsContext = React.createContext()
 

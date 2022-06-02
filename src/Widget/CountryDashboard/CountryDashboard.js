@@ -1,64 +1,37 @@
-import React, {
-  useRef,
-  useContext,
-  useCallback,
-  useState,
-  useEffect,
-} from 'react'
-import ReactDOM from 'react-dom'
+import { formatDataNumber, isMobileDevice } from '@/util/widgetHelpers.js'
+import gazaGeoJson from '@/Widget/assets/json/gaza.json'
+import centroidsRaw from '@/Widget/assets/json/geo_entities_updated_manually'
+import middleResolutionCountriesGeoJson from '@/Widget/assets/json/ne_110m_admin_0_countries.json'
 import loadable from '@loadable/component'
-
 import {
-  includes,
-  find,
-  map as _map,
-  map,
-  groupBy,
-  mapValues,
-  keyBy,
-  last,
   chain,
   clone,
+  groupBy,
+  includes,
   isNull,
+  last,
+  mapValues,
 } from 'lodash'
-
-import { FixedLocaleContext } from '../../services/i18n'
-import { WidgetParamsContext } from '../Widget'
-import { isClient, isServer } from '../../util/utils'
-import { API_URL } from '../../config'
-
-import {
-  formatDataNumber,
-  formatDataPercentage,
-  isMobileDevice,
-} from '@/util/widgetHelpers.js'
-
-import {
-  XYPlot,
-  XAxis,
-  YAxis,
-  HorizontalGridLines,
-  LineSeries,
-  CircularGridLines,
-  MarkSeries,
-  ArcSeries,
-  VerticalGridLines,
-  LabelSeries,
-} from 'react-vis'
-
+import React, { useContext, useEffect, useState } from 'react'
+import ReactDOM from 'react-dom'
+import { ArcSeries, LabelSeries, XYPlot } from 'react-vis'
 import 'react-vis/dist/style.css'
-import horizontalBarBaseImg from './dashboard-horizontal-bar-base.png'
-import middleResolutionCountriesGeoJson from '@/Widget/assets/json/ne_110m_admin_0_countries.json'
-import gazaGeoJson from '@/Widget/assets/json/gaza.json'
-
-import centroidsRaw from '@/Widget/assets/json/geo_entities_updated_manually'
-
+import { API_URL } from '../../config'
+import { FixedLocaleContext } from '../../services/i18n'
+import { isClient, isServer } from '../../util/utils'
+import { WidgetParamsContext } from '../Widget'
 import './CountryDashboard.scss'
+import { CountryMap } from './CountryMap'
+import { getCountryStat } from './get-country-stat'
+import { RadialBarChart } from './RadialBarChart'
+import { StatsTable } from './StatsTable'
+import c from './CountryDashboard.module.scss'
+import { Ingress } from './Ingress'
+import { StatsInfoText } from './StatsInfoText'
+import { DashboardHeader } from './DashboardHeader'
+import { PercentageDonut } from './PercentageDonut'
 
 middleResolutionCountriesGeoJson.features.push(gazaGeoJson.features[0])
-
-// TODO: switch to 2019
-const YEAR_TO_SHOW_IN_RADIAL_BAR_CHART = 2019
 
 const req = require.context('../assets/flags', false)
 // TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
@@ -90,7 +63,7 @@ const Mapboxgl = loadable.lib(() => import('mapbox-gl/dist/mapbox-gl.js'), {
   ssr: false,
 })
 
-function Loader() {
+export default function Loader() {
   return (
     <Mapboxgl>
       {({ default: mapboxgl }) => (
@@ -100,14 +73,38 @@ function Loader() {
   )
 }
 
-export default Loader
-
 function CountryDashboardWrapper(props) {
   const [ref, setRef] = useState()
   return (
-    <div ref={setRef}>
-      {ref ? <CountryDashboard {...props} containerElement={ref} /> : null}
-    </div>
+    <>
+      <DashboardHeader />
+      <div className={c['dashboard-map-and-ingress-wrapper']}>
+        <div className={c['map']}>
+          <CountryMap />
+        </div>
+        <div className={c['ingress']}>
+          <Ingress />
+        </div>
+      </div>
+
+      <div className={c['donut-table-wrapper']}>
+        <div style={{ flex: '1' }}>
+          <StatsTable />
+        </div>
+        <div className={c['spacer']} />
+        <div style={{ flex: '1' }}>
+          <div className={c['donuts-wrapper']}>
+            <div className={c['donut-wrapper']}>
+              <PercentageDonut dataPoint="percentageWomenFleeingToCountry" />
+            </div>
+            <div className={c['donut-wrapper']}>
+              <PercentageDonut dataPoint="percentageChildrenFleeingToCountry" />
+            </div>
+          </div>
+          <StatsInfoText />
+        </div>
+      </div>
+    </>
   )
 }
 
@@ -117,7 +114,9 @@ function CountryDashboard({ mapboxgl, containerElement }) {
 
   const { getNsFixedT } = useContext(FixedLocaleContext)
   const widgetParams = useContext(WidgetParamsContext)
-  const { countryCode, year, dataPoints, showMap, locale } = widgetParams
+  const data = widgetParams.preloadedWidgetData
+
+  const { countryCode, year, locale } = widgetParams
   const t = getNsFixedT(['Widget.Static.CountryDashboard', 'GeographicalNames'])
 
   const leonardoCentroid = getCountryCentroid(countryCode)
@@ -133,17 +132,15 @@ function CountryDashboard({ mapboxgl, containerElement }) {
       new Promise((resolve) => map.on('load', () => resolve()))
 
     const yalla = () =>
-      new Promise((resolve) => setTimeout(() => resolve(), 1000))
+      new Promise((resolve) => setTimeout(() => resolve(), 100))
 
-    Promise.all([fetchData(countryCode), mapLoaded(), yalla()]).then(
-      ([data]) => {
-        drawDataBlock(dataBlock, data, t)
-        drawMapBlock(
-          mapBlock,
-          data.filter((d) => d.year == year)
-        )
-      }
-    )
+    Promise.all([mapLoaded(), yalla()]).then(() => {
+      drawDataBlock(dataBlock, data, t)
+      drawMapBlock(
+        mapBlock,
+        data.filter((d) => d.year == year)
+      )
+    })
 
     function clearWidgetContainer() {
       $(containerElement).empty()
@@ -195,12 +192,11 @@ function CountryDashboard({ mapboxgl, containerElement }) {
 
     function drawDataBlock(dataBlock, data, t) {
       ReactDOM.render(
-        <Dashboard
+        <StatsTable
           year={year}
           locale={locale}
           countryCode={countryCode}
           data={data}
-          dataPointsToShow={dataPoints}
           onAfterRender={() => map.resize()}
           t={t}
         />,
@@ -330,427 +326,10 @@ function CountryDashboard({ mapboxgl, containerElement }) {
       // $(mapBlock).css('overflow', 'hidden');
 
       moveMapboxLogo(mapBlock)
-
-      map.on('click', function (event) {
-        hideTooltip()
-        var selectedCountry = event.features[0].properties
-
-        if (mobileLegendActive || mobileShareMenuActive) {
-          $(containerElement).find('.legend-container').css('display', 'none')
-          $(containerElement)
-            .find('#legend-button')
-            .removeClass('legend-button-closed legend-button-open')
-            .addClass('legend-button-closed')
-          setLegendState(containerElement)
-          $(containerElement)
-            .find('.share-menu-container')
-            .css('display', 'none')
-          setShareMenuState(containerElement)
-          isCountryInfoPopupOrPopoverActive = false
-        } else {
-          // insert Kosovo country code (has "name" but no "iso_a2" in natural earth data)
-          if (selectedCountry.name == 'Kosovo') {
-            selectedCountry.iso_a2 = 'KO'
-          }
-
-          // countries without iso2 code in naturalearth data have value -99 instead
-          if (countryInfo__hasData(selectedCountry.iso_a2)) {
-            if (isMobileDevice() && selectedCountry.iso_a2 != -99) {
-              isCountryInfoPopupOrPopoverActive = true
-              countryInfo__showPopover(containerElement, event)
-            } else if (selectedCountry.iso_a2 != -99) {
-              isCountryInfoPopupOrPopoverActive = true
-              countryInfo__showPopup(event, map)
-            }
-          }
-        }
-      })
-
-      // event listener for closing legend and share menu by clicking on the non-country (e.g. sea)
-      map.on('click', function (event) {
-        hideTooltip()
-        if (mobileLegendActive || mobileShareMenuActive) {
-          $(containerElement).find('.legend-container').css('display', 'none')
-          $(containerElement)
-            .find('#legend-button')
-            .removeClass('legend-button-closed legend-button-open')
-            .addClass('legend-button-closed')
-          setLegendState(containerElement)
-          $(containerElement)
-            .find('.share-menu-container')
-            .css('display', 'none')
-          setShareMenuState(containerElement)
-          isCountryInfoPopupOrPopoverActive = false
-        }
-      })
-
-      const hoverPopup = $(`
-    <div class="global-displacement-radial-bar-chart-tooltip">
-      <div class="top">2019.</div>
-      <div class="data"></div>
-    </div>`)
-      $('body').append(hoverPopup)
-      const showTooltip = (countryCode) => (e) => {
-        if (isCountryInfoPopupOrPopoverActive) return
-        const dataHtml = [
-          {
-            color: 'rgba(114,199,231,0.72)',
-            data: getCountryStat(countryCode, 'idpsInXInYear', year).data,
-          },
-          {
-            color: 'rgba(255,121,0,0.72)',
-            data: getCountryStat(countryCode, 'totalRefugeesFromX', year).data,
-          },
-          {
-            color: 'rgba(253,200,47,0.72)',
-            data: getCountryStat(
-              countryCode,
-              'newRefugeesInXFromOtherCountriesInYear',
-              year
-            ).data,
-          },
-        ]
-          .sort((a, b) => b.data - a.data)
-          .map((d) => {
-            return { ...d, data: formatDataNumber(d.data, 'nb-NO') }
-          })
-          .map(
-            (d) =>
-              `<div class="line"><div class="dot" style="background-color: ${d.color}"></div>${d.data}</div></div>`
-          )
-          .join('\n')
-        hoverPopup.children('.data').html(dataHtml)
-
-        const newCss = {
-          display: 'block',
-          left:
-            e.pageX + hoverPopup[0].clientWidth + 10 < document.body.clientWidth
-              ? e.pageX + 10 + 'px'
-              : document.body.clientWidth +
-                5 -
-                hoverPopup[0].clientWidth +
-                'px',
-          top:
-            e.pageY + hoverPopup[0].clientHeight + 10 <
-            document.body.clientHeight
-              ? e.pageY + 10 + 'px'
-              : document.body.clientHeight +
-                5 -
-                hoverPopup[0].clientHeight +
-                'px',
-        }
-        hoverPopup.css(newCss)
-      }
-      function hideTooltip(e) {
-        hoverPopup.css({ display: 'none' })
-      }
     }
-
-    // made popup global variable to be able to access it from setPassiveMode (needs to be removed before deactivating the map) - not sure it's a best solution??
-    var countryInfo__mapboxPopup
-    var mapNavigationControl
-    var mobileLegendActive = false
-    var mobileShareMenuActive = false
-    let isCountryInfoPopupOrPopoverActive = false
-
-    addLegend(containerElement)
   }, [])
 
   return null
-}
-
-function Dashboard({
-  year,
-  data,
-  countryCode,
-  dataPointsToShow,
-  onAfterRender,
-  t,
-  locale,
-}) {
-  const [selectedYear, setSelectedYear] = useState(String(year))
-  useEffect(() => {
-    onAfterRender()
-  })
-
-  const COL_SELECT_OPTIONS = [
-    {
-      label: '2019',
-      value: '2019',
-    },
-    {
-      label: '2018',
-      value: '2018',
-    },
-
-    {
-      label: '2017',
-      value: '2017',
-    },
-    {
-      label: '2016',
-      value: '2016',
-    },
-  ]
-  if (year === 2020 || year === '2020') {
-    COL_SELECT_OPTIONS.unshift({
-      label: '2020',
-      value: '2020',
-    })
-  }
-
-  const TABLE_ROWS = [
-    {
-      label: (options) => t('dataPoint.refugeesFromCountry', options),
-      totalDataPoint: 'totalRefugeesFromX',
-      newInYearXDataPoint: 'newRefugeesFromXInYear',
-    },
-    {
-      label: (options) => t('dataPoint.refugeesToCountry', options),
-      totalDataPoint: 'refugeesInXFromOtherCountriesInYear',
-      newInYearXDataPoint: 'newRefugeesInXFromOtherCountriesInYear',
-    },
-    {
-      label: (options) => t('dataPoint.idpsInCountry', options),
-      totalDataPoint: 'idpsInXInYear',
-      newInYearXDataPoint: 'newIdpsInXInYear',
-    },
-    {
-      label: (options) => t('dataPoint.voluntaryReturnsToCountry', options),
-      totalDataPoint: 'voluntaryReturnsToXInYear',
-      newInYearXDataPoint: null,
-    },
-  ]
-  if (locale === 'nb-NO') {
-    TABLE_ROWS.push({
-      label: (options) =>
-        t('dataPoint.asylumSeekersFromCountryToNorway', options),
-      totalDataPoint: 'asylumSeekersFromXToNorwayInYear',
-      newInYearXDataPoint: null,
-    })
-  }
-
-  const DATA_POINT_POPULATION = 'population'
-  const DATA_POINT_PERCENTAGE_CHILDREN_FLEEING_TO_COUNTRY =
-    'percentageChildrenFleeingToCountry'
-  const DATA_POINT_PERCENTAGE_WOMEN_FLEEING_TO_COUNTRY =
-    'percentageWomenFleeingToCountry'
-
-  const tableRows = TABLE_ROWS.filter(
-    (row) =>
-      dataPointsToShow.includes(row.totalDataPoint) ||
-      dataPointsToShow.includes(row.newInYearXDataPoint)
-  ).map((row) => {
-    const leftColStat = getCountryStat(
-      data,
-      countryCode,
-      row.newInYearXDataPoint,
-      parseInt(selectedYear)
-    )
-    const rightColStat = getCountryStat(
-      data,
-      countryCode,
-      row.totalDataPoint,
-      parseInt(selectedYear)
-    )
-
-    return (
-      <tr>
-        <td>
-          {row.label({
-            countryName: t(
-              `NRC.Web.StaticTextDictionary.Contries.${countryCode}`
-            ),
-          })}
-        </td>
-        <td className="data-cell">
-          {formatDataNumber(
-            leftColStat ? leftColStat.data : null,
-            locale,
-            true
-          )}
-        </td>
-        <td className="data-cell">
-          {formatDataNumber(
-            rightColStat ? rightColStat.data : null,
-            locale,
-            true
-          )}
-        </td>
-      </tr>
-    )
-  })
-
-  const population = getCountryStat(
-    data,
-    countryCode,
-    DATA_POINT_POPULATION,
-    parseInt(year)
-  ).data
-
-  const dataPoint_percentageWomenFleeingToCountry = getCountryStat(
-    data,
-    countryCode,
-    DATA_POINT_PERCENTAGE_WOMEN_FLEEING_TO_COUNTRY,
-    parseInt(year)
-  )
-  const dataPoint_percentageChildrenFleeingToCountry = getCountryStat(
-    data,
-    countryCode,
-    DATA_POINT_PERCENTAGE_CHILDREN_FLEEING_TO_COUNTRY,
-    parseInt(year)
-  )
-
-  return (
-    <>
-      <img
-        src={flagImagesMap[countryCode]}
-        style={{ height: '2.4em', float: 'right', border: '1px solid #d4d4d4' }}
-      />
-      <p
-        style={{
-          margin: 0,
-          padding: 0,
-          color: '#ff7602',
-          fontFamily: "'Roboto Condensed'",
-          fontSize: '2em',
-        }}
-      >
-        {t(`NRC.Web.StaticTextDictionary.Contries.${countryCode}`)}
-      </p>
-      {dataPointsToShow.includes(DATA_POINT_POPULATION) && (
-        <p
-          style={{
-            margin: '0.2em 0 0 0',
-            padding: 0,
-            color: '#666666',
-            fontFamily: "'Roboto Condensed'",
-            fontSize: '1em',
-          }}
-        >
-          {t('population', { populationInMillions: population })}
-        </p>
-      )}
-      {tableRows.length > 0 && (
-        <table className="main-data-table" style={{ marginTop: '2.5em' }}>
-          <tbody>
-            <tr>
-              <td />
-              <td className="data-header-cell">
-                {t('header.newIn')}&nbsp;
-                <select
-                  className="option-select"
-                  onChange={(e) => setSelectedYear(e.target.value)}
-                >
-                  {COL_SELECT_OPTIONS.map((option) => (
-                    <option
-                      key={option.value}
-                      value={option.value}
-                      selected={option.value === selectedYear}
-                    >
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </td>
-              <td className="data-header-cell">
-                {t('header.totalIn')}&nbsp;{selectedYear}
-              </td>
-            </tr>
-            {tableRows}
-          </tbody>
-        </table>
-      )}
-      {dataPointsToShow.includes(
-        DATA_POINT_PERCENTAGE_WOMEN_FLEEING_TO_COUNTRY
-      ) && (
-        <HorizontalBar
-          locale={locale}
-          label={t('dataPoint.percentageWomenAmongstRefugeesInCountry')}
-          fraction={
-            dataPoint_percentageWomenFleeingToCountry
-              ? dataPoint_percentageWomenFleeingToCountry.data
-              : null
-          }
-          style={{ marginTop: '1em' }}
-        />
-      )}
-      {dataPointsToShow.includes(
-        DATA_POINT_PERCENTAGE_CHILDREN_FLEEING_TO_COUNTRY
-      ) && (
-        <HorizontalBar
-          locale={locale}
-          label={t('dataPoint.percentageChildrenAmongstRefugeesInCountry')}
-          fraction={
-            dataPoint_percentageChildrenFleeingToCountry
-              ? dataPoint_percentageChildrenFleeingToCountry.data
-              : null
-          }
-          style={{ marginTop: '1.3em' }}
-        />
-      )}
-      <p className="footnote" style={{ marginBottom: '-0.5em' }}>
-        {t('legend.numbersApplyAtEntryToEachCalendarYear')}
-      </p>
-      <p className="footnote" style={{ marginBottom: '5px' }}>
-        {t('legend.sources')}
-      </p>
-    </>
-  )
-}
-
-function HorizontalBar({ locale, label, fraction, style }) {
-  return (
-    <table style={{ ...style, width: '100%' }}>
-      <tbody>
-        <tr>
-          <td
-            style={{
-              width: '50%',
-              verticalAlign: 'middle',
-            }}
-          >
-            {label}
-          </td>
-          <td
-            style={{
-              textAlign: 'right',
-              width: '3.5em',
-              verticalAlign: 'middle',
-              paddingRight: '0.4em',
-            }}
-            dangerouslySetInnerHTML={{
-              __html: !isNull(fraction)
-                ? formatDataPercentage(fraction, locale).replace(' ', '&nbsp;')
-                : '',
-            }}
-          />
-          <td>
-            <div
-              style={{
-                display: 'inline-block',
-                width: '100%',
-                height: '30px',
-                backgroundColor: isNull(fraction) ? '' : 'lightgrey',
-              }}
-            >
-              {!isNull(fraction) && (
-                <div
-                  style={{
-                    display: 'inline-block',
-                    width: `${fraction * 100}%`,
-                    height: '30px',
-                    backgroundImage: `url(${horizontalBarBaseImg})`,
-                  }}
-                />
-              )}
-              {isNull(fraction) && <>-</>}
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  )
 }
 
 function countryInfo__hasData(iso2) {
@@ -798,241 +377,6 @@ function moveMapboxLogo(mapBlock) {
     .find('.mapboxgl-ctrl-bottom-left')
     .removeClass('mapboxgl-ctrl-bottom-left')
     .addClass('mapboxgl-ctrl-bottom-right')
-}
-
-function addLegend(targetSelector) {
-  const legend = $(targetSelector).find('.legend')
-
-  if (isMobileDevice()) {
-    addLegendMobile(legend)
-  } else {
-    addLegendTabletDesktop(legend)
-  }
-
-  $(targetSelector)
-    .find('.legend-button-container')
-    .click(function () {
-      $(targetSelector).find('.share-menu-container').css('display', 'none')
-      setShareMenuState(targetSelector)
-      $(targetSelector).find('.legend-container').toggle()
-      $(targetSelector)
-        .find('#legend-button')
-        .toggleClass('legend-button-closed')
-      $(targetSelector).find('#legend-button').toggleClass('legend-button-open')
-      setLegendState(targetSelector)
-    })
-}
-
-const fullLegend = `
-      <table>
-        <tr>
-            <td><span class="refugeesFrom-dot"></span></td>
-            <td class="legend-text">Totalt antall flyktninger fra landet</td>
-        </tr>
-        <tr>
-            <td><span class="refugeesTo-dot"></span></td>
-            <td class="legend-text">Totalt antall flyktninger til landet</td>
-        </tr>
-        <tr>
-            <td><span class="idps-dot"></span></td>
-            <td class="legend-text">Totalt antall internt fordrevne i landet</td>
-        </tr>
-      </table>
-      
-      <p><span class="source"> Kilde: UNHCR, IDMC </span></p>
-    `
-
-function addLegendMobile(legend) {
-  $(legend).append(
-    `<div class="legend-button-container">
-            <a class="disable-selection">
-              <div class="legend-label">&#9432;</div>
-              <div id="legend-button"  class="legend-button-closed">
-                <span style="color: #FF7602;">&gt;</span><span style="color: #d4d4d4;">&gt;</span>
-              </div>
-            </a>
-          </div>
-          <div id="legend-container" class="legend-container" style="display: none;"></div>
-          `
-  )
-  $(legend).find('.legend-container').append($(fullLegend))
-}
-
-function addLegendTabletDesktop(legend) {
-  $(legend).append(
-    '<div id="legend-container" class="legend-container-desktop"></div>'
-  )
-  $(legend).find('.legend-container-desktop').append($(fullLegend))
-}
-
-// #endregion
-
-const START_RADIUS = 0.3
-const BAR_RADIUS_WIDTH = 0.1
-const BAR_RADIUS_SPACING = 0.1
-const HELPER_BAR_RADIUS_WIDTH = 0.04
-
-class RadialBarChart extends React.Component {
-  constructor(props) {
-    super(props)
-    this.myRef = React.createRef()
-  }
-
-  state = {
-    zeroOutAllBars: true,
-  }
-
-  componentDidMount() {
-    const el = this.myRef.current
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.intersectionRatio > 0.6) {
-            this.setState({ zeroOutAllBars: false })
-          }
-        })
-      },
-      { threshold: 0.6, rootMargin: '0px' }
-    )
-    observer.observe(el)
-  }
-
-  data() {
-    const maxFigure = Math.max(...this.props.data.map((v) => v.figure))
-    return this.props.data
-      .sort((a, b) => a.figure - b.figure)
-      .map((v, i) => {
-        const radiusStart =
-          START_RADIUS + (BAR_RADIUS_SPACING + BAR_RADIUS_WIDTH) * i
-        const radiusEnd = radiusStart + BAR_RADIUS_WIDTH
-        const helperBarRadiusStart =
-          radiusStart +
-          (radiusEnd - radiusStart) / 2 -
-          HELPER_BAR_RADIUS_WIDTH / 2
-        const helperBarRadiusEnd =
-          helperBarRadiusStart + HELPER_BAR_RADIUS_WIDTH
-        const angle = this.state.zeroOutAllBars
-          ? 0
-          : (v.figure / maxFigure) * 1.5 * Math.PI
-        return [
-          {
-            angle: angle,
-            radius0: radiusStart,
-            radius: radiusEnd,
-            color: v.colour,
-            layer: 3,
-            label: v.dataLabel,
-            xOffsetForDataLabel: v.xOffsetForDataLabel,
-            labelWidth: v.labelWidth,
-            figure: v.figure,
-          },
-          {
-            angle: angle,
-            radius0: radiusStart,
-            radius: radiusEnd,
-            color: v.colour,
-            layer: 2,
-            label: v.label,
-            labelWidth: v.labelWidth,
-            figure: v.figure,
-          },
-          {
-            angle0: angle,
-            angle: 1.5 * Math.PI,
-            radius0: helperBarRadiusStart,
-            radius: helperBarRadiusEnd,
-            color: 'rgb(186,186,186,0.72)',
-            layer: 1,
-          },
-        ]
-      })
-      .flat()
-      .sort((a, b) => a.layer - b.layer)
-  }
-
-  render() {
-    const widthHeight = 290
-
-    const RANGE = 6000000
-
-    const data = this.data()
-
-    const maxRadius = Math.max(...data.map((v) => v.radius))
-    const maxFigure = Math.max(
-      ...data.filter((v) => v.layer === 2).map((v) => v.figure)
-    )
-
-    return (
-      <div ref={this.myRef}>
-        {this.props.data.length > 0 && (
-          <XYPlot
-            className={`nrcstat-radial-chart ${this.props.data[0].iso}`}
-            margin={{ left: 40, bottom: 0, top: 0, right: 40 }}
-            width={widthHeight + 50}
-            height={widthHeight + 50}
-            xDomain={[-RANGE, RANGE]}
-            yDomain={[-RANGE, RANGE]}
-          >
-            <ArcSeries
-              animation="stiff"
-              radiusDomain={[0, maxRadius]}
-              data={this.data()}
-              colorType="literal"
-            />
-            {data
-              .filter((v) => v.layer === 2)
-              .map((v, i) => {
-                // const width = getTextWidth(v.label, '"Roboto Condensed"');
-                const width = v.labelWidth
-                return (
-                  <LabelSeries
-                    key={`${v.layer}-${i}`}
-                    data={[
-                      {
-                        x: 0,
-                        y: 0,
-                        xOffset: -5,
-                        yOffset: -50 + -32 * i,
-                        label: v.label,
-                      },
-                    ]}
-                    labelAnchorX="end"
-                    style={{ fontFamily: 'Roboto Condensed' }}
-                  />
-                )
-              })}
-            {data
-              .filter((v) => v.layer === 3)
-              .map((v, i) => {
-                // const width = getTextWidth(v.label, '"Roboto Condensed"');
-                const width = v.labelWidth
-
-                return (
-                  <LabelSeries
-                    key={`${v.layer}-${i}`}
-                    data={[
-                      {
-                        x: 0,
-                        y: 0,
-                        xOffset: v.xOffsetForDataLabel,
-                        yOffset: -49 + -32 * i,
-                        label: v.label,
-                      },
-                    ]}
-                    labelAnchorX="end"
-                    style={{
-                      fontFamily: 'Roboto Condensed',
-                      fontWeight: 'bold',
-                      fontSize: '16px',
-                    }}
-                  />
-                )
-              })}
-          </XYPlot>
-        )}
-      </div>
-    )
-  }
 }
 
 const dataPointToLabel = (t) => ({
@@ -1154,18 +498,4 @@ const dataTransformer = (t, locale) => (data) => {
     })
   )
   return mapped
-}
-
-function getCountryStats(data, countryIso2Code) {
-  return data.filter((c) => c.countryCode === countryIso2Code)
-}
-
-function getCountryStat(rawData, countryCode, dataPoint, year) {
-  const stats = rawData.filter(
-    (c) => c.countryCode === countryCode && c.year === year
-  )
-  if (!stats) return null
-  const data = stats.filter((d) => d.dataPoint === dataPoint)
-  if (data && data.length > 0) return data[0]
-  return null
 }

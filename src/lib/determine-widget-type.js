@@ -56,9 +56,14 @@ export const determineWidgetType = async (widget) => {
       widgetObject = widget.widgetObject
     } else {
       widgetObject = await loadWidgetObject(widgetIdParam)
+      console.log(widgetObject)
+      if (!widgetObject || widgetObject.error) {
+        console.log('Could not load widget by id ', widgetIdParam)
+        return { locale, type: 'BlankError', widgetObject }
+      }
     }
     widgetObject = removeLocaleLayer(widgetObject, locale)
-    const type = widgetObject.type
+    const type = widgetObject?.type
     if (type === 'donut') {
       return { locale, type: 'Donut', widgetObject }
     } else if (type === 'bar') {
@@ -74,7 +79,8 @@ export const determineWidgetType = async (widget) => {
     } else if (type === 'timeline') {
       return { locale, type: 'Timeline', widgetObject }
     } else {
-      throw new Error('Could not determine widget type')
+      console.log('Could not determine widget type')
+      return { locale, type: 'BlankError', widgetObject }
     }
   }
 }
@@ -170,42 +176,15 @@ function removeLocaleLayer(widgetObject, locale) {
 
 function extractDynamicCountryDashboardWidgetParams(widgetId) {
   const patternCountryYear = /dynamic_country_dashboard_([A-Z]{2})_(\d{4})/
-  const patternCountryYearDataPoints =
-    /dynamic_country_dashboard_([A-Z]{2})_(\d{4})_([A-Za-z,]+)/
 
   let countryCode
   let year
-  let dataPoints = [
-    'totalRefugeesFromX',
-    'idpsInXInYear',
-    'refugeesInXFromOtherCountriesInYear',
-    'newRefugeesFromXInYear',
-    'newRefugeesInXFromOtherCountriesInYear',
-    'newIdpsInXInYear',
-    'voluntaryReturnsToXInYear',
-    'asylumSeekersFromXToNorwayInYear',
-    'population',
-    'percentageWomenFleeingToCountry',
-    'percentageChildrenFleeingToCountry',
-  ]
-  let showMap = true
 
-  if (patternCountryYearDataPoints.test(widgetId)) {
-    const matches = patternCountryYearDataPoints.exec(widgetId)
-    countryCode = matches[1]
-    year = matches[2]
-    dataPoints = matches[3].split(',')
-  } else if (patternCountryYear.test(widgetId)) {
-    const matches = patternCountryYear.exec(widgetId)
-    countryCode = matches[1]
-    year = matches[2]
-  }
+  const matches = patternCountryYear.exec(widgetId)
+  countryCode = matches[1]
+  year = matches[2]
 
-  if (widgetId.indexOf('hideMap') !== -1) {
-    showMap = false
-  }
-
-  return { countryCode, year, dataPoints, showMap }
+  return { countryCode, year }
 }
 
 const DEFAULT_COUNTRY_SIDEBAR_DATA_POINTS = [
