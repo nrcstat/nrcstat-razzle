@@ -11,7 +11,6 @@ if (isServer()) {
 }
 
 export function loadWidgetData(context, headers = {}) {
-  console.log(context)
   const { dataPoints, countryCode, year } = context
 
   const query = {
@@ -25,7 +24,7 @@ export function loadWidgetData(context, headers = {}) {
   const url = `${API_URL}/datas?filter=${encodeURIComponent(
     JSON.stringify(query)
   )}`
-  console.log(url)
+
   return fetch(url, {
     headers: { nrcstatpassword: headers.nrcstatpassword },
   }).then((resp) => resp.json())

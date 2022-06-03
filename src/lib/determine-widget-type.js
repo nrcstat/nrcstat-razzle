@@ -196,7 +196,7 @@ const DEFAULT_COUNTRY_SIDEBAR_DATA_POINTS = [
 function extractStaticCountrySidebarWidgetParams(widgetId) {
   const patternCountryYear = /country_sidebar_([A-Z]{2})_(\d{4})/
   const patternCountryYearDataPoints =
-    /country_sidebar_([A-Z]{2})_(\d{4})_([A-Za-z,]+)/
+    /country_sidebar_([A-Z]{2})_(\d{4})_([A-Za-z,_]+)/
 
   let countryCode
   let year
