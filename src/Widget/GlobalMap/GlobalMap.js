@@ -185,6 +185,7 @@ const nrcCountryIso2 = {
     'UG',
     'UA',
     'VE',
+    'MZ',
   ],
   'en-GB': [
     'AF',
@@ -221,6 +222,7 @@ const nrcCountryIso2 = {
     'UG',
     'UA',
     'VE',
+    'MZ',
   ],
   'sv-SE': [
     'AF',
@@ -257,6 +259,7 @@ const nrcCountryIso2 = {
     'UG',
     'UA',
     'VE',
+    'MZ',
   ],
 }
 const blueCountryIso2 = {
