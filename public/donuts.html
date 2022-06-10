@@ -15,26 +15,32 @@
 
   <body>
     <style>
-      #grid {
-        display: grid;
-        grid-template:
-          'pictogram timeline'
-          / 600px 300px;
+      #abc222,
+      #abc111 {
+        height: 600px;
+        width: 100%;
       }
     </style>
 
-    <div id="grid">
-      <div id="abc1" class="nrcstat-block"></div>
-      <div id="abc2" class="nrcstat-block"></div>
-    </div>
+    <div id="abc1" class="nrcstat-block"></div>
     <script>
       NrcStatWidgetLibrary.getInstance().generateWidget({
         targetSelector: '#abc1',
-        widgetId: '60c998f185c26161e7eeb86c',
+        widgetId: 'nb-NO-60c9fa6b85c26161e7eeb872',
       })
+    </script>
+    <div id="abc2" class="nrcstat-block"></div>
+    <script>
       NrcStatWidgetLibrary.getInstance().generateWidget({
         targetSelector: '#abc2',
-        widgetId: '61951e9bf0b228225c712a1c',
+        widgetId: 'nb-NO-60cba97df1a9295f57793eb8',
+      })
+    </script>
+    <div id="abc3" class="nrcstat-block"></div>
+    <script>
+      NrcStatWidgetLibrary.getInstance().generateWidget({
+        targetSelector: '#abc3',
+        widgetId: 'nb-NO-60cbaf9df1a9295f57793ebb',
       })
     </script>
   </body>

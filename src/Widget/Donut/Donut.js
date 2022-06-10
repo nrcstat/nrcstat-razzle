@@ -10,6 +10,7 @@ import {
 } from 'recharts'
 import { FixedLocaleContext } from '../../services/i18n'
 import { isServer } from '../../util/utils'
+import { formatDataNumber } from '../../util/widgetHelpers'
 import ShareButton from '../ShareButton'
 import { WidgetParamsContext } from '../Widget'
 import './Donut.scss'
@@ -261,8 +262,10 @@ function translationKeyForVariantKey(variant, key) {
 
 const CustomTooltip = ({ active, payload }) => {
   const containerElementRef = useRef(null)
-  const { formatDataNumber } = useContext(FixedLocaleContext)
   const { clientX, clientY, screenX, screenY, pageX, pageY } = useMouse()
+  const { locale } = useContext(WidgetParamsContext)
+  console.log(locale)
+
   if (active) {
     const { name, value } = payload[0]
     const bounds = containerElementRef.current?.getBoundingClientRect()
@@ -286,7 +289,7 @@ const CustomTooltip = ({ active, payload }) => {
       >
         <span className="year">{name}</span>
         <hr className="ruler" />
-        <span className="number">{formatDataNumber(value)}</span>
+        <span className="number">{formatDataNumber(value, locale, true)}</span>
       </div>
     )
   }

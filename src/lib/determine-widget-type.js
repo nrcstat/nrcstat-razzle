@@ -56,7 +56,6 @@ export const determineWidgetType = async (widget) => {
       widgetObject = widget.widgetObject
     } else {
       widgetObject = await loadWidgetObject(widgetIdParam)
-      console.log(widgetObject)
       if (!widgetObject || widgetObject.error) {
         console.log('Could not load widget by id ', widgetIdParam)
         return { locale, type: 'BlankError', widgetObject }

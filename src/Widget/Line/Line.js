@@ -159,7 +159,7 @@ function LineWidget() {
             {enablePopup ? (
               <Tooltip
                 formatter={(d, hoverLabel) => [
-                  formatDataNumber(d, locale),
+                  formatDataNumber(d, locale, true),
                   hoverLabel,
                 ]}
                 contentStyle={{

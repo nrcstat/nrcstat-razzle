@@ -9,7 +9,6 @@ function StaticCountrySidebar() {
   if (isServer()) return null
 
   const widgetParams = useContext(WidgetParamsContext)
-  console.log(widgetParams)
   const { countryCode, locale, dataPoints, preloadedWidgetData } = widgetParams
 
   const dataMap = makeDataPointToDataMap(dataPoints, preloadedWidgetData)

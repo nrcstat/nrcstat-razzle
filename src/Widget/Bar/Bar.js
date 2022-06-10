@@ -117,7 +117,7 @@ function BarViz() {
             {enablePopup ? (
               <Tooltip
                 formatter={(d, _, info) => {
-                  return [formatDataNumber(d, locale)]
+                  return [formatDataNumber(d, locale, true)]
                 }}
                 labelFormatter={(a, b, c, d) => {
                   return b?.[0]?.payload?.name
