@@ -77,24 +77,24 @@ server
         // we last time we turned off the in-memory caching of data, we didn't find a way
         // to combine it with the password authentication mechanism.
         // widget.nrcstatpassword = req.headers.nrcstatpassword
-        // const data = await dataLoader(widget, {
-        //   nrcstatpassword: req.headers.nrcstatpassword,
-        // })
-        // widget.preloadedWidgetData = data
+        const data = await dataLoader(widget, {
+          nrcstatpassword: req.headers.nrcstatpassword,
+        })
+        widget.preloadedWidgetData = data
 
         // Special case: if the widget ID is widget-wizard, it comes from the old
         // widget wizard or the new widget builder. Either way, there is no point
         // in caching data for these as they're not saved widgets.
-        if (
-          dataCache[widget.widgetId] &&
-          !/widget-wizard/.test(widget.widgetId)
-        ) {
-          widget.preloadedWidgetData = dataCache[widget.widgetId]
-        } else {
-          const data = await dataLoader(widget)
-          widget.preloadedWidgetData = data
-          dataCache[widget.widgetId] = data
-        }
+        // if (
+        //   dataCache[widget.widgetId] &&
+        //   !/widget-wizard/.test(widget.widgetId)
+        // ) {
+        //   widget.preloadedWidgetData = dataCache[widget.widgetId]
+        // } else {
+        //   const data = await dataLoader(widget)
+        //   widget.preloadedWidgetData = data
+        //   dataCache[widget.widgetId] = data
+        // }
       }
     }
 
