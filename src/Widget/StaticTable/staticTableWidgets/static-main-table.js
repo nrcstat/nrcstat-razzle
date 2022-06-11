@@ -24,10 +24,16 @@ export default function (widgetParams) {
   const { t, periodYear, locale } = widgetParams
   const tableTitle = t(`RefugeeReport${periodYear + 1}.MainTable.Heading`)
 
-  const countryAnnotations =
-    periodYear === 2019
-      ? buildCountrySpecificFootnotes2019(t)
-      : buildCountrySpecificFootnotes2020(t)
+  const countryAnnotations = (() => {
+    switch (periodYear) {
+      case 2019:
+        return buildCountrySpecificFootnotes2019(t)
+      case 2020:
+        return buildCountrySpecificFootnotes2020(t)
+      case 2021:
+        return buildCountrySpecificFootnotes2021(t)
+    }
+  })()
 
   const footerAnnotations = t(
     `RefugeeReport${periodYear + 1}.MainTable.TableFooterText`
@@ -43,6 +49,8 @@ export default function (widgetParams) {
     'population',
     'percentageWomenFleeingToCountry',
     'percentageChildrenFleeingToCountry',
+    'percentageWomenFleeingFromCountry',
+    'percentageChildrenFleeingFromCountry',
   ]
 
   function loadWidgetData(_, headers = {}) {
@@ -426,7 +434,10 @@ export default function (widgetParams) {
                   periodYear + 1
                 }.MainTable.Column.percentageWomen.hoverText`
               )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
-              data: 'percentageWomenFleeingToCountry',
+              data:
+                periodYear < 2021
+                  ? 'percentageWomenFleeingToCountry'
+                  : 'percentageWomenFleeingFromCountry',
               render: (data, type, row) =>
                 type == 'display' ? percentFormatter(locale)(data) : data,
             },
@@ -441,7 +452,10 @@ export default function (widgetParams) {
                   periodYear + 1
                 }.MainTable.Column.percentageChildren.hoverText`
               )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
-              data: 'percentageChildrenFleeingToCountry',
+              data:
+                periodYear < 2021
+                  ? 'percentageChildrenFleeingToCountry'
+                  : 'percentageChildrenFleeingFromCountry',
               render: (data, type, row) =>
                 type == 'display' ? percentFormatter(locale)(data) : data,
             },
@@ -653,6 +667,89 @@ export function buildCountrySpecificFootnotes2019(t) {
 }
 
 export function buildCountrySpecificFootnotes2020(t) {
+  return [
+    {
+      countryCode: ['DZ', 'EH'],
+      annotation: t(
+        'RefugeeReport2021.CountrySpecificFootnote.AlgerieWesternSahara'
+      ),
+    },
+    {
+      countryCode: ['AU'],
+      annotation: t('RefugeeReport2021.CountrySpecificFootnote.Australia'),
+    },
+    {
+      countryCode: ['IQ', 'SY', 'JO'],
+      annotation: t(
+        'RefugeeReport2021.CountrySpecificFootnote.IraqJordanSyria'
+      ),
+    },
+
+    {
+      countryCode: ['JP'],
+      annotation: t('RefugeeReport2021.CountrySpecificFootnote.Japan'),
+    },
+
+    {
+      countryCode: ['CN', 'VN'],
+      annotation: t('RefugeeReport2021.CountrySpecificFootnote.ChinaVietnam'),
+    },
+
+    {
+      countryCode: ['JO', 'LB', 'PS', 'SY'],
+      annotation: t(
+        'RefugeeReport2021.CountrySpecificFootnote.JordanLebanonPalestineSyria'
+      ),
+    },
+    {
+      countryCode: ['KO', 'RS'],
+      annotation: t('RefugeeReport2021.CountrySpecificFootnote.KosovoSerbia'),
+    },
+    {
+      countryCode: ['TR'],
+      annotation: t('RefugeeReport2021.CountrySpecificFootnote.Turkey'),
+    },
+
+    {
+      countryCode: [
+        'VE',
+        'AW',
+        'BR',
+        'CL',
+        'CO',
+        'CW',
+        'DO',
+        'EC',
+        'GY',
+        'MX',
+        'PA',
+        'PY',
+        'PE',
+        'TT',
+        'UY',
+      ],
+      annotation: t(
+        'RefugeeReport2021.CountrySpecificFootnote.ArubaBrazilChileColombiaCuracaoDominicanRepublicEcuadorGuyanaMexicoPanamaParaguayPeruTrinidadTobagoUruguayVenezuela'
+      ),
+    },
+    {
+      countryCode: ['US'],
+      annotation: t('RefugeeReport2021.CountrySpecificFootnote.USA'),
+    },
+
+    // Two new ones added for RefRep 2021, i.e.numbers for 2020:
+    {
+      countryCode: ['AM'],
+      annotation: t('RefugeeReport2021.CountrySpecificFootnote.Armenia'),
+    },
+    {
+      countryCode: ['AZ'],
+      annotation: t('RefugeeReport2021.CountrySpecificFootnote.Azerbaijan'),
+    },
+  ]
+}
+
+export function buildCountrySpecificFootnotes2021(t) {
   return [
     {
       countryCode: ['DZ', 'EH'],

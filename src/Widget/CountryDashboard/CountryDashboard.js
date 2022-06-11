@@ -22,7 +22,7 @@ import { StatsTable } from './StatsTable'
 export default function CountryDashboard() {
   const { getNsFixedT } = useContext(FixedLocaleContext)
   const widgetParams = useContext(WidgetParamsContext)
-  const { countryCode } = widgetParams
+  const { countryCode, year } = widgetParams
 
   const t = getNsFixedT(['Widget.Static.CountryDashboard'])
 
@@ -53,10 +53,18 @@ export default function CountryDashboard() {
         <div style={{ flex: '1' }}>
           <div className={c['donuts-wrapper']}>
             <div className={c['donut-wrapper']}>
-              <PercentageDonut dataPoint="percentageWomenFleeingToCountry" />
+              {year < 2021 ? (
+                <PercentageDonut dataPoint="percentageWomenFleeingToCountry" />
+              ) : (
+                <PercentageDonut dataPoint="percentageWomenFleeingFromCountry" />
+              )}
             </div>
             <div className={c['donut-wrapper']}>
-              <PercentageDonut dataPoint="percentageChildrenFleeingToCountry" />
+              {year < 2021 ? (
+                <PercentageDonut dataPoint="percentageChildrenFleeingToCountry" />
+              ) : (
+                <PercentageDonut dataPoint="percentageChildrenFleeingFromCountry" />
+              )}
             </div>
           </div>
           <StatsInfoText />
