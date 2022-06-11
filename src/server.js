@@ -76,7 +76,7 @@ server
         // Uncomment to restore the password-based data embargo mechanism. Remember that
         // we last time we turned off the in-memory caching of data, we didn't find a way
         // to combine it with the password authentication mechanism.
-        // widget.nrcstatpassword = req.headers.nrcstatpassword
+        widget.nrcstatpassword = req.headers.nrcstatpassword
         const data = await dataLoader(widget, {
           nrcstatpassword: req.headers.nrcstatpassword,
         })
