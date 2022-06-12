@@ -136,6 +136,51 @@ const radialBarChartsMapSvSe2020 = chain(
   .mapValues('file')
   .value()
 
+const reqNbNo2021 = require.context(
+  './assets/pre-rendered-radial-bar-charts-2021/nb-NO',
+  false
+)
+// TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
+const radialBarChartsMapNbNo2021 = chain(
+  reqNbNo2021.keys().map((file) => ({
+    file: reqNbNo2021(file),
+    countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
+  }))
+)
+  .keyBy('countryCode')
+  .mapValues('file')
+  .value()
+
+const reqEnGb2021 = require.context(
+  './assets/pre-rendered-radial-bar-charts-2021/en-GB',
+  false
+)
+// TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
+const radialBarChartsMapEnGb2021 = chain(
+  reqEnGb2021.keys().map((file) => ({
+    file: reqEnGb2021(file),
+    countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
+  }))
+)
+  .keyBy('countryCode')
+  .mapValues('file')
+  .value()
+
+const reqSvSe2021 = require.context(
+  './assets/pre-rendered-radial-bar-charts-2021/sv-SE',
+  false
+)
+// TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
+const radialBarChartsMapSvSe2021 = chain(
+  reqSvSe2021.keys().map((file) => ({
+    file: reqSvSe2021(file),
+    countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
+  }))
+)
+  .keyBy('countryCode')
+  .mapValues('file')
+  .value()
+
 const radialBarChartsMap = {
   'en-GB': radialBarChartsMapEnGb,
   'nb-NO': radialBarChartsMapNbNo,
@@ -146,6 +191,12 @@ const radialBarChartsMap2020 = {
   'nb-NO': radialBarChartsMapNbNo2020,
   'sv-SE': radialBarChartsMapSvSe2020,
 }
+const radialBarChartsMap2021 = {
+  'en-GB': radialBarChartsMapEnGb2021,
+  'nb-NO': radialBarChartsMapNbNo2021,
+  'sv-SE': radialBarChartsMapSvSe2021,
+}
+console.log(radialBarChartsMapSvSe2021)
 
 let countryStatsCache = null
 let isFullScreen
@@ -1501,8 +1552,18 @@ function GlobalMap({ mapboxgl }) {
         hoverPopup.css({ display: 'none' })
       }
 
-      const radialBarChartsToUse =
-        periodYear === 2020 ? radialBarChartsMap2020 : radialBarChartsMap
+      const radialBarChartsToUse = (() => {
+        switch (periodYear) {
+          case 2019:
+            return radialBarChartsMap
+          case 2020:
+            return radialBarChartsMap2020
+          case 2021:
+            return radialBarChartsMap2021
+          default:
+            throw new Error('Invalid year passed to GlobalMap')
+        }
+      })()
 
       // TODO: this is likely to be a bottleneck
       geojson.features.forEach(function (marker) {

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <script src="/widgetLib.js"></script>
+  </head>
+
+  <body>
+    <style>
+      #abc222,
+      #abc111 {
+        height: 700px;
+      }
+    </style>
+
+    <pre>en-GB-global-displacement-radial-bar-chart-map-2022-0.1</pre>
+    <div id="abc222" class="nrcstat-block"></div>
+    <script>
+      NrcStatWidgetLibrary.getInstance().generateWidget({
+        targetSelector: '#abc222',
+        widgetId: 'en-GB-global-displacement-radial-bar-chart-map-2022-0.1',
+      })
+    </script>
+  </body>
+</html>
