@@ -754,43 +754,43 @@ export function buildCountrySpecificFootnotes2021(t) {
     {
       countryCode: ['DZ', 'EH'],
       annotation: t(
-        'RefugeeReport2021.CountrySpecificFootnote.AlgerieWesternSahara'
+        'RefugeeReport2022.CountrySpecificFootnote.AlgerieWesternSahara'
       ),
     },
     {
       countryCode: ['AU'],
-      annotation: t('RefugeeReport2021.CountrySpecificFootnote.Australia'),
+      annotation: t('RefugeeReport2022.CountrySpecificFootnote.Australia'),
     },
     {
       countryCode: ['IQ', 'SY', 'JO'],
       annotation: t(
-        'RefugeeReport2021.CountrySpecificFootnote.IraqJordanSyria'
+        'RefugeeReport2022.CountrySpecificFootnote.IraqJordanSyria'
       ),
     },
 
     {
       countryCode: ['JP'],
-      annotation: t('RefugeeReport2021.CountrySpecificFootnote.Japan'),
+      annotation: t('RefugeeReport2022.CountrySpecificFootnote.Japan'),
     },
 
     {
       countryCode: ['CN', 'VN'],
-      annotation: t('RefugeeReport2021.CountrySpecificFootnote.ChinaVietnam'),
+      annotation: t('RefugeeReport2022.CountrySpecificFootnote.ChinaVietnam'),
     },
 
     {
       countryCode: ['JO', 'LB', 'PS', 'SY'],
       annotation: t(
-        'RefugeeReport2021.CountrySpecificFootnote.JordanLebanonPalestineSyria'
+        'RefugeeReport2022.CountrySpecificFootnote.JordanLebanonPalestineSyria'
       ),
     },
     {
       countryCode: ['KO', 'RS'],
-      annotation: t('RefugeeReport2021.CountrySpecificFootnote.KosovoSerbia'),
+      annotation: t('RefugeeReport2022.CountrySpecificFootnote.KosovoSerbia'),
     },
     {
       countryCode: ['TR'],
-      annotation: t('RefugeeReport2021.CountrySpecificFootnote.Turkey'),
+      annotation: t('RefugeeReport2022.CountrySpecificFootnote.Turkey'),
     },
 
     {
@@ -812,22 +812,22 @@ export function buildCountrySpecificFootnotes2021(t) {
         'UY',
       ],
       annotation: t(
-        'RefugeeReport2021.CountrySpecificFootnote.ArubaBrazilChileColombiaCuracaoDominicanRepublicEcuadorGuyanaMexicoPanamaParaguayPeruTrinidadTobagoUruguayVenezuela'
+        'RefugeeReport2022.CountrySpecificFootnote.ArubaBrazilChileColombiaCuracaoDominicanRepublicEcuadorGuyanaMexicoPanamaParaguayPeruTrinidadTobagoUruguayVenezuela'
       ),
     },
     {
       countryCode: ['US'],
-      annotation: t('RefugeeReport2021.CountrySpecificFootnote.USA'),
+      annotation: t('RefugeeReport2022.CountrySpecificFootnote.USA'),
     },
 
-    // Two new ones added for RefRep 2021, i.e.numbers for 2020:
+    // Two new ones added for RefRep 2022, i.e.numbers for 2020:
     {
       countryCode: ['AM'],
-      annotation: t('RefugeeReport2021.CountrySpecificFootnote.Armenia'),
+      annotation: t('RefugeeReport2022.CountrySpecificFootnote.Armenia'),
     },
     {
       countryCode: ['AZ'],
-      annotation: t('RefugeeReport2021.CountrySpecificFootnote.Azerbaijan'),
+      annotation: t('RefugeeReport2022.CountrySpecificFootnote.Azerbaijan'),
     },
   ]
 }
