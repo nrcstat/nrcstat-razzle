@@ -4,6 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Table widgets</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Roboto:wght@300;400;700&display=swap"
+    />
+    <style>
+      /*
+        Note: the widget will "self-style" only the datatable part of itself, not the header or footer part.
+        Here, we apply some rules that will take care of styling the header and footer. The rules were
+        copied from the NRC website.
+      */
+      html {
+        font-family: Roboto;
+        position: relative;
+      }
+      body {
+        font-size: 18px;
+        line-height: 1.444444444444;
+      }
+      h4 {
+        font-size: 1.25em;
+        margin: 0 0 10px;
+        line-height: 1.2em;
+        font-family: Roboto, sans-serif;
+        font-weight: 300;
+        font-style: normal;
+      }
+    </style>
 
     <script src="/widgetLib.js"></script>
 
