@@ -191,22 +191,18 @@ export default function (widgetParams) {
         tmpl = `
       <h4>${tableTitle}</h4>
         <div class="controls-wrapper">
-          <div class="nrcstat-selector-continent">
-            <label>Kontinent:</label>
-              <select class="form-control continent-selector"><option value="">${t(
-                `RefugeeReport${
-                  periodYear + 1
-                }.MainTable.CountryContientDropdown.all`
-              )}</option></select>
-          </div>
-          <div class="nrcstat-selector-country">
-            <label>${t('columnNames.country')}:</label>
-            <select class="form-control country-selector"><option value="">${t(
+          <label>Kontinent:</label>
+            <select class="continent-selector"><option value="">${t(
               `RefugeeReport${
                 periodYear + 1
               }.MainTable.CountryContientDropdown.all`
             )}</option></select>
-          </div>
+          <label>${t('columnNames.country')}:</label>
+          <select class="country-selector"><option value="">${t(
+            `RefugeeReport${
+              periodYear + 1
+            }.MainTable.CountryContientDropdown.all`
+          )}</option></select>
         </div>
       <table id="datatable${id}" class="display responsive no-wrap row-border cell-border stripe hover order-column" style="width: 100%;">
         <thead>
@@ -556,13 +552,15 @@ export default function (widgetParams) {
             )}</option>`
           )
         })
-        CONTINENTS.forEach((k) => {
-          countrySelector.append(
-            `<option value="${k}">${t(
-              `NRC.Web.StaticTextDictionary.Continents.${k}`
-            )}</option>`
-          )
-        })
+        tableData
+          .map((d) => d.countryCode)
+          .forEach((iso2) => {
+            countrySelector.append(
+              `<option value="${iso2}">${t(
+                `NRC.Web.StaticTextDictionary.Contries.${iso2}`
+              )}</option>`
+            )
+          })
 
         continentSelector.on('change', (e) => {
           currentContinentCode = e.target.value
