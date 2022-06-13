@@ -5,7 +5,7 @@ import { IconBar } from './IconBar'
 
 export const Food = IconBar(FoodIcon)
 
-function FoodIcon(props) {
+export function FoodIcon(props) {
   return (
     <Icon {...props}>
       <g>

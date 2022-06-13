@@ -5,7 +5,7 @@ import { IconBar } from './IconBar'
 
 export const Education = IconBar(EducationIcon)
 
-function EducationIcon(props) {
+export function EducationIcon(props) {
   return (
     <Icon {...props}>
       <g>

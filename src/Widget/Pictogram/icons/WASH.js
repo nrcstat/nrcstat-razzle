@@ -5,7 +5,7 @@ import { IconBar } from './IconBar'
 
 export const WASH = IconBar(WASHIcon)
 
-function WASHIcon(props) {
+export function WASHIcon(props) {
   return (
     <Icon {...props}>
       <g>

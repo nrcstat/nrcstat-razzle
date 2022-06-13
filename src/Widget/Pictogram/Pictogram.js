@@ -4,65 +4,13 @@ import React, { useContext } from 'react'
 import ReactMarkdown from 'react-markdown'
 import ShareButton from '../ShareButton'
 import { WidgetParamsContext } from '../Widget'
-import { BackgroundColorKey, BackgroundColorToIconBaseColorMap } from './config'
 import {
-  Camp,
-  Education,
-  Food,
-  Legal,
-  PeopleChildren,
-  PeopleChildrenCircle,
-  PeopleFemale,
-  PeopleFemaleCircle,
-  PeopleLittleBoy,
-  PeopleLittleBoyCircle,
-  PeopleLittleGirl,
-  PeopleLittleGirlCircle,
-  PeopleMale,
-  PeopleMaleCircle,
-  PeopleRefugeeFamily,
-  PeopleRefugeeFamilyAlt,
-  PeopleRefugeeFamilyAltCircle,
-  PeopleRefugeeFamilyCircle,
-  PeopleRefugeesRunning,
-  PeopleRefugeesRunningCircle,
-  PeopleSchoolBoy,
-  PeopleSchoolBoyCircle,
-  PeopleSchoolGirl,
-  PeopleSchoolGirlCircle,
-  Shelter,
-  WASH,
-} from './icons/index.js'
-import c from './Pictogram.module.scss'
+  BackgroundColorKey,
+  BackgroundColorToIconBaseColorMap,
+  WidgetIconMap,
+} from './config'
 
-const WidgetIconMap = {
-  PeopleFemale,
-  PeopleMale,
-  PeopleLittleBoy,
-  PeopleLittleGirl,
-  PeopleSchoolGirl,
-  PeopleSchoolBoy,
-  PeopleChildren,
-  PeopleRefugeeFamily,
-  PeopleRefugeeFamilyAlt,
-  PeopleRefugeesRunning,
-  PeopleFemaleCircle,
-  PeopleMaleCircle,
-  PeopleLittleBoyCircle,
-  PeopleLittleGirlCircle,
-  PeopleSchoolGirlCircle,
-  PeopleSchoolBoyCircle,
-  PeopleChildrenCircle,
-  PeopleRefugeeFamilyCircle,
-  PeopleRefugeeFamilyAltCircle,
-  PeopleRefugeesRunningCircle,
-  Camp,
-  Education,
-  Food,
-  Legal,
-  Shelter,
-  WASH,
-}
+import c from './Pictogram.module.scss'
 
 function Pictogram() {
   if (isServer()) return null

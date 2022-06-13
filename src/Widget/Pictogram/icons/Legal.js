@@ -5,7 +5,7 @@ import { IconBar } from './IconBar'
 
 export const Legal = IconBar(LegalIcon)
 
-function LegalIcon(props) {
+export function LegalIcon(props) {
   return (
     <Icon {...props}>
       <g>

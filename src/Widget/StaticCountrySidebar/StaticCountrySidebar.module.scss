@@ -1,34 +1,6 @@
 @import '@/style/common.scss';
 
 .container {
-  .facts-grid {
-    display: grid;
-    grid-template-columns: 50% 50%;
-    grid-auto-rows: 1fr;
-  }
-
-  .grid-cell {
-    padding-top: 0.4em;
-    padding-bottom: 0.4em;
-    padding-right: 0.2em;
-  }
-  .grid-cell-content {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .grid-cell:nth-child(2n + 0) {
-    padding-left: 0.5em;
-  }
-  .grid-cell:nth-child(n + 3) {
-    border-top: 1px solid black;
-  }
-  .grid-cell:nth-child(2n + 1) {
-    border-right: 1px solid black;
-  }
-
   .datapoint-label,
   .datapoint-figure {
     margin: 0;
@@ -38,8 +10,8 @@
   .datapoint-label {
     font-family: Roboto;
     font-size: 14px;
-    font-style: italic;
-    font-weight: 400;
+    // font-style: italic;
+    font-weight: 700;
     line-height: 18px;
     letter-spacing: 0em;
     text-align: left;
@@ -53,7 +25,7 @@
     text-align: left;
   }
   .read-more-link {
-    //styleName: 14px/Regular;
+    text-align: center;
     font-family: Roboto;
     font-size: 14px;
     font-weight: 400;
@@ -62,5 +34,76 @@
     color: #212121;
     text-decoration: underline;
     text-decoration-color: $nrcOrange;
+  }
+}
+
+.global-displacement-variant {
+  dl {
+    margin: 0;
+  }
+  .facts-grid {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-auto-rows: 1fr;
+    gap: 0.2em;
+  }
+
+  .grid-cell {
+    background-color: #eae7dd;
+    padding: 0.6em 0.6em;
+  }
+  .grid-cell-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  caption {
+    display: inline-block;
+    font-family: Roboto;
+    font-size: 14px;
+    font-weight: 400;
+    color: #212121;
+    width: 100%;
+    font-style: italic;
+  }
+}
+
+.gors-variant {
+  .gors-grid {
+    display: grid;
+    grid-template: 1.4em auto / 4em auto;
+    column-gap: 1.2em;
+    grid-template-areas:
+      'iconarea label'
+      'iconarea figure';
+  }
+  // Selects every .gors-grid except first one
+  .gors-grid + .gors-grid {
+    margin-top: 0.5em;
+  }
+  .gors-cell-icon {
+    grid-area: iconarea;
+  }
+  .gors-cell-label {
+    padding-top: 0.4em;
+    grid-area: label;
+  }
+  .gors-cell-figure {
+    grid-area: figure;
+  }
+  caption {
+    display: inline-block;
+    font-family: 'Roboto Condensed';
+    font-size: 20px;
+    font-weight: 400;
+    color: #212121;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 1em;
+  }
+  figure {
+    margin: 0;
   }
 }

@@ -8,7 +8,7 @@ import c from './all-icons-style.module.scss'
 
 export function Icon({
   children,
-  horizontalFill,
+  horizontalFill = 1,
   iconBaseColor = '#C2C2C2',
   fillColor = '#FDC82F',
 }) {

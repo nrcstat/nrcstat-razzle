@@ -5,7 +5,7 @@ import { IconBar } from './IconBar'
 
 export const Shelter = IconBar(ShelterIcon)
 
-function ShelterIcon(props) {
+export function ShelterIcon(props) {
   return (
     <Icon {...props}>
       <g>

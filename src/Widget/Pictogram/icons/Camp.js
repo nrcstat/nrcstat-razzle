@@ -5,7 +5,7 @@ import { IconBar } from './IconBar'
 
 export const Camp = IconBar(CampIcon)
 
-function CampIcon(props) {
+export function CampIcon(props) {
   return (
     <Icon {...props}>
       <g>
