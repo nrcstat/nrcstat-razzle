@@ -51,6 +51,7 @@ export default function (widgetParams) {
     'percentageChildrenFleeingToCountry',
     'percentageWomenFleeingFromCountry',
     'percentageChildrenFleeingFromCountry',
+    'resettlementRefugeesToXInYear',
   ]
 
   function loadWidgetData(_, headers = {}) {
@@ -252,6 +253,17 @@ export default function (widgetParams) {
                 periodYear + 1
               }.MainTable.Column.percentageChildren.label`
             )}</th>
+            ${
+              periodYear >= 2021
+                ? `
+               <th>${t(
+                 `RefugeeReport${
+                   periodYear + 1
+                 }.MainTable.Column.resettlementRefugeesToXInYear.label`
+               )}</th>
+            `
+                : ``
+            }
           </tr>
         </thead>
       </table>
@@ -307,159 +319,175 @@ export default function (widgetParams) {
       },
 
       function setupTable(cb) {
+        const columns = [
+          { data: () => '' },
+          // Column 0: continent (Verdensdel)
+          {
+            data: 'continent',
+          },
+          // Column 1: country (Land)
+          {
+            data: 'country',
+            render: (data, type, row) => {
+              if (type == 'display') {
+                let txt = data
+                row.annotations.forEach((annot) => {
+                  txt += `&nbsp;<span class="nrcstat-widget-tooltip" title="${annot.annotation}"><sup>${annot.number})</sup></span>`
+                })
+                return txt
+              } else {
+                return data
+              }
+            },
+          },
+          // Column 2: totalRefugeesFromX (Totalt flyktninger fra)
+          {
+            title: `<span class="nrcstat-tablewidget-header" >${t(
+              `RefugeeReport${
+                periodYear + 1
+              }.MainTable.Column.totalRefugeesFrom.label`
+            )}</span><span class="nrcstat-widget-tooltip" title="${t(
+              `RefugeeReport${
+                periodYear + 1
+              }.MainTable.Column.totalRefugeesFrom.hoverText`
+            )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
+            data: 'totalRefugeesFromX',
+            render: (data, type, row) =>
+              type == 'display' ? thousandsFormatter(locale)(data) : data,
+          },
+          // Column 3: refugeesInXFromOtherCountriesInYear (Totalt flyktninger til)
+          {
+            title: `<span class="nrcstat-tablewidget-header" >${t(
+              `RefugeeReport${
+                periodYear + 1
+              }.MainTable.Column.totalRefugeesTo.label`
+            )}</span><span class="nrcstat-widget-tooltip" title="${t(
+              `RefugeeReport${
+                periodYear + 1
+              }.MainTable.Column.totalRefugeesTo.hoverText`
+            )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
+            data: 'refugeesInXFromOtherCountriesInYear',
+            render: (data, type, row) =>
+              type == 'display' ? thousandsFormatter(locale)(data) : data,
+          },
+          // Column 4: idpsInXInYear (Totalt internt fordrevne)
+          {
+            title: `<span class="nrcstat-tablewidget-header" >${t(
+              `RefugeeReport${periodYear + 1}.MainTable.Column.totalIdps.label`
+            )}</span><span class="nrcstat-widget-tooltip" title="${t(
+              `RefugeeReport${
+                periodYear + 1
+              }.MainTable.Column.totalIdps.hoverText`
+            )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
+            data: 'idpsInXInYear',
+            render: (data, type, row) =>
+              type == 'display' ? thousandsFormatter(locale)(data) : data,
+          },
+          // Column 5: newRefugeesFromXInYear (Nye flyktninger fra)
+          {
+            title: `<span class="nrcstat-tablewidget-header" >${t(
+              `RefugeeReport${
+                periodYear + 1
+              }.MainTable.Column.newRefugeesFrom.label`
+            )}</span><span class="nrcstat-widget-tooltip" title="${t(
+              `RefugeeReport${
+                periodYear + 1
+              }.MainTable.Column.newRefugeesFrom.hoverText`
+            )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
+            data: 'newRefugeesFromXInYear',
+            render: (data, type, row) =>
+              type == 'display' ? thousandsFormatter(locale)(data) : data,
+          },
+          // Column 6: newRefugeesInXFromOtherCountriesInYear (Nye flyktninger til)
+          {
+            title: `<span class="nrcstat-tablewidget-header" >${t(
+              `RefugeeReport${
+                periodYear + 1
+              }.MainTable.Column.newRefugeesTo.label`
+            )}</span><span class="nrcstat-widget-tooltip" title="${t(
+              `RefugeeReport${
+                periodYear + 1
+              }.MainTable.Column.newRefugeesTo.hoverText`
+            )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
+            data: 'newRefugeesInXFromOtherCountriesInYear',
+            render: (data, type, row) =>
+              type == 'display' ? thousandsFormatter(locale)(data) : data,
+          },
+          // Column 7: newIdpsInXInYear (Nye internt fordrevne)
+          {
+            title: `<span class="nrcstat-tablewidget-header" >${t(
+              `RefugeeReport${periodYear + 1}.MainTable.Column.newIdps.label`
+            )}</span><span class="nrcstat-widget-tooltip" title="${t(
+              `RefugeeReport${
+                periodYear + 1
+              }.MainTable.Column.newIdps.hoverText`
+            )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
+            data: 'newIdpsInXInYear',
+            render: (data, type, row) =>
+              type == 'display' ? thousandsFormatter(locale)(data) : data,
+          },
+          // Column 8: population (Folketall)
+          {
+            data: 'population',
+            render: (data, type, row) =>
+              type == 'display' ? thousandsFormatter(locale)(data) : data,
+          },
+          // Column 9: percentageWomenFleeingToCountry (Andel kvinner)
+          {
+            title: `<span class="nrcstat-tablewidget-header" >${t(
+              `RefugeeReport${
+                periodYear + 1
+              }.MainTable.Column.percentageWomen.label`
+            )}</span><span class="nrcstat-widget-tooltip" title="${t(
+              `RefugeeReport${
+                periodYear + 1
+              }.MainTable.Column.percentageWomen.hoverText`
+            )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
+            data:
+              periodYear < 2021
+                ? 'percentageWomenFleeingToCountry'
+                : 'percentageWomenFleeingFromCountry',
+            render: (data, type, row) =>
+              type == 'display' ? percentFormatter(locale)(data) : data,
+          },
+          // Column 10: percentageChildrenFleeingToCountry (Andel barn)
+          {
+            title: `<span class="nrcstat-tablewidget-header" >${t(
+              `RefugeeReport${
+                periodYear + 1
+              }.MainTable.Column.percentageChildren.label`
+            )}</span><span class="nrcstat-widget-tooltip" title="${t(
+              `RefugeeReport${
+                periodYear + 1
+              }.MainTable.Column.percentageChildren.hoverText`
+            )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
+            data:
+              periodYear < 2021
+                ? 'percentageChildrenFleeingToCountry'
+                : 'percentageChildrenFleeingFromCountry',
+            render: (data, type, row) =>
+              type == 'display' ? percentFormatter(locale)(data) : data,
+          },
+        ]
+        if (periodYear >= 2021) {
+          columns.push({
+            // Column 11: resettlementRefugeesToXInYear (Kvoteflyktninger til)
+            title: `<span class="nrcstat-tablewidget-header" >${t(
+              `RefugeeReport${
+                periodYear + 1
+              }.MainTable.Column.resettlementRefugeesToXInYear.label`
+            )}</span><span class="nrcstat-widget-tooltip" title="${t(
+              `RefugeeReport${
+                periodYear + 1
+              }.MainTable.Column.resettlementRefugeesToXInYear.hoverText`
+            )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
+            data: 'resettlementRefugeesToXInYear',
+            render: (data, type, row) =>
+              type == 'display' ? thousandsFormatter(locale)(data) : data,
+          })
+        }
         ft = $(`#datatable${id}`).DataTable({
-          columns: [
-            { data: () => '' },
-            // Column 0: continent (Verdensdel)
-            {
-              data: 'continent',
-            },
-            // Column 1: country (Land)
-            {
-              data: 'country',
-              render: (data, type, row) => {
-                if (type == 'display') {
-                  let txt = data
-                  row.annotations.forEach((annot) => {
-                    txt += `&nbsp;<span class="nrcstat-widget-tooltip" title="${annot.annotation}"><sup>${annot.number})</sup></span>`
-                  })
-                  return txt
-                } else {
-                  return data
-                }
-              },
-            },
-            // Column 2: totalRefugeesFromX (Totalt flyktninger fra)
-            {
-              title: `<span class="nrcstat-tablewidget-header" >${t(
-                `RefugeeReport${
-                  periodYear + 1
-                }.MainTable.Column.totalRefugeesFrom.label`
-              )}</span><span class="nrcstat-widget-tooltip" title="${t(
-                `RefugeeReport${
-                  periodYear + 1
-                }.MainTable.Column.totalRefugeesFrom.hoverText`
-              )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
-              data: 'totalRefugeesFromX',
-              render: (data, type, row) =>
-                type == 'display' ? thousandsFormatter(locale)(data) : data,
-            },
-            // Column 3: refugeesInXFromOtherCountriesInYear (Totalt flyktninger til)
-            {
-              title: `<span class="nrcstat-tablewidget-header" >${t(
-                `RefugeeReport${
-                  periodYear + 1
-                }.MainTable.Column.totalRefugeesTo.label`
-              )}</span><span class="nrcstat-widget-tooltip" title="${t(
-                `RefugeeReport${
-                  periodYear + 1
-                }.MainTable.Column.totalRefugeesTo.hoverText`
-              )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
-              data: 'refugeesInXFromOtherCountriesInYear',
-              render: (data, type, row) =>
-                type == 'display' ? thousandsFormatter(locale)(data) : data,
-            },
-            // Column 4: idpsInXInYear (Totalt internt fordrevne)
-            {
-              title: `<span class="nrcstat-tablewidget-header" >${t(
-                `RefugeeReport${
-                  periodYear + 1
-                }.MainTable.Column.totalIdps.label`
-              )}</span><span class="nrcstat-widget-tooltip" title="${t(
-                `RefugeeReport${
-                  periodYear + 1
-                }.MainTable.Column.totalIdps.hoverText`
-              )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
-              data: 'idpsInXInYear',
-              render: (data, type, row) =>
-                type == 'display' ? thousandsFormatter(locale)(data) : data,
-            },
-            // Column 5: newRefugeesFromXInYear (Nye flyktninger fra)
-            {
-              title: `<span class="nrcstat-tablewidget-header" >${t(
-                `RefugeeReport${
-                  periodYear + 1
-                }.MainTable.Column.newRefugeesFrom.label`
-              )}</span><span class="nrcstat-widget-tooltip" title="${t(
-                `RefugeeReport${
-                  periodYear + 1
-                }.MainTable.Column.newRefugeesFrom.hoverText`
-              )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
-              data: 'newRefugeesFromXInYear',
-              render: (data, type, row) =>
-                type == 'display' ? thousandsFormatter(locale)(data) : data,
-            },
-            // Column 6: newRefugeesInXFromOtherCountriesInYear (Nye flyktninger til)
-            {
-              title: `<span class="nrcstat-tablewidget-header" >${t(
-                `RefugeeReport${
-                  periodYear + 1
-                }.MainTable.Column.newRefugeesTo.label`
-              )}</span><span class="nrcstat-widget-tooltip" title="${t(
-                `RefugeeReport${
-                  periodYear + 1
-                }.MainTable.Column.newRefugeesTo.hoverText`
-              )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
-              data: 'newRefugeesInXFromOtherCountriesInYear',
-              render: (data, type, row) =>
-                type == 'display' ? thousandsFormatter(locale)(data) : data,
-            },
-            // Column 7: newIdpsInXInYear (Nye internt fordrevne)
-            {
-              title: `<span class="nrcstat-tablewidget-header" >${t(
-                `RefugeeReport${periodYear + 1}.MainTable.Column.newIdps.label`
-              )}</span><span class="nrcstat-widget-tooltip" title="${t(
-                `RefugeeReport${
-                  periodYear + 1
-                }.MainTable.Column.newIdps.hoverText`
-              )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
-              data: 'newIdpsInXInYear',
-              render: (data, type, row) =>
-                type == 'display' ? thousandsFormatter(locale)(data) : data,
-            },
-            // Column 8: population (Folketall)
-            {
-              data: 'population',
-              render: (data, type, row) =>
-                type == 'display' ? thousandsFormatter(locale)(data) : data,
-            },
-            // Column 9: percentageWomenFleeingToCountry (Andel kvinner)
-            {
-              title: `<span class="nrcstat-tablewidget-header" >${t(
-                `RefugeeReport${
-                  periodYear + 1
-                }.MainTable.Column.percentageWomen.label`
-              )}</span><span class="nrcstat-widget-tooltip" title="${t(
-                `RefugeeReport${
-                  periodYear + 1
-                }.MainTable.Column.percentageWomen.hoverText`
-              )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
-              data:
-                periodYear < 2021
-                  ? 'percentageWomenFleeingToCountry'
-                  : 'percentageWomenFleeingFromCountry',
-              render: (data, type, row) =>
-                type == 'display' ? percentFormatter(locale)(data) : data,
-            },
-            // Column 10: percentageChildrenFleeingToCountry (Andel barn)
-            {
-              title: `<span class="nrcstat-tablewidget-header" >${t(
-                `RefugeeReport${
-                  periodYear + 1
-                }.MainTable.Column.percentageChildren.label`
-              )}</span><span class="nrcstat-widget-tooltip" title="${t(
-                `RefugeeReport${
-                  periodYear + 1
-                }.MainTable.Column.percentageChildren.hoverText`
-              )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
-              data:
-                periodYear < 2021
-                  ? 'percentageChildrenFleeingToCountry'
-                  : 'percentageChildrenFleeingFromCountry',
-              render: (data, type, row) =>
-                type == 'display' ? percentFormatter(locale)(data) : data,
-            },
-          ],
+          columns,
           language: languageObject,
 
           responsive: {
