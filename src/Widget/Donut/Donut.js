@@ -43,16 +43,6 @@ function RenderOnVisible({ children }) {
 
 const colours = ['#FF9C48', '#47A3B5', '#FED769', '#70A873', '#E5735F']
 
-function DonutRerenderOnResize() {
-  const [show, setShow] = useState(true)
-  useEventListener('resize', () => {
-    setShow(false)
-    setInterval(() => setShow(true))
-  })
-  if (show) return <Donut />
-  else return null
-}
-
 function Donut() {
   if (isServer()) return null
 
@@ -297,7 +287,7 @@ class DonutTitle extends React.Component {
   }
 }
 
-export default DonutRerenderOnResize
+export default Donut
 
 function translateCustomData(customData) {
   const nameProperty = customData.columns[0].data
