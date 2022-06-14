@@ -9,7 +9,7 @@ import {
   Tooltip,
 } from 'recharts'
 import { FixedLocaleContext } from '../../services/i18n'
-import { isServer } from '../../util/utils'
+import { isClient, isServer } from '../../util/utils'
 import { formatDataNumber } from '../../util/widgetHelpers'
 import ShareButton from '../ShareButton'
 import { WidgetParamsContext } from '../Widget'
@@ -188,7 +188,9 @@ function Donut() {
   )
 }
 
-window.centeredLabelCache = {}
+if (isClient()) {
+  window.centeredLabelCache = {}
+}
 
 function CenteredLabel(props) {
   const { text, cx, cy, middleRadius } = props
