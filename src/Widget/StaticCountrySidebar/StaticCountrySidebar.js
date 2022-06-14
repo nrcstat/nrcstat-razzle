@@ -126,6 +126,7 @@ function GorsVariant() {
           countryName: t(
             `NRC.Web.StaticTextDictionary.Contries.${countryCode}`
           ),
+          year: String(year),
         })}
       </caption>
 
