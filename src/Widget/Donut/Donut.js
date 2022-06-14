@@ -14,6 +14,32 @@ import { formatDataNumber } from '../../util/widgetHelpers'
 import ShareButton from '../ShareButton'
 import { WidgetParamsContext } from '../Widget'
 import './Donut.scss'
+import { useIntersection } from 'react-use'
+
+const VISIBILITY_RENDER_THRESHOLD = 0.15
+
+function RenderOnVisible({ children }) {
+  const elementRef = useRef(null)
+  const renderingWasTriggered = useRef(false)
+  const intersection = useIntersection(elementRef, {
+    root: null,
+    rootMargin: '0px',
+    threshold: VISIBILITY_RENDER_THRESHOLD,
+  })
+
+  if (
+    !renderingWasTriggered.current &&
+    intersection?.intersectionRatio > VISIBILITY_RENDER_THRESHOLD
+  ) {
+    renderingWasTriggered.current = true
+  }
+
+  return (
+    <div ref={elementRef} style={{ width: '100%', height: '100%' }}>
+      {renderingWasTriggered.current ? children : null}
+    </div>
+  )
+}
 
 const colours = ['#FF9C48', '#47A3B5', '#FED769', '#70A873', '#E5735F']
 
@@ -60,6 +86,7 @@ function Donut() {
         throw new Error('Invalid widget dataType')
     }
   })()
+  data.unshift({ name: '', value: 0 })
 
   // NOTE: the `container` class is added so that
   // nrcstat-monorepo/libs/widget-social-media-sharing/src/lib/index.ts:useRenderWidgetThumbnailBlob
@@ -67,39 +94,43 @@ function Donut() {
   return (
     <div className="container" ref={findElementEpiServerAncestorResetHeight}>
       <div style={{ width: '100%', height: '450px' }}>
-        <ResponsiveContainer>
-          <PieChart>
-            <Pie
-              dataKey="value"
-              startAngle={0}
-              innerRadius="60%"
-              endAngle={-360}
-              data={data}
-              fill="#8884d8"
-              paddingAngle={0}
-            >
-              {data.map((d, i) => (
-                <Cell
-                  key={`cell-${i}`}
-                  fill={colours[i % colours.length]}
-                  stroke={colours[i % colours.length]}
-                />
-              ))}
-              <Label
-                position="center"
-                content={<DonutTitle setViewBox={setViewBox} />}
-                value={title}
-              />
-            </Pie>
+        <RenderOnVisible>
+          <ResponsiveContainer>
+            <PieChart>
+              <Pie
+                dataKey="value"
+                startAngle={0}
+                innerRadius="60%"
+                endAngle={-360}
+                data={data}
+                fill="#8884d8"
+                paddingAngle={0}
+                activeIndex={0}
+                activeShape={renderCenteredLabel(title)}
+              >
+                {data.map((d, i) => (
+                  <Cell
+                    key={`cell-${i}`}
+                    fill={colours[i % colours.length]}
+                    stroke={colours[i % colours.length]}
+                  />
+                ))}
+                {/* <Label
+                  position="center"
+                  content={<DonutTitle setViewBox={setViewBox} />}
+                  value={title}
+                /> */}
+              </Pie>
 
-            {enablePopup ? (
-              <Tooltip
-                content={<CustomTooltip />}
-                wrapperStyle={{ visibility: 'visible', foo: 'bar' }}
-              />
-            ) : null}
-          </PieChart>
-        </ResponsiveContainer>
+              {enablePopup ? (
+                <Tooltip
+                  content={<CustomTooltip />}
+                  wrapperStyle={{ visibility: 'visible', foo: 'bar' }}
+                />
+              ) : null}
+            </PieChart>
+          </ResponsiveContainer>
+        </RenderOnVisible>
       </div>
       {viewBox && (
         <div
@@ -155,6 +186,65 @@ function Donut() {
       )}
     </div>
   )
+}
+
+window.centeredLabelCache = {}
+
+function CenteredLabel(props) {
+  const { text, cx, cy, middleRadius } = props
+
+  const [, forceUpdate] = useState()
+
+  const afterTextRender = (textElement) => {
+    if (window.centeredLabelCache[text]) return
+
+    const availableWidthOrHeight = middleRadius
+    window.bb = textElement
+
+    if (!textElement) return
+    const { width: currentWidth, height: currentHeight } = textElement.getBBox()
+
+    var widthTransform = availableWidthOrHeight / currentWidth
+    var heightTransform = availableWidthOrHeight / currentHeight
+    var value =
+      widthTransform < heightTransform ? widthTransform : heightTransform
+
+    window.centeredLabelCache[text] = value
+
+    forceUpdate()
+  }
+
+  return (
+    <g
+      onMouseOver={(e) => e.stopPropagation()}
+      onMouseMove={(e) => e.stopPropagation()}
+      onMouseEnter={(e) => e.stopPropagation()}
+    >
+      <text
+        x={cx}
+        y={cy}
+        dy={8}
+        alignmentBaseline="middle"
+        textAnchor="middle"
+        fontFamily="Roboto"
+        fill="#474747"
+        fontWeight="bold"
+        ref={afterTextRender}
+        style={{
+          fontSize: `${window.centeredLabelCache[text]}em`,
+          visibility: window.centeredLabelCache[text] ? 'visible' : 'hidden',
+        }}
+      >
+        {text}
+      </text>
+    </g>
+  )
+}
+
+function renderCenteredLabel(text) {
+  return function (props) {
+    return <CenteredLabel {...props} text={text} />
+  }
 }
 
 class DonutTitle extends React.Component {
@@ -264,7 +354,6 @@ const CustomTooltip = ({ active, payload }) => {
   const containerElementRef = useRef(null)
   const { clientX, clientY, screenX, screenY, pageX, pageY } = useMouse()
   const { locale } = useContext(WidgetParamsContext)
-  console.log(locale)
 
   if (active) {
     const { name, value } = payload[0]

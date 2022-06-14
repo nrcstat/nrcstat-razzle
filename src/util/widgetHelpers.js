@@ -10,7 +10,6 @@ export function isMobileDevice() {
 }
 
 export function formatDataNumber(number, locale, forceFullFormat = false) {
-  console.log(number, locale, forceFullFormat)
   if (isNull(number) || isUndefined(number)) {
     return '-'
   }

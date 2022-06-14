@@ -28,12 +28,7 @@ function Donut({ dataPoint }) {
   const widgetParams = useContext(WidgetParamsContext)
   const { year, countryCode, preloadedWidgetData, locale } = widgetParams
 
-  const data = getCountryStat(
-    preloadedWidgetData,
-    countryCode,
-    dataPoint,
-    parseInt(year)
-  ).data
+  const data = 0
   const remainder = 1 - data
 
   const donutData = [
