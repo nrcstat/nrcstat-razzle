@@ -777,6 +777,7 @@ export function buildCountrySpecificFootnotes2020(t) {
 
 export function buildCountrySpecificFootnotes2021(t) {
   return [
+    // All the upcoming eight footnotes were kept from the previous year
     {
       countryCode: ['DZ', 'EH'],
       annotation: t(
@@ -793,17 +794,10 @@ export function buildCountrySpecificFootnotes2021(t) {
         'RefugeeReport2022.CountrySpecificFootnote.IraqJordanSyria'
       ),
     },
-
-    {
-      countryCode: ['JP'],
-      annotation: t('RefugeeReport2022.CountrySpecificFootnote.Japan'),
-    },
-
     {
       countryCode: ['CN', 'VN'],
       annotation: t('RefugeeReport2022.CountrySpecificFootnote.ChinaVietnam'),
     },
-
     {
       countryCode: ['JO', 'LB', 'PS', 'SY'],
       annotation: t(
@@ -814,11 +808,6 @@ export function buildCountrySpecificFootnotes2021(t) {
       countryCode: ['KO', 'RS'],
       annotation: t('RefugeeReport2022.CountrySpecificFootnote.KosovoSerbia'),
     },
-    {
-      countryCode: ['TR'],
-      annotation: t('RefugeeReport2022.CountrySpecificFootnote.Turkey'),
-    },
-
     {
       countryCode: [
         'VE',
@@ -846,14 +835,22 @@ export function buildCountrySpecificFootnotes2021(t) {
       annotation: t('RefugeeReport2022.CountrySpecificFootnote.USA'),
     },
 
-    // Two new ones added for RefRep 2022, i.e.numbers for 2020:
+    // All the below are new footnotes for this year
     {
-      countryCode: ['AM'],
-      annotation: t('RefugeeReport2022.CountrySpecificFootnote.Armenia'),
+      countryCode: ['AO'],
+      annotation: t('RefugeeReport2022.CountrySpecificFootnote.Angola'),
     },
     {
-      countryCode: ['AZ'],
-      annotation: t('RefugeeReport2022.CountrySpecificFootnote.Azerbaijan'),
+      countryCode: ['BG'],
+      annotation: t('RefugeeReport2022.CountrySpecificFootnote.Bulgaria'),
+    },
+    {
+      countryCode: ['CA'],
+      annotation: t('RefugeeReport2022.CountrySpecificFootnote.Canada'),
+    },
+    {
+      countryCode: ['ZA'],
+      annotation: t('RefugeeReport2022.CountrySpecificFootnote.SouthAfrica'),
     },
   ]
 }
