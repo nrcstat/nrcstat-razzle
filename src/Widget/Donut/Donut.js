@@ -18,35 +18,11 @@ import { useIntersection } from 'react-use'
 
 const VISIBILITY_RENDER_THRESHOLD = 0.15
 
-function RenderOnVisible({ children }) {
-  const elementRef = useRef(null)
-  const renderingWasTriggered = useRef(false)
-  const intersection = useIntersection(elementRef, {
-    root: null,
-    rootMargin: '0px',
-    threshold: VISIBILITY_RENDER_THRESHOLD,
-  })
-
-  if (
-    !renderingWasTriggered.current &&
-    intersection?.intersectionRatio > VISIBILITY_RENDER_THRESHOLD
-  ) {
-    renderingWasTriggered.current = true
-  }
-
-  return (
-    <div ref={elementRef} style={{ width: '100%', height: '100%' }}>
-      {renderingWasTriggered.current ? children : null}
-    </div>
-  )
-}
-
 const colours = ['#FF9C48', '#47A3B5', '#FED769', '#70A873', '#E5735F']
 
 function Donut() {
   if (isServer()) return null
 
-  const [viewBox, setViewBox] = useState(null)
   const widgetParams = useContext(WidgetParamsContext)
   const {
     widgetObject: {
@@ -83,97 +59,108 @@ function Donut() {
   // can accurately target the container to render into a thumbnail image.
   return (
     <div className="container" ref={findElementEpiServerAncestorResetHeight}>
-      <div style={{ width: '100%', height: '450px' }}>
-        <RenderOnVisible>
-          <ResponsiveContainer>
-            <PieChart>
-              <Pie
-                dataKey="value"
-                startAngle={0}
-                innerRadius="60%"
-                endAngle={-360}
-                data={data}
-                fill="#8884d8"
-                paddingAngle={0}
-                activeIndex={0}
-                activeShape={renderCenteredLabel(title)}
-              >
-                {data.map((d, i) => (
-                  <Cell
-                    key={`cell-${i}`}
-                    fill={colours[i % colours.length]}
-                    stroke={colours[i % colours.length]}
-                  />
-                ))}
-                {/* <Label
-                  position="center"
-                  content={<DonutTitle setViewBox={setViewBox} />}
-                  value={title}
-                /> */}
-              </Pie>
-
-              {enablePopup ? (
-                <Tooltip
-                  content={<CustomTooltip />}
-                  wrapperStyle={{ visibility: 'visible', foo: 'bar' }}
-                />
-              ) : null}
-            </PieChart>
-          </ResponsiveContainer>
-        </RenderOnVisible>
-      </div>
-      {viewBox && (
+      <div
+        style={{
+          maxHeight: '450px',
+        }}
+      >
         <div
           style={{
-            width: viewBox.outerRadius * 2,
-            margin: '0 auto',
-            textAlign: 'center',
+            width: '100%',
+            paddingTop: '100%',
             position: 'relative',
-            top: -(450 / 2 - viewBox.outerRadius),
           }}
         >
-          {}
-          {enableSocialMediaSharing ? (
-            <div style={{ position: 'absolute', right: '0', bottom: '0.25em' }}>
-              <ShareButton widgetId={id} />
-            </div>
-          ) : null}
+          <div
+            style={{
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              right: 0,
+              bottom: 0,
+              maxHeight: '450px',
+            }}
+          >
+            <RenderOnVisible>
+              <ResponsiveContainer>
+                <PieChart>
+                  <Pie
+                    dataKey="value"
+                    startAngle={0}
+                    innerRadius="60%"
+                    endAngle={-360}
+                    data={data}
+                    fill="#8884d8"
+                    paddingAngle={0}
+                    activeIndex={0}
+                    activeShape={renderCenteredLabel(title)}
+                  >
+                    {data.map((d, i) => (
+                      <Cell
+                        key={`cell-${i}`}
+                        fill={colours[i % colours.length]}
+                        stroke={colours[i % colours.length]}
+                      />
+                    ))}
+                  </Pie>
+
+                  {enablePopup ? (
+                    <Tooltip
+                      content={<CustomTooltip />}
+                      wrapperStyle={{ visibility: 'visible', foo: 'bar' }}
+                    />
+                  ) : null}
+                </PieChart>
+              </ResponsiveContainer>
+            </RenderOnVisible>
+          </div>
+        </div>
+      </div>
+
+      <div
+        style={{
+          textAlign: 'center',
+        }}
+      >
+        {enableSocialMediaSharing ? (
+          <div style={{ position: 'absolute', right: '0', bottom: '0.25em' }}>
+            <ShareButton widgetId={id} />
+          </div>
+        ) : null}
+        <p
+          style={{
+            fontFamily: 'Roboto',
+            color: '#474747',
+            fontSize: '22px',
+            fontWeight: '400',
+            margin: 0,
+            padding: 0,
+          }}
+        >
+          {subtitle}
+        </p>
+        {source ? (
           <p
             style={{
               fontFamily: 'Roboto',
               color: '#474747',
-              fontSize: '22px',
-              fontWeight: '400',
+              fontSize: '16px',
+              fontWeight: '300',
               margin: 0,
               padding: 0,
-              marginTop: '30px',
+              marginTop: '10px',
             }}
           >
-            {subtitle}
+            {linkToSource ? (
+              <a href={linkToSource} target="_blank">
+                {source}
+              </a>
+            ) : (
+              source
+            )}
           </p>
-          {source ? (
-            <p
-              style={{
-                fontFamily: 'Roboto',
-                color: '#474747',
-                fontSize: '16px',
-                fontWeight: '300',
-                margin: 0,
-                padding: 0,
-                marginTop: '10px',
-              }}
-            >
-              {linkToSource ? (
-                <a href={linkToSource} target="_blank">
-                  {source}
-                </a>
-              ) : (
-                source
-              )}
-            </p>
-          ) : null}
-        </div>
-      )}
+        ) : null}
+      </div>
     </div>
   )
 }
@@ -239,52 +226,27 @@ function renderCenteredLabel(text) {
   }
 }
 
-class DonutTitle extends React.Component {
-  textRef = React.createRef()
+function RenderOnVisible({ children }) {
+  const elementRef = useRef(null)
+  const renderingWasTriggered = useRef(false)
+  const intersection = useIntersection(elementRef, {
+    root: null,
+    rootMargin: '0px',
+    threshold: VISIBILITY_RENDER_THRESHOLD,
+  })
 
-  state = {
-    scale: 0,
-    x: 0,
-    y: 0,
+  if (
+    !renderingWasTriggered.current &&
+    intersection?.intersectionRatio > VISIBILITY_RENDER_THRESHOLD
+  ) {
+    renderingWasTriggered.current = true
   }
 
-  componentDidMount() {
-    this.props.setViewBox(this.props.viewBox)
-    // Calculate scale transformation
-    const textElement = this.textRef.current
-    var bb = textElement.getBBox()
-    const enclosingCircleRadius = this.props.viewBox.innerRadius
-    const boundingBoxWidthHeight = enclosingCircleRadius * 2 * Math.SQRT1_2
-    var widthTransform = boundingBoxWidthHeight / bb.width
-    var heightTransform = boundingBoxWidthHeight / bb.height
-    var scale =
-      widthTransform < heightTransform ? widthTransform : heightTransform
-
-    // Calculate (x,y) translate
-    const { cx, cy } = this.props.viewBox
-    const x = cx
-    // TODO: this calculation is strange and a result of trial & error - fix it?
-    const y = cy + (bb.height * scale) / 4
-
-    this.setState({ scale, x, y })
-  }
-
-  render() {
-    return (
-      <g transform={`translate(${this.state.x}, ${this.state.y})`}>
-        <text
-          fontFamily="Roboto"
-          fill="#474747"
-          fontWeight="bold"
-          textAnchor="middle"
-          transform={`scale(${this.state.scale})`}
-          ref={this.textRef}
-        >
-          {this.props.value}
-        </text>
-      </g>
-    )
-  }
+  return (
+    <div ref={elementRef} style={{ width: '100%', height: '100%' }}>
+      {renderingWasTriggered.current ? children : null}
+    </div>
+  )
 }
 
 export default Donut
