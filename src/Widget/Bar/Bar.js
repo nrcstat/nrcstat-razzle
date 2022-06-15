@@ -166,7 +166,7 @@ function BarViz() {
                 offset={{ bar: 20, column: 30 }[type]}
                 style={{
                   fontFamily: 'Roboto Condensed',
-                  fontSize: '22px',
+                  fontSize: '18px',
                   marginBottom: '10px',
                   fontWeight: 'bold',
                 }}
@@ -176,7 +176,7 @@ function BarViz() {
                   // https://stackoverflow.com/a/52266005/16852998
                   label.toLocaleString().replace(/ /g, '\u00A0')
                 }
-                dominantBaseline="middle"
+                dominantBaseline={0}
               />
             </Bar>
           </BarChart>
