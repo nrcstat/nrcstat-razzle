@@ -5,8 +5,11 @@ import { formatDataNumber } from '@/util/widgetHelpers.js'
 import { FixedLocaleContext } from '../../services/i18n'
 import { WidgetParamsContext } from '../Widget'
 import { isServer } from '../../util/utils'
+import arrowFlat from './arrow-flat.png'
+import arrowUpwards from './arrow-upwards.png'
+import arrowDownwards from './arrow-downwards.png'
 
-export function StatsTable() {
+export function StatsTable({ selectedYear, setSelectedYear }) {
   if (isServer()) return null
 
   const { getNsFixedT } = useContext(FixedLocaleContext)
@@ -16,38 +19,33 @@ export function StatsTable() {
   const { countryCode, year, locale } = widgetParams
   const t = getNsFixedT(['Widget.Static.CountryDashboard', 'GeographicalNames'])
 
-  const [selectedYear, setSelectedYear] = useState(String(year))
-  // useEffect(() => {
-  //   onAfterRender()
-  // })
-
   const YEAR_OPTIONS = [
     {
       label: '2020',
-      value: '2020',
+      value: 2020,
     },
     {
       label: '2019',
-      value: '2019',
+      value: 2019,
     },
     {
       label: '2018',
-      value: '2018',
+      value: 2018,
     },
 
     {
       label: '2017',
-      value: '2017',
+      value: 2017,
     },
     {
       label: '2016',
-      value: '2016',
+      value: 2016,
     },
   ]
   if (year === 2021 || year === '2021') {
     YEAR_OPTIONS.unshift({
       label: '2021',
-      value: '2021',
+      value: 2021,
     })
   }
 
@@ -81,32 +79,57 @@ export function StatsTable() {
     })
   }
 
-  const tableRows = TABLE_ROWS.map((row) => [
-    row.label,
-    getCountryStat(
+  const tableRows = TABLE_ROWS.map((row) => {
+    const label = row.label
+    const newInYearXDataPoint = row.newInYearXDataPoint
+    const totalDataPoint = row.totalDataPoint
+
+    const newInFigure = getCountryStat(
       data,
       countryCode,
       row.newInYearXDataPoint,
-      parseInt(selectedYear)
-    ),
-    getCountryStat(
+      selectedYear
+    )
+    const totalFigure = getCountryStat(
       data,
       countryCode,
       row.totalDataPoint,
-      parseInt(selectedYear)
-    ),
-  ]).map(([label, totalFigure, newInFigure]) => (
-    <tr>
-      <td>{label}</td>
-      <td className={c['data-cell']}>
-        {formatDataNumber(newInFigure ? newInFigure.data : null, locale, true)}
-      </td>
-      <td className={c['data-cell']}>
-        {formatDataNumber(totalFigure ? totalFigure.data : null, locale, true)}
-      </td>
-      <td className={c['data-cell']}>test</td>
-    </tr>
-  ))
+      selectedYear
+    )
+    const currentYear = parseInt(selectedYear)
+    const previousYear = currentYear - 1
+    const trendLineImage = determineTrendLineImage(
+      data,
+      countryCode,
+      newInYearXDataPoint,
+
+      previousYear,
+      currentYear
+    )
+
+    return (
+      <tr>
+        <td>{label}</td>
+        <td className={c['data-cell']}>
+          {formatDataNumber(
+            totalFigure ? totalFigure.data : null,
+            locale,
+            true
+          )}
+        </td>
+        <td className={c['data-cell']}>
+          {formatDataNumber(
+            newInFigure ? newInFigure.data : null,
+            locale,
+            true
+          )}
+        </td>
+        <td className={c['trend-line-cell']}>
+          <img className={c['trend-line-image']} src={trendLineImage} />
+        </td>
+      </tr>
+    )
+  })
 
   return (
     <>
@@ -129,7 +152,7 @@ export function StatsTable() {
               <td />
               <td className={c['data-header-cell']}>{t('header.totalIn')}</td>
               <td className={c['data-cell']}>{t('header.newIn')}</td>
-              <td />
+              <td className={c['trend-line-cell']} />
             </tr>
             {tableRows}
           </tbody>
@@ -137,4 +160,26 @@ export function StatsTable() {
       </div>
     </>
   )
+}
+
+function determineTrendLineImage(
+  data,
+  countryCode,
+  dataPoint,
+  fromYear,
+  toYear
+) {
+  const fromData = getCountryStat(data, countryCode, dataPoint, fromYear)
+  const toData = getCountryStat(data, countryCode, dataPoint, toYear)
+  if (fromData && toData) {
+    if (fromData.data === null || toData.data === null) return null
+    if (toData.data > fromData.data) {
+      return arrowUpwards
+    } else if (toData.data < fromData.data) {
+      return arrowDownwards
+    } else {
+      return arrowFlat
+    }
+  }
+  return null
 }

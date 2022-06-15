@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 import centroidsRaw from '@/Widget/assets/json/geo_entities_updated_manually'
 import { isServer } from '../../util/utils'
@@ -19,22 +19,34 @@ middleResolutionCountriesGeoJson.features.push(gazaGeoJson.features[0])
 mapboxgl.accessToken =
   'pk.eyJ1IjoibnJjbWFwcyIsImEiOiJjaW5hNTM4MXMwMDB4d2tseWZhbmFxdWphIn0._w6LWU9OWnXak36BkzopcQ'
 
-export function CountryMap() {
+export function CountryMap({ selectedYear }) {
   if (isServer()) return null
+
+  const [mapboxLoaded, setMapboxLoaded] = useState(false)
+
+  console.log(selectedYear)
 
   const mapContainer = useRef(null)
   const map = useRef(null)
-  const isMapSetup = useRef(false)
+  const markerContainerRef = useRef(null)
+  const somethingWonderful = useRef(null)
 
   const { getNsFixedT } = useContext(FixedLocaleContext)
   const widgetParams = useContext(WidgetParamsContext)
-  const { countryCode, preloadedWidgetData, locale, year } = widgetParams
+  const { countryCode, preloadedWidgetData, locale } = widgetParams
 
   const t = getNsFixedT(['Widget.Static.CountryDashboard', 'GeographicalNames'])
 
   const leonardoCentroid = getCountryCentroid(countryCode)
+  const boundingBox = leonardoCentroid.boundingbox
+  const [west, south, east, north] = boundingBox
+  const fitBounds_bounds = [
+    [south, west],
+    [north, east],
+  ]
+  const fitBounds_config = { padding: 15 }
 
-  const data = preloadedWidgetData.filter((d) => d.year === parseInt(year))
+  const data = preloadedWidgetData.filter((d) => d.year === selectedYear)
 
   useEffect(() => {
     if (map.current) return // initialize map only once
@@ -46,123 +58,9 @@ export function CountryMap() {
     })
 
     map.current.on('load', () => {
-      const boundingBox = leonardoCentroid.boundingbox
-      const [west, south, east, north] = boundingBox
-      const fitBounds_bounds = [
-        [south, west],
-        [north, east],
-      ]
-      const fitBounds_config = { padding: 15 }
-
-      const somethingWonderful = map.current.cameraForBounds(
-        fitBounds_bounds,
-        fitBounds_config
-      )
-
       map.current.fitBounds(fitBounds_bounds, fitBounds_config)
       map.current.on('resize', () => {
-        console.log('resize')
         map.current.fitBounds(fitBounds_bounds, fitBounds_config)
-      })
-
-      const el = document.createElement('div')
-      el.className = 'nrcstat-radial-bar-chart'
-
-      new mapboxgl.Marker(el)
-        .setLngLat(somethingWonderful.center.toArray())
-        .addTo(map.current)
-
-      ReactDOM.render(
-        <RadialBarChart
-          data={Object.values(dataTransformer(t, locale)(data))[0]}
-        />,
-        el
-      )
-
-      const singleCountry = clone(middleResolutionCountriesGeoJson)
-      singleCountry.features = singleCountry.features.filter(
-        (c) =>
-          c.properties &&
-          c.properties.iso_a2 &&
-          c.properties.iso_a2.toUpperCase() === countryCode.toUpperCase()
-      )
-
-      map.current.addSource('highlight-individual-country', {
-        type: 'geojson',
-        data: singleCountry,
-      })
-
-      map.current.addLayer({
-        id: 'countries-highlighted',
-        type: 'fill',
-        source: 'highlight-individual-country',
-        paint: {
-          'fill-opacity': 1,
-        },
-        paint: { 'fill-color': '#d4d4d4' },
-      })
-
-      map.current.addSource('radial-chart-title-src', {
-        type: 'geojson',
-        data: {
-          type: 'FeatureCollection',
-          features: [
-            {
-              type: 'Feature',
-              properties: {
-                countryLabel: t('radialBarChart.belowChart.line1'),
-              },
-              geometry: {
-                type: 'Point',
-                coordinates: somethingWonderful.center.toArray(),
-              },
-            },
-          ],
-        },
-      })
-      map.current.addLayer({
-        id: 'radial-chart-title',
-        type: 'symbol',
-        source: 'radial-chart-title-src',
-        layout: {
-          'text-field': ['get', 'countryLabel'],
-          'text-font': ['Roboto Condensed'],
-          'text-max-width': 50,
-          'text-size': 25,
-          'text-line-height': 1,
-          'text-offset': [0, 6.5],
-        },
-      })
-      map.current.addSource('radial-chart-subtitle-src', {
-        type: 'geojson',
-        data: {
-          type: 'FeatureCollection',
-          features: [
-            {
-              type: 'Feature',
-              properties: {
-                countryLabel: t('radialBarChart.belowChart.line2'),
-              },
-              geometry: {
-                type: 'Point',
-                coordinates: somethingWonderful.center.toArray(),
-              },
-            },
-          ],
-        },
-      })
-      map.current.addLayer({
-        id: 'radial-chart-subtitle',
-        type: 'symbol',
-        source: 'radial-chart-subtitle-src',
-        layout: {
-          'text-field': ['get', 'countryLabel'],
-          'text-font': ['Roboto Condensed'],
-          'text-max-width': 50,
-          'text-size': 15,
-          'text-line-height': 1,
-          'text-offset': [0, 12.5],
-        },
       })
 
       // Move the mapbox logo
@@ -171,8 +69,142 @@ export function CountryMap() {
       )
       mapboxLogo.classList.remove('mapboxgl-ctrl-bottom-left')
       mapboxLogo.classList.add('mapboxgl-ctrl-bottom-right')
+
+      markerContainerRef.current = document.createElement('div')
+      markerContainerRef.current.className = 'nrcstat-radial-bar-chart'
+
+      somethingWonderful.current = map.current.cameraForBounds(
+        fitBounds_bounds,
+        fitBounds_config
+      )
+
+      new mapboxgl.Marker(markerContainerRef.current)
+        .setLngLat(somethingWonderful.current.center.toArray())
+        .addTo(map.current)
+
+      setMapboxLoaded(true)
     })
-  })
+  }, [])
+
+  useEffect(() => {
+    if (!mapboxLoaded) return
+
+    const singleCountry = clone(middleResolutionCountriesGeoJson)
+    singleCountry.features = singleCountry.features.filter(
+      (c) =>
+        c.properties &&
+        c.properties.iso_a2 &&
+        c.properties.iso_a2.toUpperCase() === countryCode.toUpperCase()
+    )
+
+    map.current.addSource('highlight-individual-country', {
+      type: 'geojson',
+      data: singleCountry,
+    })
+
+    map.current.addLayer({
+      id: 'countries-highlighted',
+      type: 'fill',
+      source: 'highlight-individual-country',
+      paint: {
+        'fill-opacity': 1,
+      },
+      paint: { 'fill-color': '#d4d4d4' },
+    })
+  }, [mapboxLoaded])
+
+  useEffect(() => {
+    if (!mapboxLoaded) return
+    ReactDOM.unmountComponentAtNode(markerContainerRef.current)
+    if (map.current.getLayer('radial-chart-title'))
+      map.current.removeLayer('radial-chart-title')
+    if (map.current.getSource('radial-chart-title-src'))
+      map.current.removeSource('radial-chart-title-src')
+    if (map.current.getLayer('radial-chart-subtitle'))
+      map.current.removeLayer('radial-chart-subtitle')
+    if (map.current.getSource('radial-chart-subtitle-src'))
+      map.current.removeSource('radial-chart-subtitle-src')
+
+    ReactDOM.render(
+      <RadialBarChart
+        data={Object.values(dataTransformer(t, locale)(data))[0]}
+      />,
+      markerContainerRef.current
+    )
+
+    const singleCountry = clone(middleResolutionCountriesGeoJson)
+    singleCountry.features = singleCountry.features.filter(
+      (c) =>
+        c.properties &&
+        c.properties.iso_a2 &&
+        c.properties.iso_a2.toUpperCase() === countryCode.toUpperCase()
+    )
+
+    map.current.addSource('radial-chart-title-src', {
+      type: 'geojson',
+      data: {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            properties: {
+              countryLabel: t('radialBarChart.belowChart.line1'),
+            },
+            geometry: {
+              type: 'Point',
+              coordinates: somethingWonderful.current.center.toArray(),
+            },
+          },
+        ],
+      },
+    })
+    map.current.addLayer({
+      id: 'radial-chart-title',
+      type: 'symbol',
+      source: 'radial-chart-title-src',
+      layout: {
+        'text-field': ['get', 'countryLabel'],
+        'text-font': ['Roboto Condensed'],
+        'text-max-width': 50,
+        'text-size': 25,
+        'text-line-height': 1,
+        'text-offset': [0, 6.5],
+      },
+    })
+    map.current.addSource('radial-chart-subtitle-src', {
+      type: 'geojson',
+      data: {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            properties: {
+              countryLabel: t('radialBarChart.belowChart.line2', {
+                year: String(selectedYear + 1),
+              }),
+            },
+            geometry: {
+              type: 'Point',
+              coordinates: somethingWonderful.current.center.toArray(),
+            },
+          },
+        ],
+      },
+    })
+    map.current.addLayer({
+      id: 'radial-chart-subtitle',
+      type: 'symbol',
+      source: 'radial-chart-subtitle-src',
+      layout: {
+        'text-field': ['get', 'countryLabel'],
+        'text-font': ['Roboto Condensed'],
+        'text-max-width': 50,
+        'text-size': 15,
+        'text-line-height': 1,
+        'text-offset': [0, 12.5],
+      },
+    })
+  }, [data, mapboxLoaded])
 
   // useEffect(() => {
   //   if (!map.current) return // wait for map to initialize

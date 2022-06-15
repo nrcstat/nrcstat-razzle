@@ -1,13 +1,6 @@
-import { formatDataNumber } from '@/util/widgetHelpers.js'
-import centroidsRaw from '@/Widget/assets/json/geo_entities_updated_manually'
-import middleResolutionCountriesGeoJson from '@/Widget/assets/json/ne_110m_admin_0_countries.json'
-import { clone, groupBy, includes, isNull, mapValues } from 'lodash'
-import React, { useContext, useEffect } from 'react'
-import ReactDOM from 'react-dom'
+import React, { useContext, useState } from 'react'
 import 'react-vis/dist/style.css'
-import { API_URL } from '../../config'
 import { FixedLocaleContext } from '../../services/i18n'
-import { isServer } from '../../util/utils'
 import { WidgetParamsContext } from '../Widget'
 import c from './CountryDashboard.module.scss'
 import './CountryDashboard.scss'
@@ -15,7 +8,6 @@ import { CountryMap } from './CountryMap'
 import { DashboardHeader } from './DashboardHeader'
 import { Ingress } from './Ingress'
 import { PercentageDonut } from './PercentageDonut'
-import { RadialBarChart } from './RadialBarChart'
 import { StatsInfoText } from './StatsInfoText'
 import { StatsTable } from './StatsTable'
 
@@ -23,6 +15,7 @@ export default function CountryDashboard() {
   const { getNsFixedT } = useContext(FixedLocaleContext)
   const widgetParams = useContext(WidgetParamsContext)
   const { countryCode, year } = widgetParams
+  const [selectedYear, setSelectedYear] = useState(parseInt(year))
 
   const t = getNsFixedT(['Widget.Static.CountryDashboard'])
 
@@ -36,7 +29,7 @@ export default function CountryDashboard() {
       <DashboardHeader />
       <div className={c['dashboard-map-and-ingress-wrapper']}>
         <div className={c['map']}>
-          <CountryMap />
+          <CountryMap selectedYear={selectedYear} />
         </div>
         {isIngressNonEmpty ? (
           <div className={c['ingress']}>
@@ -47,7 +40,10 @@ export default function CountryDashboard() {
 
       <div className={c['donut-table-wrapper']}>
         <div style={{ flex: '1' }}>
-          <StatsTable />
+          <StatsTable
+            selectedYear={selectedYear}
+            setSelectedYear={setSelectedYear}
+          />
         </div>
         <div className={c['spacer']} />
         <div style={{ flex: '1' }}>
