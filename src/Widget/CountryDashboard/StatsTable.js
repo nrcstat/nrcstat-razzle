@@ -99,10 +99,10 @@ export function StatsTable() {
     <tr>
       <td>{label}</td>
       <td className={c['data-cell']}>
-        {formatDataNumber(totalFigure ? totalFigure.data : null, locale, true)}
+        {formatDataNumber(newInFigure ? newInFigure.data : null, locale, true)}
       </td>
       <td className={c['data-cell']}>
-        {formatDataNumber(newInFigure ? newInFigure.data : null, locale, true)}
+        {formatDataNumber(totalFigure ? totalFigure.data : null, locale, true)}
       </td>
     </tr>
   ))
@@ -126,8 +126,8 @@ export function StatsTable() {
           <tbody>
             <tr>
               <td />
-              <td className={c['data-cell']}>{t('header.newIn')}</td>
               <td className={c['data-header-cell']}>{t('header.totalIn')}</td>
+              <td className={c['data-cell']}>{t('header.newIn')}</td>
             </tr>
             {tableRows}
           </tbody>
