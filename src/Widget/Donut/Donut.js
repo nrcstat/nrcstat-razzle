@@ -18,7 +18,7 @@ import { useIntersection } from 'react-use'
 
 const VISIBILITY_RENDER_THRESHOLD = 0.15
 
-const colours = ['#FF9C48', '#47A3B5', '#FED769', '#70A873', '#E5735F']
+const COLOURS = ['#FF9C48', '#47A3B5', '#FED769', '#70A873', '#E5735F']
 
 function Donut() {
   if (isServer()) return null
@@ -33,9 +33,15 @@ function Donut() {
       config: { subtitle, source, linkToSource },
       enableSocialMediaSharing,
       enablePopup,
+      enableColourSchemeOverride,
+      overridingColourScheme,
     },
     preloadedWidgetData,
   } = widgetParams
+
+  const colours = enableColourSchemeOverride
+    ? overridingColourScheme.split(',')
+    : COLOURS
 
   const { getNsFixedT } = useContext(FixedLocaleContext)
   const t = getNsFixedT(['Glossary', 'GeographicalNames'])

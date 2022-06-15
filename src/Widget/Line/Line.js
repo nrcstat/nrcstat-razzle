@@ -20,7 +20,7 @@ import ShareButton from '../ShareButton'
 import { WidgetParamsContext } from '../Widget'
 import './Line.scss'
 
-const colours = ['#FF9C48', '#47A3B5', '#FED769', '#70A873', '#E5735F']
+const COLOURS = ['#FF9C48', '#47A3B5', '#FED769', '#70A873', '#E5735F']
 
 function LineWidget() {
   if (isServer()) return null
@@ -35,9 +35,15 @@ function LineWidget() {
       config: { subtitle = '', linkbox = '', source = '', linkToSource = '' },
       enableSocialMediaSharing,
       enablePopup,
+      enableColourSchemeOverride,
+      overridingColourScheme,
     },
     preloadedWidgetData,
   } = useContext(WidgetParamsContext)
+
+  const colours = enableColourSchemeOverride
+    ? overridingColourScheme.split(',')
+    : COLOURS
 
   const { getNsFixedT } = useContext(FixedLocaleContext)
   const t = getNsFixedT(['Glossary', 'GeographicalNames'])
