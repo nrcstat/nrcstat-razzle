@@ -39,7 +39,7 @@
 
 .global-displacement-variant {
   margin-top: 0.8em;
-  margin-bottom: 1em;
+  margin-bottom: 1.1em;
 
   dl {
     margin: 0;
@@ -74,8 +74,8 @@
 }
 
 .gors-variant {
-  margin-top: 0.9em;
-  margin-bottom: 0.9em;
+  margin-top: 1.1em;
+  margin-bottom: 1.1em;
 
   .core-competencies-grid {
     display: grid;
@@ -99,7 +99,7 @@
   }
   // Selects every .core-competency-item except first one
   .core-competency-item:not(:last-child) {
-    margin-bottom: 0.1em;
+    margin-bottom: 0em;
   }
   .core-competency-icon {
     grid-area: iconarea;
@@ -119,7 +119,7 @@
     color: #212121;
     width: 100%;
     text-align: left;
-    margin-bottom: 1em;
+    margin-bottom: 0.7em;
   }
   figure {
     margin: 0;
