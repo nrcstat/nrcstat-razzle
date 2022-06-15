@@ -126,8 +126,8 @@ export function StatsTable() {
           <tbody>
             <tr>
               <td />
-              <td className={c['data-header-cell']}>{t('header.totalIn')}</td>
               <td className={c['data-cell']}>{t('header.newIn')}</td>
+              <td className={c['data-header-cell']}>{t('header.totalIn')}</td>
             </tr>
             {tableRows}
           </tbody>
