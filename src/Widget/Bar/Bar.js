@@ -4,7 +4,9 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Cell,
   LabelList,
+  Label,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -15,6 +17,8 @@ import { isServer } from '../../util/utils'
 import ShareButton from '../ShareButton'
 import { WidgetParamsContext } from '../Widget'
 import c from './Bar.module.scss'
+
+const COLOURS = ['#FED769']
 
 function BarViz() {
   if (isServer()) return null
@@ -50,7 +54,13 @@ function BarViz() {
     config: { subtitle, source, linkToSource },
     enableSocialMediaSharing,
     enablePopup,
+    enableColourSchemeOverride,
+    overridingColourScheme,
   } = widgetObject
+
+  const colours = enableColourSchemeOverride
+    ? overridingColourScheme.split(',')
+    : COLOURS
 
   const Axis = { bar: XAxis, column: YAxis }[type]
   const OtherAxis = { bar: YAxis, column: XAxis }[type]
@@ -143,7 +153,10 @@ function BarViz() {
               />
             ) : null}
 
-            <Bar dataKey="value" fill="#FED769">
+            <Bar dataKey="value" fill={console.log}>
+              {data.map((entry, index) => (
+                <Cell key={index} fill={colours[index % colours.length]} />
+              ))}
               <LabelList
                 dataKey="name"
                 position={
@@ -154,10 +167,10 @@ function BarViz() {
                 style={{
                   fontFamily: 'Roboto Condensed',
                   fontSize: '22px',
-                  color: '#474747',
                   marginBottom: '10px',
                   fontWeight: 'bold',
                 }}
+                fill="#474747"
                 formatter={(label) =>
                   // Neat trick! Convert label spaces to non-breaking spaces. Source:
                   // https://stackoverflow.com/a/52266005/16852998
