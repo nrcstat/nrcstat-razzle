@@ -38,15 +38,11 @@ function Donut({ dataPoint }) {
   ).data
   const remainder = 1 - data
 
-  console.log(data)
-
   const donutData = [
     { name: '', value: data },
     { name: '', value: remainder },
   ]
   donutData.unshift({ name: '', value: 0 })
-
-  console.log(donutData)
 
   const { getNsFixedT } = useContext(FixedLocaleContext)
   const t = getNsFixedT(['Widget.Static.CountryDashboard'])

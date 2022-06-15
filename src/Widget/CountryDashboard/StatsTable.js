@@ -104,6 +104,7 @@ export function StatsTable() {
       <td className={c['data-cell']}>
         {formatDataNumber(totalFigure ? totalFigure.data : null, locale, true)}
       </td>
+      <td className={c['data-cell']}>test</td>
     </tr>
   ))
 
@@ -128,6 +129,7 @@ export function StatsTable() {
               <td />
               <td className={c['data-header-cell']}>{t('header.totalIn')}</td>
               <td className={c['data-cell']}>{t('header.newIn')}</td>
+              <td />
             </tr>
             {tableRows}
           </tbody>
