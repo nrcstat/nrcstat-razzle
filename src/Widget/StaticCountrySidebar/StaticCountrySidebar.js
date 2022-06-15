@@ -188,7 +188,7 @@ function Caption({ align, style = {} }) {
 
   return (
     <caption style={{ textAlign: align, ...style }}>
-      {t('figuresCaption', { YEAR: String(year + 1) })}
+      {t('figuresCaption', { YEAR: String(parseInt(year) + 1) })}
     </caption>
   )
 }
