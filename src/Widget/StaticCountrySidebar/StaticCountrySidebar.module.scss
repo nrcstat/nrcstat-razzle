@@ -74,7 +74,7 @@
   .core-competencies-grid {
     display: grid;
   }
-  @media (min-width: 500px) and (max-width: 1024px) {
+  @media (min-width: 550px) and (max-width: 1024px) {
     .core-competencies-grid {
       grid-template-columns: 50% 50%;
     }
@@ -89,8 +89,8 @@
       'iconarea figure';
   }
   // Selects every .core-competency-item except first one
-  .core-competency-item + .core-competency-item {
-    margin-top: 0.5em;
+  .core-competency-item:not(:last-child) {
+    margin-bottom: 0.5em;
   }
   .core-competency-icon {
     grid-area: iconarea;
