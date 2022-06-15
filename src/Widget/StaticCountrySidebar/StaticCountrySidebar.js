@@ -130,22 +130,28 @@ function GorsVariant() {
         })}
       </caption>
 
-      {dataPoints.map((dataPoint) => {
-        const Icon = gorsDataPointToIconMap[dataPoint]
-        return (
-          <div key={dataPoint} className={c['gors-grid']}>
-            <figure className={c['gors-cell-icon']}>
-              <Icon fillColor="#FF7602" />
-            </figure>
-            <dt className={`${c['gors-cell-label']} ${c['datapoint-label']}`}>
-              {t(`dataPointLabel.${dataPoint}`)}
-            </dt>
-            <dd className={`${c['gors-cell-figure']} ${c['datapoint-figure']}`}>
-              {thousandsFormatter(locale)(dataMap[dataPoint])}
-            </dd>
-          </div>
-        )
-      })}
+      <div className={c['core-competencies-grid']}>
+        {dataPoints.map((dataPoint) => {
+          const Icon = gorsDataPointToIconMap[dataPoint]
+          return (
+            <div key={dataPoint} className={c['core-competency-item']}>
+              <figure className={c['core-competency-icon']}>
+                <Icon fillColor="#FF7602" />
+              </figure>
+              <dt
+                className={`${c['core-competency-label']} ${c['datapoint-label']}`}
+              >
+                {t(`dataPointLabel.${dataPoint}`)}
+              </dt>
+              <dd
+                className={`${c['core-competency-figure']} ${c['datapoint-figure']}`}
+              >
+                {thousandsFormatter(locale)(dataMap[dataPoint])}
+              </dd>
+            </div>
+          )
+        })}
+      </div>
 
       <div
         key="read-more"

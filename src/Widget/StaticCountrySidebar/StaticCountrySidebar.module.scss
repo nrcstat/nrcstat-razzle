@@ -71,7 +71,16 @@
 }
 
 .gors-variant {
-  .gors-grid {
+  .core-competencies-grid {
+    display: grid;
+  }
+  @media (min-width: 500px) and (max-width: 1024px) {
+    .core-competencies-grid {
+      grid-template-columns: 50% 50%;
+    }
+  }
+
+  .core-competency-item {
     display: grid;
     grid-template: 1.4em auto / 4em auto;
     column-gap: 1.2em;
@@ -79,18 +88,18 @@
       'iconarea label'
       'iconarea figure';
   }
-  // Selects every .gors-grid except first one
-  .gors-grid + .gors-grid {
+  // Selects every .core-competency-item except first one
+  .core-competency-item + .core-competency-item {
     margin-top: 0.5em;
   }
-  .gors-cell-icon {
+  .core-competency-icon {
     grid-area: iconarea;
   }
-  .gors-cell-label {
+  .core-competency-label {
     padding-top: 0.4em;
     grid-area: label;
   }
-  .gors-cell-figure {
+  .core-competency-figure {
     grid-area: figure;
   }
   caption {

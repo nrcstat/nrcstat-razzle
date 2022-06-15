@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Roboto:wght@300;400;700&display=swap"
+    />
+
+    <script src="/widgetLib.js"></script>
+  </head>
+
+  <body>
+    <style>
+      #grid {
+        width: 100%;
+      }
+      .nrcstat-block {
+        margin-bottom: 50px;
+      }
+    </style>
+
+    <div id="grid">
+      <p>
+        Test av såpass small viewport at sidebar tar full bredde. Det leder til
+        behov for å vise CC aktiviteter i GORS-variant av Country Sidebar i to
+        kolonner.
+      </p>
+      <pre>
+country_sidebar_AF_2021_gors_camp,gors_education,gors_icla,gors_lfs,gors_shelter,gors_wash</pre
+      >
+      <div id="abc5" class="nrcstat-block"></div>
+    </div>
+    <script>
+      NrcStatWidgetLibrary.getInstance().generateWidget({
+        targetSelector: '#abc5',
+        widgetId:
+          'country_sidebar_AF_2021_gors_camp,gors_education,gors_icla,gors_lfs,gors_shelter,gors_wash',
+      })
+    </script>
+  </body>
+</html>
