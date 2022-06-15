@@ -155,7 +155,7 @@ function GorsVariant() {
 
       <div
         key="read-more"
-        className={c['grid-cell']}
+        className={`${c['grid-cell']} ${c['read-more-cell']}`}
         style={{ marginTop: '1em' }}
       >
         <div className={c['grid-cell-content']}>
