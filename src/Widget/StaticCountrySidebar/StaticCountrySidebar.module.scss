@@ -38,7 +38,7 @@
 }
 
 .global-displacement-variant {
-  margin-top: 0.5 em;
+  margin-top: 0.5em;
   margin-bottom: 1em;
 
   dl {
@@ -98,7 +98,7 @@
   }
   // Selects every .core-competency-item except first one
   .core-competency-item:not(:last-child) {
-    margin-bottom: 0.5em;
+    margin-bottom: 0.1em;
   }
   .core-competency-icon {
     grid-area: iconarea;
