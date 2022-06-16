@@ -191,7 +191,7 @@ export default function (widgetParams) {
         tmpl = `
       <h4>${tableTitle}</h4>
         <div class="controls-wrapper">
-          <label>Kontinent:</label>
+          <label>${t('columnNames.continent')}:</label>
             <select class="continent-selector"><option value="">${t(
               `RefugeeReport${
                 periodYear + 1
