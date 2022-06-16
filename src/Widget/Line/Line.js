@@ -199,6 +199,9 @@ function LineWidget() {
                 marginLeft: '60px',
               }}
               label={{ fontFamily: 'Roboto Condensed' }}
+              formatter={(value) => (
+                <span style={{ color: 'rgb(71,71,71)' }}>{value}</span>
+              )}
             />
             {data.map((s, i) => (
               <Line
