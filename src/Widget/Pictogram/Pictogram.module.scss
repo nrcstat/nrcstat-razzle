@@ -9,8 +9,9 @@
   margin-top: 20px;
 }
 
-.icon-svg + .icon-svg {
-  margin-left: 8px;
+.icon-bar svg {
+  flex-grow: 1;
+  aspect-ratio: auto 1/1;
 }
 
 .container {
