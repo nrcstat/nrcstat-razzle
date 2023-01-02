@@ -42,6 +42,9 @@ const StaticCountrySidebar = loadable(() =>
 const Timeline = loadable(() =>
   import(/* webpackChunkName: "Timeline" */ './Timeline/Timeline')
 )
+const Table = loadable(() =>
+  import(/* webpackChunkName: "Table" */ './Table/Table')
+)
 const BlankError = loadable(() =>
   import(/* webpackChunkName: "BlankError" */ './BlankError/BlankError')
 )
@@ -58,6 +61,7 @@ const widgetMap = {
   Pictogram: Pictogram,
   StaticCountrySidebar: StaticCountrySidebar,
   Timeline: Timeline,
+  Table: Table,
   BlankError: BlankError,
 }
 

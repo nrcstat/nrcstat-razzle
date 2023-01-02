@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Roboto:wght@300;400;700&display=swap"
+    />
+
+    <script src="/widgetLib.js"></script>
+  </head>
+
+  <body>
+    <style></style>
+    <div style="height: 1000px"></div>
+    <pre>build me in VB</pre>
+    <div id="abc1" class="nrcstat-block"></div>
+    <script>
+      NrcStatWidgetLibrary.getInstance().generateWidget({
+        targetSelector: '#abc1',
+        widgetId: 'widget-wizard',
+        widgetObject: {
+          type: 'table',
+          config: {
+            subtitle: {},
+            source: { 'nb-NO': 'Kilde: IDMC', 'en-GB': 'Source: UNHCR' },
+            linkToSource: '',
+          },
+          internalName:
+            'Countries with the highest number of internally displaced people in 2021',
+          title: {
+            'nb-NO': 'Land med flest nye internt fordrevne i 2021',
+            'en-GB':
+              'Countries with the highest number of new internally displaced people in 2021',
+          },
+          dataType: 'custom',
+          autoData: { dataPoints: [], countries: [], years: [] },
+          customData: {
+            columns: [
+              {
+                type: 'text',
+                data: 'label',
+                columnLabel: {
+                  'en-GB': 'COUNTRY',
+                  'nb-NO': 'LAND',
+                  'de-DE': 'Spaltenname',
+                  'sv-SE': 'Kolumnnamn',
+                },
+              },
+              {
+                renderer: 'numeric',
+                data: 'data_79b5fd11-51ca-4575-b3de-657107b3f65b',
+                columnLabel: {
+                  'en-GB': 'INTERNALLY DISPLACED',
+                  'nb-NO': 'INTERNT FORDREVNE',
+                  'de-DE': 'Spaltenname 1',
+                  'sv-SE': 'Kolumnnamn 1',
+                },
+              },
+            ],
+            data: [
+              {
+                id: '38d8a332-8879-4f28-8abd-991116b678a9',
+                label: { 'en-GB': 'Ethiopia', 'nb-NO': 'Etiopia' },
+                'data_79b5fd11-51ca-4575-b3de-657107b3f65b': 5142356,
+                'data_e0d04355-a08d-4913-9bc3-a501ee64927c': 200,
+              },
+              {
+                id: '88f08fd4-7123-4516-93bf-32561d28ea31',
+                label: { 'en-GB': 'DR Congo', 'nb-NO': 'DR Kongo' },
+                'data_79b5fd11-51ca-4575-b3de-657107b3f65b': 2711783,
+                'data_e0d04355-a08d-4913-9bc3-a501ee64927c': 400,
+              },
+              {
+                id: '8c09e8c2-1bbc-411a-b856-cc01904e861f',
+                label: { 'en-GB': 'Afghanistan', 'nb-NO': 'Afghanistan' },
+                'data_79b5fd11-51ca-4575-b3de-657107b3f65b': 723082,
+              },
+              {
+                id: '9e6131dc-ca8d-4bc6-b8f4-0b6a7553ee95',
+                label: { 'en-GB': 'Burkina Faso', 'nb-NO': 'Burkina Faso' },
+                'data_79b5fd11-51ca-4575-b3de-657107b3f65b': 682245,
+              },
+              {
+                id: '89ada1cf-b3d6-4910-9743-d8e6f27d4d22',
+                label: { 'en-GB': 'Somalia', 'nb-NO': 'Somalia' },
+                'data_79b5fd11-51ca-4575-b3de-657107b3f65b': 548884,
+              },
+              {
+                id: 'eddc8cdb-f9df-4528-9ab8-720c8161231c',
+                label: {
+                  'en-GB': 'Central African Republic',
+                  'nb-NO': 'Den sentralafrikanske republikk',
+                },
+                'data_79b5fd11-51ca-4575-b3de-657107b3f65b': 495600,
+              },
+              {
+                id: '4f3abc91-579f-4a54-b361-3f8936e1dee0',
+                label: { 'en-GB': 'Syria', 'nb-NO': 'Syria' },
+                'data_79b5fd11-51ca-4575-b3de-657107b3f65b': 455540,
+              },
+              {
+                id: 'e746625a-06fa-4209-952d-2c27b10db4f2',
+                label: { 'en-GB': 'Myanmar', 'nb-NO': 'Myanmar' },
+                'data_79b5fd11-51ca-4575-b3de-657107b3f65b': 447818,
+              },
+              {
+                id: 'b1de1588-7610-48eb-9c9e-19d54216e70a',
+                label: { 'en-GB': 'Sudan', 'nb-NO': 'Sudan' },
+                'data_79b5fd11-51ca-4575-b3de-657107b3f65b': 442427,
+              },
+              {
+                id: 'f29768a1-8a10-4384-b59c-bd2fbc259502',
+                label: { 'en-GB': 'South Sudan', 'nb-NO': 'Sør-Sudan' },
+                'data_79b5fd11-51ca-4575-b3de-657107b3f65b': 429432,
+              },
+            ],
+          },
+          socialMediaDescription: {},
+          enableSocialMediaSharing: false,
+          isTemplate: false,
+          enablePopup: true,
+          createdBy: 'Lars',
+        },
+      })
+    </script>
+  </body>
+</html>

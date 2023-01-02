@@ -47,6 +47,7 @@ const dataPreLoaders = {
   Bar: loadBarData,
   Column: loadBarData,
   Line: loadLineData,
+  Table: loadLineData,
   StaticCountrySidebar: loadStaticCountrySidebarData,
   CountryDashboard: loadCountryDashboardData,
 }

@@ -81,6 +81,8 @@ export const determineWidgetType = async (widget) => {
       return { locale, type: 'Pictogram', widgetObject }
     } else if (type === 'timeline') {
       return { locale, type: 'Timeline', widgetObject }
+    } else if (type === 'table') {
+      return { locale, type: 'Table', widgetObject }
     } else {
       console.log('Could not determine widget type')
       return { locale, type: 'BlankError', widgetObject }
