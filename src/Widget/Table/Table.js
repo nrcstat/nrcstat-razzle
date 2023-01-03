@@ -59,7 +59,6 @@ function Table() {
         <span className={c2.subtitle}>{subtitle}</span>
         <table
           ref={onReady}
-          style={{ maxWidth: '600px' }}
           className="display responsive no-wrap row-border cell-border stripe hover order-column"
         >
           <thead>
