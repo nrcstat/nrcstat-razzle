@@ -1,20 +1,54 @@
 import i18next from 'i18next'
 import Locize from 'i18next-locize-backend'
+import { createClient } from '@sanity/client'
 
 import { ALL_LOCALE_NAMESPACES, ENABLED_LOCALES } from '../config.js'
 
+const sanityClient = createClient({
+  projectId: 'obdzv40s',
+  dataset: 'production',
+  useCdn: true,
+  apiVersion: '2023-03-01',
+})
+
+function fetchAllSanityKeys() {
+  const groqQuery = `
+  *[_type=="key"]{
+    _id,
+    id,
+    value,
+    namespace->
+  }`
+  return sanityClient.fetch(groqQuery)
+}
+
+function fromSanityKeysToI18nResources(keys) {
+  let localeKeys = keys
+  localeKeys = localeKeys.map((key) => {
+    delete key.value._type
+    for (const locale in key.value) {
+      const correctLocale =
+        locale.substring(0, 2) + '-' + locale.substring(2, 4)
+      key.value[correctLocale] = key.value[locale]
+      delete key.value[locale]
+    }
+    return key
+  })
+
+  const localeNamespaceKeysMap = {}
+  for (const key of localeKeys) {
+    for (const [locale, value] of Object.entries(key.value)) {
+      if (!localeNamespaceKeysMap[locale]) localeNamespaceKeysMap[locale] = {}
+      if (!localeNamespaceKeysMap[locale][key.namespace.name])
+        localeNamespaceKeysMap[locale][key.namespace.name] = {}
+      localeNamespaceKeysMap[locale][key.namespace.name][key.id] = value
+    }
+  }
+
+  return localeNamespaceKeysMap
+}
+
 const options = {
-  backend: {
-    // the id of your locize project
-    projectId: 'faea19bd-5e3e-4bc5-b91a-721ee4afb475',
-
-    // add an api key if you want to send missing keys
-    apiKey: '82974bbf-7ec6-4f44-8c30-053f4f88d87c',
-
-    // the reference language of your project
-    referenceLng: 'nb-NO',
-    version: 'latest',
-  },
   preload: ENABLED_LOCALES,
   fallbackLng: 'en-GB',
 
@@ -23,8 +57,17 @@ const options = {
 }
 
 async function initializeI18n() {
-  await i18next.use(Locize).init(options)
-  console.log('> Languages loaded from Locize')
+  const sanityLocaleKeys = await fetchAllSanityKeys()
+  const localeNamespaceKeysMap = fromSanityKeysToI18nResources(sanityLocaleKeys)
+
+  i18next.init(options)
+
+  for (const locale in localeNamespaceKeysMap) {
+    for (const namespaceId in localeNamespaceKeysMap[locale]) {
+      const namespaceResource = localeNamespaceKeysMap[locale][namespaceId]
+      i18next.addResourceBundle(locale, namespaceId, namespaceResource)
+    }
+  }
 }
 initializeI18n()
 
