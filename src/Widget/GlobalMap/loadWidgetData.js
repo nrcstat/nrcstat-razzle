@@ -11,7 +11,6 @@ if (isServer()) {
 }
 
 export function loadWidgetData({ periodYear }, headers = {}) {
-  console.log(headers)
   const query = { where: { year: periodYear } }
   const url = `${API_URL}/datas?filter=${encodeURIComponent(
     JSON.stringify(query)

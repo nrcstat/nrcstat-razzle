@@ -196,7 +196,6 @@ const radialBarChartsMap2021 = {
   'nb-NO': radialBarChartsMapNbNo2021,
   'sv-SE': radialBarChartsMapSvSe2021,
 }
-console.log(radialBarChartsMapSvSe2021)
 
 let countryStatsCache = null
 let isFullScreen
