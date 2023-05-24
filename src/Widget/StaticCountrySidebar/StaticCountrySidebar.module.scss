@@ -78,20 +78,38 @@
   margin-bottom: 1.1em;
 
   .core-competencies-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+    display: grid;
+    // NOTE: the value of 10.7em was obtained through trial and failure. To modify, open a
+    // browser pointed at static-country-sidebar-gors-variant.html, and play around with
+    // different viewport widths while adjusting the number. This is likely to become
+    // necessary next time we change GORS data point labels, especially if we start using
+    // English GORS data labels (at time of writing only Norwegian labels are used).
+    //
+    // The alternative is trying to program a grid with truly dynamic column widths where
+    // no hardcoded width is needed.
+    // which I've spent around three hours trying to achieve just that, without success.
+    // I'm sure if it's possible, and I decided it's wasn't worth the hassle to continue
+    // trying.
+    // A short summary of the attempt:
+    // Trying to use flexbox instead of grid is very promising... until we see that a
+    // flexbox rule of "flex: 1 1 auto" which should make all items equal width, doesn't
+    // work. It does work... but only for each individual line. The result is prettty
+    // much the same as seen by this poor chap: https://stackoverflow.com/q/23274338
+    // If trying to do it with CSS grid, the issue is that implicitly created rows and
+    // columns can't have the auto-sizing of cells I'm looking for.
+    grid-template-columns: repeat(auto-fill, minmax(10.7em, 1fr));
+    column-gap: 1em;
   }
 
   .core-competency-item {
     flex: 1 1 auto;
     display: grid;
     grid-template: 1.4em auto / 4em auto;
-    column-gap: 0.5em;
+    column-gap: 0.4em;
     grid-template-areas:
       'iconarea label'
       'iconarea figure';
-    // width: max-content;
+    width: max-content;
   }
   // Selects every .core-competency-item except first one
   .core-competency-item:not(:last-child) {
