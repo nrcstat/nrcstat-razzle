@@ -10,11 +10,11 @@
   .datapoint-label {
     font-family: Roboto;
     font-size: 12px;
-    // font-style: italic;
     font-weight: 500;
     line-height: 18px;
     letter-spacing: 0em;
     text-align: left;
+    white-space: nowrap;
   }
   .datapoint-figure {
     font-family: Roboto Condensed;
@@ -78,24 +78,20 @@
   margin-bottom: 1.1em;
 
   .core-competencies-grid {
-    display: grid;
-  }
-  @media (min-width: 550px) and (max-width: 1024px) {
-    .core-competencies-grid {
-      grid-template-columns: 50% 50%;
-    }
-    .read-more-cell {
-      text-align: center;
-    }
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
   }
 
   .core-competency-item {
+    flex: 1 1 auto;
     display: grid;
     grid-template: 1.4em auto / 4em auto;
-    column-gap: 1.2em;
+    column-gap: 0.5em;
     grid-template-areas:
       'iconarea label'
       'iconarea figure';
+    // width: max-content;
   }
   // Selects every .core-competency-item except first one
   .core-competency-item:not(:last-child) {
