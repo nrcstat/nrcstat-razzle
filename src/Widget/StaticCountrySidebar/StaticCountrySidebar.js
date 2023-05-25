@@ -136,7 +136,7 @@ function GorsVariant() {
           return (
             <div key={dataPoint} className={c['core-competency-item']}>
               <figure className={c['core-competency-icon']}>
-                <Icon fillColor="#FF7602" />
+                <Icon fillColor="#FD5A00" />
               </figure>
               <dt
                 className={`${c['core-competency-label']} ${c['datapoint-label']}`}

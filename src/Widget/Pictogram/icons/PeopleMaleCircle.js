@@ -18,7 +18,7 @@ function PeopleMaleCircleIcon(props) {
       <g id="children_circle">
         {/* <circle
           id="Base"
-          fill="#FF7602"
+          fill="#FD5A00"
           fill-rule="nonzero"
           cx="34.5"
           cy="34.5"

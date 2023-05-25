@@ -948,7 +948,7 @@ function GlobalMap({ mapboxgl }) {
               <a class="disable-selection">
                 <div class="legend-label">&#9432;</div>
                 <div id="legend-button"  class="legend-button-closed">
-                  <span style="color: #FF7602;">&gt;</span><span style="color: #d4d4d4;">&gt;</span>
+                  <span style="color: #FD5A00;">&gt;</span><span style="color: #d4d4d4;">&gt;</span>
                 </div>
               </a>
             </div>

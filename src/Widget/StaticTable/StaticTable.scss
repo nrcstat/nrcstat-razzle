@@ -73,7 +73,7 @@ body {
 }
 
 .nrcstat-widget-tooltip {
-  color: #ff7602;
+  color: #fd5a00;
   cursor: pointer;
   margin-left: 3px;
   font-size: 13px;
@@ -1014,7 +1014,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child:before {
   position: absolute;
   font-family: 'FontAwesome';
   content: '\f067';
-  color: #ff7602;
+  color: #fd5a00;
 }
 table.dataTable.dtr-inline.collapsed
   > tbody
@@ -1030,7 +1030,7 @@ table.dataTable.dtr-inline.collapsed
   background-color: #d33333;*/
   font-family: 'FontAwesome';
   content: '\f068';
-  color: #ff7602;
+  color: #fd5a00;
 }
 table.dataTable.dtr-inline.collapsed > tbody > tr.child td:before {
   display: none;
@@ -1064,7 +1064,7 @@ table.dataTable.dtr-column > tbody > tr > td.control:before {
   position: absolute;
   font-family: 'FontAwesome';
   content: '\f067';
-  color: #ff7602;
+  color: #fd5a00;
   /*color: white;
   border: 2px solid white;
   border-radius: 16px;
@@ -1080,7 +1080,7 @@ table.dataTable.dtr-column > tbody > tr.parent td.control:before {
   background-color: #d33333;*/
   font-family: 'FontAwesome';
   content: '\f068';
-  color: #ff7602;
+  color: #fd5a00;
 }
 table.dataTable > tbody > tr.child {
   padding: 0.5em 1em;

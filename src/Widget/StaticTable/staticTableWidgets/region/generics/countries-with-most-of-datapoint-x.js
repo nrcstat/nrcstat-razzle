@@ -160,7 +160,7 @@ export default function (
 
         <div class="nrcstat-table-widget-annotations">
           <div class="accordion accordion-closed">
-            <div class="accordion-title" style="font-size: 16px; color: #474747; font-family: Roboto; font-weight: 200; cursor: pointer;"><i class="fa fa-plus-square-o" style="color: #ff7602;"></i>&nbsp;${t(
+            <div class="accordion-title" style="font-size: 16px; color: #474747; font-family: Roboto; font-weight: 200; cursor: pointer;"><i class="fa fa-plus-square-o" style="color: #FD5A00;"></i>&nbsp;${t(
               'footnotes.title'
             )}</div>
             <div class="accordion-body" style="font-size: 12px; color: #474747; white-space: pre-line;">

@@ -50,7 +50,7 @@ export const BackgroundColorKey = {
   DarkGray: 'dark-grey',
 }
 export const DataColor = {
-  Orange: '#FF7602',
+  Orange: '#FD5A00',
   Blue: '#007D99',
   Yellow: '#FDC82F',
   Red: '#FF2B00',

@@ -265,7 +265,7 @@ export default function (widgetParams) {
       </table>
       <div class="nrcstat-table-widget-annotations">
         <div class="accordion accordion-closed">
-          <div class="accordion-title" style="font-size: 16px; color: #474747; font-family: Roboto; font-weight: 200; cursor: pointer;"><i class="fa fa-plus-square-o" style="color: #ff7602;"></i>&nbsp;${t(
+          <div class="accordion-title" style="font-size: 16px; color: #474747; font-family: Roboto; font-weight: 200; cursor: pointer;"><i class="fa fa-plus-square-o" style="color: #FD5A00;"></i>&nbsp;${t(
             `RefugeeReport${
               periodYear + 1
             }.MainTable.Footnotes.Title.countrySpecificNotes`
@@ -275,7 +275,7 @@ export default function (widgetParams) {
           </div>
         </div>
         <div class="accordion accordion-closed">
-          <div class="accordion-title" style="font-size: 16px; color: #474747; font-family: Roboto; font-weight: 200; cursor: pointer;"><i class="fa fa-plus-square-o" style="color: #ff7602;"></i>&nbsp;${t(
+          <div class="accordion-title" style="font-size: 16px; color: #474747; font-family: Roboto; font-weight: 200; cursor: pointer;"><i class="fa fa-plus-square-o" style="color: #FD5A00;"></i>&nbsp;${t(
             `RefugeeReport${
               periodYear + 1
             }.MainTable.Footnotes.Title.generalNotes`
