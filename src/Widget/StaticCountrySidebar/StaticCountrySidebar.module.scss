@@ -97,7 +97,7 @@
     // much the same as seen by this poor chap: https://stackoverflow.com/q/23274338
     // If trying to do it with CSS grid, the issue is that implicitly created rows and
     // columns can't have the auto-sizing of cells I'm looking for.
-    grid-template-columns: repeat(auto-fill, minmax(10.7em, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(9.8em, 1fr));
     column-gap: 1em;
   }
 
