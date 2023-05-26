@@ -104,8 +104,8 @@
   .core-competency-item {
     flex: 1 1 auto;
     display: grid;
-    grid-template: 1.4em auto / 4em auto;
-    column-gap: 0.4em;
+    grid-template: 1.1em auto / 3.3em auto;
+    column-gap: 0.25em;
     grid-template-areas:
       'iconarea label'
       'iconarea figure';
