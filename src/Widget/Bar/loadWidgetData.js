@@ -1,6 +1,7 @@
 import { API_URL } from '../../config'
 import nodeFetch from 'node-fetch'
 import { isServer } from '../../util/utils'
+import { isNumber } from 'lodash'
 
 let fetch
 
@@ -10,10 +11,10 @@ if (isServer()) {
   fetch = window.fetch
 }
 
-export function loadWidgetData(context, headers = {}) {
+export async function loadWidgetData(context, headers = {}) {
   if (context?.widgetObject?.dataType !== 'auto') return Promise.resolve(null)
 
-  const {
+  let {
     dataPoints = [],
     countries = [],
     years = [],
@@ -22,15 +23,42 @@ export function loadWidgetData(context, headers = {}) {
   const query = {
     where: {
       dataPoint: { inq: dataPoints },
-      countryCode: { inq: countries },
       year: { inq: years },
     },
+  }
+  if (countries.length > 0) {
+    query.where.countryCode = { inq: countries }
   }
 
   const url = `${API_URL}/datas?filter=${encodeURIComponent(
     JSON.stringify(query)
   )}`
-  return fetch(url, {
+
+  const resp = await fetch(url, {
     headers: { nrcstatpassword: headers.nrcstatpassword },
-  }).then((resp) => resp.json())
+  })
+  let data = await resp.json()
+
+  if (countries.length === 0) {
+    // If no countries were selected, sum all data points where the only
+    // variant is the country code. Do this using a .reduce function.
+    data = data.reduce((acc, d) => {
+      const key = `${d.dataPoint}-${d.year}`
+      if (!acc[key]) {
+        acc[key] = d
+      } else {
+        if (isNumber(d.data)) {
+          // the Number(acc[key].data) covers the case where it is
+          // null or undefined
+          acc[key].data = Number(acc[key].data) + d.data
+        }
+      }
+      return acc
+    }, {})
+    data = Object.values(data).map(
+      ({ countryCode, continentCode, regionCodeNRC, ...d }) => d
+    )
+  }
+
+  return data
 }
