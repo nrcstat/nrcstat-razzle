@@ -65,6 +65,8 @@ function BarViz() {
   const Axis = { bar: XAxis, column: YAxis }[type]
   const OtherAxis = { bar: YAxis, column: XAxis }[type]
 
+  const labelColour = getContrastColor(colours[0])
+
   // NOTE: the `container` class (NOT the css moduels c.container) is added so that
   // nrcstat-monorepo/libs/widget-social-media-sharing/src/lib/index.ts:useRenderWidgetThumbnailBlob
   // can accurately target the container to render into a thumbnail image.
@@ -170,7 +172,7 @@ function BarViz() {
                   marginBottom: '10px',
                   fontWeight: 'bold',
                 }}
-                fill="#474747"
+                fill={labelColour}
                 formatter={(label) =>
                   // Neat trick! Convert label spaces to non-breaking spaces. Source:
                   // https://stackoverflow.com/a/52266005/16852998
@@ -317,4 +319,92 @@ function measureText14RobotoCondensed(text) {
   ctx.font = "14px 'Roboto Condensed"
 
   return ctx.measureText(text).width
+}
+
+function getContrastColor(hex1, hex2 = '#FFFFFF') {
+  // Convert hex to RGB first and get the luminance for both colors
+  const L1 = calculateLuminance(hex1)
+  const L2 = calculateLuminance(hex2)
+
+  // Find the optimal colors that provide at least 4.5 contrast ratio
+  let optimal1 = getOptimalColor(L1)
+  let optimal2 = getOptimalColor(L2)
+
+  // If the optimal colors overlap, pick any color from the overlap
+  if (
+    Math.max(optimal1[0], optimal2[0]) <= Math.min(optimal1[1], optimal2[1])
+  ) {
+    return toGrayHex(Math.max(optimal1[0], optimal2[0]))
+  }
+
+  // If not, pick the color that provides the highest minimum contrast
+  if (contrastRatio(optimal1[0], L1) > contrastRatio(optimal2[1], L2)) {
+    return toGrayHex(optimal1[0])
+  } else {
+    return toGrayHex(optimal2[1])
+  }
+}
+
+function getOptimalColor(L) {
+  // Compute the minimum and maximum grayscale levels that provide at least 4.5 contrast ratio
+  let minLevel = (L + 0.05) * 4.5 - 0.05
+  let maxLevel = (L + 0.05) / 4.5 - 0.05
+
+  // Clamp to valid range
+  minLevel = Math.max(Math.min(minLevel, 1), 0)
+  maxLevel = Math.max(Math.min(maxLevel, 1), 0)
+
+  // Return as grayscale levels
+  return [minLevel, maxLevel]
+}
+
+function calculateLuminance(hex) {
+  // convert hex to RGB
+  let r = 0,
+    g = 0,
+    b = 0
+
+  // 3 digits
+  if (hex.length == 4) {
+    r = parseInt(hex[1] + hex[1], 16)
+    g = parseInt(hex[2] + hex[2], 16)
+    b = parseInt(hex[3] + hex[3], 16)
+  }
+  // 6 digits
+  else if (hex.length == 7) {
+    r = parseInt(hex[1] + hex[2], 16)
+    g = parseInt(hex[3] + hex[4], 16)
+    b = parseInt(hex[5] + hex[6], 16)
+  }
+
+  // Then to sRGB
+  r /= 255
+  g /= 255
+  b /= 255
+
+  // And then to linear RGB
+  r = r <= 0.03928 ? r / 12.92 : ((r + 0.055) / 1.055) ** 2.4
+  g = g <= 0.03928 ? g / 12.92 : ((g + 0.055) / 1.055) ** 2.4
+  b = b <= 0.03928 ? b / 12.92 : ((b + 0.055) / 1.055) ** 2.4
+
+  // Finally, calculate the luminance
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+
+function contrastRatio(L1, L2) {
+  if (L1 > L2) {
+    return (L1 + 0.05) / (L2 + 0.05)
+  } else {
+    return (L2 + 0.05) / (L1 + 0.05)
+  }
+}
+
+function toGrayHex(level) {
+  // Convert level to a grayscale hex color
+  let gray = Math.round(level * 255)
+  let hex = gray.toString(16)
+  if (hex.length < 2) {
+    hex = '0' + hex
+  }
+  return '#' + hex + hex + hex
 }
