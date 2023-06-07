@@ -9,7 +9,7 @@
   }
   .datapoint-label {
     font-family: Roboto;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
     line-height: 18px;
     letter-spacing: 0em;
@@ -97,15 +97,15 @@
     // much the same as seen by this poor chap: https://stackoverflow.com/q/23274338
     // If trying to do it with CSS grid, the issue is that implicitly created rows and
     // columns can't have the auto-sizing of cells I'm looking for.
-    grid-template-columns: repeat(auto-fill, minmax(9.8em, 1fr));
-    column-gap: 1em;
+    grid-template-columns: repeat(auto-fill, minmax(9.1em, 1fr));
+    column-gap: 0.3em;
   }
 
   .core-competency-item {
     flex: 1 1 auto;
     display: grid;
-    grid-template: 1.1em auto / 3.3em auto;
-    column-gap: 0.25em;
+    grid-template: 1.1em auto / 3.2em auto;
+    column-gap: 0.2em;
     grid-template-areas:
       'iconarea label'
       'iconarea figure';
