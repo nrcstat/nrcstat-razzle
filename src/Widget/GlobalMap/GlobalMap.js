@@ -181,6 +181,51 @@ const radialBarChartsMapSvSe2021 = chain(
   .mapValues('file')
   .value()
 
+const reqNbNo2022 = require.context(
+  './assets/pre-rendered-radial-bar-charts-2022/nb-NO',
+  false
+)
+// TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
+const radialBarChartsMapNbNo2022 = chain(
+  reqNbNo2022.keys().map((file) => ({
+    file: reqNbNo2022(file),
+    countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
+  }))
+)
+  .keyBy('countryCode')
+  .mapValues('file')
+  .value()
+
+const reqEnGb2022 = require.context(
+  './assets/pre-rendered-radial-bar-charts-2022/en-GB',
+  false
+)
+// TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
+const radialBarChartsMapEnGb2022 = chain(
+  reqEnGb2022.keys().map((file) => ({
+    file: reqEnGb2022(file),
+    countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
+  }))
+)
+  .keyBy('countryCode')
+  .mapValues('file')
+  .value()
+
+const reqSvSe2022 = require.context(
+  './assets/pre-rendered-radial-bar-charts-2022/sv-SE',
+  false
+)
+// TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
+const radialBarChartsMapSvSe2022 = chain(
+  reqSvSe2022.keys().map((file) => ({
+    file: reqSvSe2022(file),
+    countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
+  }))
+)
+  .keyBy('countryCode')
+  .mapValues('file')
+  .value()
+
 const radialBarChartsMap = {
   'en-GB': radialBarChartsMapEnGb,
   'nb-NO': radialBarChartsMapNbNo,
@@ -195,6 +240,11 @@ const radialBarChartsMap2021 = {
   'en-GB': radialBarChartsMapEnGb2021,
   'nb-NO': radialBarChartsMapNbNo2021,
   'sv-SE': radialBarChartsMapSvSe2021,
+}
+const radialBarChartsMap2022 = {
+  'en-GB': radialBarChartsMapEnGb2022,
+  'nb-NO': radialBarChartsMapNbNo2022,
+  'sv-SE': radialBarChartsMapSvSe2022,
 }
 
 let countryStatsCache = null
@@ -1563,6 +1613,8 @@ function GlobalMap({ mapboxgl }) {
             return radialBarChartsMap2020
           case 2021:
             return radialBarChartsMap2021
+          case 2022:
+            return radialBarChartsMap2022
           default:
             throw new Error('Invalid year passed to GlobalMap')
         }
