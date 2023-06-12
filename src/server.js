@@ -1,15 +1,10 @@
 import pathLib from 'path'
-import fs from 'fs'
 import React from 'react'
 import express from 'express'
 import cors from 'cors'
-import { html as htmlTemplate, oneLineTrim } from 'common-tags'
 import { renderToString } from 'react-dom/server'
-import { ServerLocation } from '@reach/router'
 import { ChunkExtractor, ChunkExtractorManager } from '@loadable/server'
-import { transform } from '@babel/core'
 import { mapValues } from 'lodash'
-import App from './App'
 import { determineWidgetType } from './lib/determine-widget-type'
 
 import Widget from './Widget/Widget'
@@ -26,7 +21,6 @@ import { i18n } from './server-only/locale-service.js'
 import { mapNestedObjectToPathKeyedObject } from './util/mapNestedObjectToPathKeyedObject'
 
 import tableTypeToTableWidgetMap from './Widget/StaticTable/table-type-to-table-widget-map.js'
-import { API_URL } from './config'
 
 const dataPreLoaders = {
   GlobalMap: loadGlobalMapData,
@@ -62,68 +56,65 @@ server
   .disable('x-powered-by')
   .use(express.static(process.env.RAZZLE_PUBLIC_DIR))
   .get('/render-widgets', async (req, res) => {
-    const rawQueue = JSON.parse(req.query.queue)
-    const enrichWidget = async (widget) => {
-      const widgetType = await determineWidgetType(widget)
-      const enriched = { ...widget, ...widgetType }
-      return enriched
-    }
-    const enrichedQueue = await Promise.all(rawQueue.map(enrichWidget))
-    // TODO: replace this with a Promise.all() method to load all data in parallel
-    for (let i = 0; i < enrichedQueue.length; i++) {
-      const widget = enrichedQueue[i]
-      const dataLoader = dataPreLoaders[widget.type]
-      if (dataLoader) {
-        // Uncomment to restore the password-based data embargo mechanism. Remember that
-        // we last time we turned off the in-memory caching of data, we didn't find a way
-        // to combine it with the password authentication mechanism.
-        widget.nrcstatpassword = req.headers.nrcstatpassword
-        const data = await dataLoader(widget, {
-          nrcstatpassword: req.headers.nrcstatpassword,
-        })
-        widget.preloadedWidgetData = data
+    let queue = JSON.parse(req.query.queue)
+    queue = await Promise.all(
+      queue.map(async (widget) => {
+        const widgetType = await determineWidgetType(widget)
+        const enrichedWidget = { ...widget, ...widgetType }
+        const dataLoader = dataPreLoaders[widgetType.type]
+        if (dataLoader) {
+          // Uncomment to restore the password-based data embargo mechanism. Remember that
+          // we last time we turned off the in-memory caching of data, we didn't find a way
+          // to combine it with the password authentication mechanism.
+          enrichedWidget.nrcstatpassword = req.headers.nrcstatpassword
+          const data = await dataLoader(enrichedWidget, {
+            nrcstatpassword: req.headers.nrcstatpassword,
+          })
+          enrichedWidget.preloadedWidgetData = data
 
-        // Special case: if the widget ID is widget-wizard, it comes from the old
-        // widget wizard or the new widget builder. Either way, there is no point
-        // in caching data for these as they're not saved widgets.
-        // if (
-        //   dataCache[widget.widgetId] &&
-        //   !/widget-wizard/.test(widget.widgetId)
-        // ) {
-        //   widget.preloadedWidgetData = dataCache[widget.widgetId]
-        // } else {
-        //   const data = await dataLoader(widget)
-        //   widget.preloadedWidgetData = data
-        //   dataCache[widget.widgetId] = data
-        // }
-      }
-    }
+          // Special case: if the widget ID is widget-wizard, it comes from the old
+          // widget wizard or the new widget builder. Either way, there is no point
+          // in caching data for these as they're not saved widgets.
+          // if (
+          //   dataCache[widget.widgetId] &&
+          //   !/widget-wizard/.test(widget.widgetId)
+          // ) {
+          //   widget.preloadedWidgetData = dataCache[widget.widgetId]
+          // } else {
+          //   const data = await dataLoader(widget)
+          //   widget.preloadedWidgetData = data
+          //   dataCache[widget.widgetId] = data
+          // }
+        }
+        return enrichedWidget
+      })
+    )
 
-    const extractor = new ChunkExtractor({
+    let extractor = new ChunkExtractor({
       statsFile: pathLib.resolve('build/loadable-stats.json'),
       entrypoints: ['client'],
     })
 
     renderToString(
       <ChunkExtractorManager extractor={extractor}>
-        {enrichedQueue.map((props) => (
+        {queue.map((props) => (
           <Widget key={props.widgetId} {...props} />
         ))}
       </ChunkExtractorManager>
     )
 
     const languageLocaleData = mapValues(
-      i18n.getDataByLanguage(enrichedQueue[0].locale),
+      i18n.getDataByLanguage(queue[0].locale),
       (namespace) => mapNestedObjectToPathKeyedObject(namespace)
     )
 
     const payload = {
       localeTranslation: {
-        [enrichedQueue[0].locale]: languageLocaleData,
+        [queue[0].locale]: languageLocaleData,
         ...languageLocaleData,
       },
       __LOADABLE_REQUIRED_CHUNKS__: null,
-      widgetQueue: enrichedQueue,
+      widgetQueue: queue,
       scripts: [],
       links: [],
     }
@@ -142,15 +133,23 @@ server
       /<script.+>(.+)<\/script>/g.exec(js)[1]
     )
 
-    const css = extractor.getStyleTags((attrs) => {
-      if (attrs) {
-        const linkUrl = attrs.url
-        payload.links.push(linkUrl)
-      }
-      return attrs || {}
-    })
+    // const css = extractor.getStyleTags((attrs) => {
+    //   if (attrs) {
+    //     const linkUrl = attrs.url
+    //     payload.links.push(linkUrl)
+    //   }
+    //   return attrs || {}
+    // })
 
     res.type('javascript').send(payload)
+
+    // There is a memory leak issue in the @loadable package.
+    // This is an attempt at alleviating it. I don't know if it
+    // has any effect, but it's better than nothing.
+    queue = null
+    extractor = null
+
+    return
   })
 
 export default server
