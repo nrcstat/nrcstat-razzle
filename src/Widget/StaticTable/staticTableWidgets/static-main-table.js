@@ -915,9 +915,11 @@ export function buildCountrySpecificFootnotes2022(t) {
         'RefugeeReport2023.CountrySpecificFootnote.AfghanistanIran'
       ),
     },
-    // {
-    //   countryCode: ['UA'],
-    //   annotation: t('RefugeeReport2023.CountrySpecificFootnote.Ukraine'),
-    // }
+    {
+      countryCode: ['UA', 'RU', 'GB', 'MD', 'DE'],
+      annotation: t(
+        'RefugeeReport2023.CountrySpecificFootnote.UkraineRussiaUnitedkingdomMoldovaGermany'
+      ),
+    },
   ]
 }
