@@ -3,7 +3,12 @@ import { thousandsFormatter } from '@/util/tableWidgetFormatters.js'
 import { API_URL } from '@/config.js'
 import { map, filter, findIndex, includes, find } from 'lodash'
 import { isServer } from '../../../../../util/utils'
-import { buildCountrySpecificFootnotes2019 } from '../../static-main-table'
+import {
+  buildCountrySpecificFootnotes2019,
+  buildCountrySpecificFootnotes2020,
+  buildCountrySpecificFootnotes2021,
+  buildCountrySpecificFootnotes2022,
+} from '../../static-main-table'
 const async = require('async')
 
 const $ = require('jquery')
@@ -27,7 +32,20 @@ export default function (
 
   const { t, periodYear, locale } = widgetParams
 
-  const countryAnnotations = buildCountrySpecificFootnotes2019(t)
+  console.log(widgetParams)
+
+  const countryAnnotations = (() => {
+    switch (periodYear) {
+      case 2019:
+        return buildCountrySpecificFootnotes2019(t)
+      case 2020:
+        return buildCountrySpecificFootnotes2020(t)
+      case 2021:
+        return buildCountrySpecificFootnotes2021(t)
+      case 2022:
+        return buildCountrySpecificFootnotes2022(t)
+    }
+  })()
 
   function loadWidgetData(widgetObject, headers = {}) {
     var q = {
