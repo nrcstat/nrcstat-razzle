@@ -640,7 +640,7 @@ export function buildCountrySpecificFootnotes2019(t) {
 
     {
       countryCode: ['CN', 'VN'],
-      annotation: t(`RefugeeReport$2020CountrySpecificFootnote.ChinaVietnam`),
+      annotation: t(`RefugeeReport.2020CountrySpecificFootnote.ChinaVietnam`),
     },
 
     {
