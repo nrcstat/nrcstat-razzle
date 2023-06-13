@@ -32,6 +32,8 @@ export default function (widgetParams) {
         return buildCountrySpecificFootnotes2020(t)
       case 2021:
         return buildCountrySpecificFootnotes2021(t)
+      case 2022:
+        return buildCountrySpecificFootnotes2022(t)
     }
   })()
 
@@ -852,5 +854,70 @@ export function buildCountrySpecificFootnotes2021(t) {
       countryCode: ['ZA'],
       annotation: t('RefugeeReport2022.CountrySpecificFootnote.SouthAfrica'),
     },
+  ]
+}
+
+export function buildCountrySpecificFootnotes2022(t) {
+  return [
+    // The six first footnotes are the same as last year. The next two are brand new.
+    {
+      countryCode: ['DZ', 'EH'],
+      annotation: t(
+        'RefugeeReport2023.CountrySpecificFootnote.AlgerieWesternSahara'
+      ),
+    },
+    {
+      countryCode: ['IQ', 'SY', 'JO'],
+      annotation: t(
+        'RefugeeReport2023.CountrySpecificFootnote.IraqJordanSyria'
+      ),
+    },
+    {
+      countryCode: ['JO', 'LB', 'PS', 'SY'],
+      annotation: t(
+        'RefugeeReport2023.CountrySpecificFootnote.JordanLebanonPalestineSyria'
+      ),
+    },
+    {
+      countryCode: ['KO', 'RS'],
+      annotation: t('RefugeeReport2023.CountrySpecificFootnote.KosovoSerbia'),
+    },
+    {
+      countryCode: [
+        'VE',
+        'AW',
+        'BR',
+        'CL',
+        'CO',
+        'CW',
+        'DO',
+        'EC',
+        'GY',
+        'MX',
+        'PA',
+        'PY',
+        'PE',
+        'TT',
+        'UY',
+      ],
+      annotation: t(
+        'RefugeeReport2023.CountrySpecificFootnote.ArubaBrazilChileColombiaCuracaoDominicanRepublicEcuadorGuyanaMexicoPanamaParaguayPeruTrinidadTobagoUruguayVenezuela'
+      ),
+    },
+    {
+      countryCode: ['US'],
+      annotation: t('RefugeeReport2023.CountrySpecificFootnote.USA'),
+    },
+    // New ones
+    {
+      countryCode: ['AF', 'IR'],
+      annotation: t(
+        'RefugeeReport2023.CountrySpecificFootnote.AfghanistanIran'
+      ),
+    },
+    // {
+    //   countryCode: ['UA'],
+    //   annotation: t('RefugeeReport2023.CountrySpecificFootnote.Ukraine'),
+    // }
   ]
 }
