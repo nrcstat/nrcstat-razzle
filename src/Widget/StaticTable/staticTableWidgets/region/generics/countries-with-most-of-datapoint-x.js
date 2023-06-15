@@ -32,8 +32,6 @@ export default function (
 
   const { t, periodYear, locale } = widgetParams
 
-  console.log(widgetParams)
-
   const countryAnnotations = (() => {
     switch (periodYear) {
       case 2019:

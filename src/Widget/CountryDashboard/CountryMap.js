@@ -24,8 +24,6 @@ export function CountryMap({ selectedYear }) {
 
   const [mapboxLoaded, setMapboxLoaded] = useState(false)
 
-  console.log(selectedYear)
-
   const mapContainer = useRef(null)
   const map = useRef(null)
   const markerContainerRef = useRef(null)
