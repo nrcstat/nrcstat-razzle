@@ -1684,7 +1684,7 @@ function GlobalMap({ mapboxgl }) {
         className="nrcstat__globalmap__mapbox"
         ref={onReady}
         style={{
-          position: 'relative',
+          position: 'absolute',
           overflow: 'hidden',
           width: '100%',
           height: '100%',
