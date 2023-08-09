@@ -74,7 +74,7 @@ function Widget(props) {
   return (
     <FixedLocaleContext>
       <WidgetParamsContext.Provider value={{ ...props }}>
-        <div className={c['nrcstat__rootwidget']}>
+        <div className={c['nrcstat__rootwidget']} style={{ height: '100%' }}>
           <SpecificWidget />
         </div>
       </WidgetParamsContext.Provider>
