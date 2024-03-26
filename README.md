@@ -14,6 +14,8 @@ Run it: `docker run -p 3000:3000 -v "$(pwd)":/app -v /app/node_modules --name nr
 
 That starts `yarn start` under the hood
 
+Need to stop it by running `docker stop nrcstat-razzle` and then `docker rm nrcstat-razzle` every time 😅
+
 # Other tips
 
 I use loadable-components but since long have forgotten the details of how I set it up. It's useful to check out https://github.com/gregberge/loadable-components.git. There's an examples folder that contains an example on how to use with razzle. Maybe wanna check that out.
