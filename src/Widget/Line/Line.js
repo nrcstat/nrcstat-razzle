@@ -40,7 +40,7 @@ function LineWidget() {
     },
     preloadedWidgetData,
   } = useContext(WidgetParamsContext)
-
+  
   const colours = enableColourSchemeOverride
     ? overridingColourScheme.split(',')
     : COLOURS
@@ -81,12 +81,14 @@ function LineWidget() {
         locale
       )
     ) + 15
-
+  
   // NOTE: the `container` class is added so that
   // nrcstat-monorepo/libs/widget-social-media-sharing/src/lib/index.ts:useRenderWidgetThumbnailBlob
   // can accurately target the container to render into a thumbnail image.
   return (
-    <div className="container" ref={fixEpiServerAncestorBlockHeight}>
+    <div className="container" ref={fixEpiServerAncestorBlockHeight} style={{
+      height: (450 + 20+16*data.length) + 'px',
+    }}>
       <div style={{ marginLeft: '10px' }}>
         {title && (
           <p
