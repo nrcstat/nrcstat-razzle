@@ -46,8 +46,8 @@
 .container.desktop {
   margin: 30px auto;
   padding-top: 50px;
-  padding-left: 100px;
-  padding-right: 100px;
+  padding-left: 20px;
+  padding-right: 20px;
 
   .title {
     font-size: 22px;
@@ -146,7 +146,7 @@
 
 .container.desktop .share-button-wrapper {
   position: absolute;
-  right: 100px;
+  right: 20px; /* I should be same as .container.desktop padding-left */
   bottom: 20px;
 }
 .container.mobile .share-button-wrapper {
