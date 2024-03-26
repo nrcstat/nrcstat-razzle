@@ -7,39 +7,16 @@
 # Notes on usage of repo
 - Use `yarn`, not `npm`
 
+# Get razzle running locally
 
-# Get the razzle example running
+Build local docker image: `docker build -t nrcstat-razzle .`
+Run it: `docker run -p 3000:3000 -v "$(pwd)":/app -v /app/node_modules --name nrcstat-razzle nrcstat-razzle`
 
-Steps:
+That starts `yarn start` under the hood
 
-1. Download repository
+# Other tips
 
-```bash
-git clone https://github.com/gregberge/loadable-components.git
-```
-
-2. move into example directory
-
-```bash
-cd ./loadable-components/examples/razzle
-```
-
-3. install [https://yarnpkg.com/lang/en/docs/install](yarn) if haven't already
-4. install project dependencies
-
-```bash
-yarn
-```
-
-5. run locally or build and serve
-
-```bash
-yarn dev
-# or
-yarn build
-yarn start:prod
-```
-
+I use loadable-components but since long have forgotten the details of how I set it up. It's useful to check out https://github.com/gregberge/loadable-components.git. There's an examples folder that contains an example on how to use with razzle. Maybe wanna check that out.
 
 # Troubleshooting techniques
 
