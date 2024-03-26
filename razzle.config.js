@@ -52,6 +52,12 @@ module.exports = {
     // Tip sourced from:https://github.com/jaredpalmer/razzle/issues/546
     config.devtool = dev ? 'eval-source-map' : 'none'
 
+    appConfig.devServer = Object.assign({}, appConfig.devServer, {
+      watchOptions: {
+        poll: 1000
+      }
+    })
+
     return appConfig
   },
 
