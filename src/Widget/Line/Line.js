@@ -40,7 +40,7 @@ function LineWidget() {
     },
     preloadedWidgetData,
   } = useContext(WidgetParamsContext)
-  
+
   const colours = enableColourSchemeOverride
     ? overridingColourScheme.split(',')
     : COLOURS
@@ -75,20 +75,18 @@ function LineWidget() {
       formatDataNumber(
         Math.max(
           ...flatten(data.map(({ seriesData }) => seriesData)).map(
-            (d) => d.value
-          )
+            (d) => d.value,
+          ),
         ),
-        locale
-      )
+        locale,
+      ),
     ) + 15
-  
+
   // NOTE: the `container` class is added so that
   // nrcstat-monorepo/libs/widget-social-media-sharing/src/lib/index.ts:useRenderWidgetThumbnailBlob
   // can accurately target the container to render into a thumbnail image.
   return (
-    <div className="container" ref={fixEpiServerAncestorBlockHeight} style={{
-      height: (450 + 20+16*data.length) + 'px',
-    }}>
+    <div className="container" ref={fixEpiServerAncestorBlockHeight}>
       <div style={{ marginLeft: '10px' }}>
         {title && (
           <p
@@ -121,114 +119,122 @@ function LineWidget() {
           </p>
         )}
       </div>
-      <div style={{ width: '100%', height: '450px', position: 'relative' }}>
-        <ResponsiveContainer>
-          <LineChart
-            margin={{ top: 5, right: source ? 18 : 5, bottom: 5, left: 5 }}
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="date"
-              allowDuplicatedCategory={false}
-              tick
-              axisLine={{ strokeWidth: 2, stroke: 'rgb(188,188,188)' }}
-              tickMargin={5}
-              padding={{ left: 10 }}
-              tick={{
-                fontFamily: 'Roboto Condensed',
-                fontSize: '14px',
-                fill: '#474747',
-              }}
+      <div
+        className="container"
+        ref={fixEpiServerAncestorBlockHeight}
+        style={{
+          height: 450 + 20 + 16 * data.length + 'px',
+        }}
+      >
+        <div style={{ width: '100%', height: '450px', position: 'relative' }}>
+          <ResponsiveContainer>
+            <LineChart
+              margin={{ top: 5, right: source ? 18 : 5, bottom: 5, left: 5 }}
             >
-              <Label
-                value={linkbox}
-                offset={30}
-                position="insideTopRight"
-                style={{
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="date"
+                allowDuplicatedCategory={false}
+                tick
+                axisLine={{ strokeWidth: 2, stroke: 'rgb(188,188,188)' }}
+                tickMargin={5}
+                padding={{ left: 10 }}
+                tick={{
                   fontFamily: 'Roboto Condensed',
                   fontSize: '14px',
-                  fill: '#919191',
+                  fill: '#474747',
                 }}
-              />
-            </XAxis>
-            <YAxis
-              dataKey="value"
-              type="number"
-              width={yAxisWidth}
-              tickFormatter={(d) => formatDataNumber(d, locale)}
-              tickMargin={5}
-              tickLine={{ stroke: 'rgb(188,188,188)' }}
-              tick={{
-                fontFamily: 'Roboto Condensed',
-                fontSize: '14px',
-                fill: '#474747',
-              }}
-            />
-            {enablePopup ? (
-              <Tooltip
-                formatter={(d, hoverLabel) => [
-                  formatDataNumber(d, locale, true),
-                  hoverLabel,
-                ]}
-                contentStyle={{
-                  padding: '10px',
-                  border: '1px solid #474747',
-                  borderRadius: '3px',
-                }} // text box
-                labelStyle={{
-                  fontFamily: 'Roboto Condensed',
-                  fontSize: '22px',
-                  color: '#474747',
-                  marginBottom: '10px',
-                  fontWeight: 'bold',
-                }} //  year
-                itemStyle={{
-                  paddingBottom: '5px',
-                  fontFamily: 'Roboto Condensed',
-                  fontSize: '16px',
-                }}
-              />
-            ) : null}
-            <Legend
-              align="center"
-              layout="vertical"
-              iconType="circle"
-              wrapperStyle={{
-                bottom: -30,
-                left: 20,
-                fontFamily: 'Roboto Condensed',
-                fontSize: '14px',
-                marginLeft: '60px',
-              }}
-              label={{ fontFamily: 'Roboto Condensed' }}
-              formatter={(value) => (
-                <span style={{ color: 'rgb(71,71,71)' }}>{value}</span>
-              )}
-            />
-            {data.map((s, i) => (
-              <Line
+              >
+                <Label
+                  value={linkbox}
+                  offset={30}
+                  position="insideTopRight"
+                  style={{
+                    fontFamily: 'Roboto Condensed',
+                    fontSize: '14px',
+                    fill: '#919191',
+                  }}
+                />
+              </XAxis>
+              <YAxis
                 dataKey="value"
-                data={s.seriesData}
-                name={s.seriesLegend}
-                key={s.seriesLegend}
-                stroke={colours[i % colours.length]}
-                strokeWidth={3}
-                dot={{ strokeWidth: 5 }}
-                activeDot={{ r: 10 }}
+                type="number"
+                width={yAxisWidth}
+                tickFormatter={(d) => formatDataNumber(d, locale)}
+                tickMargin={5}
+                tickLine={{ stroke: 'rgb(188,188,188)' }}
+                tick={{
+                  fontFamily: 'Roboto Condensed',
+                  fontSize: '14px',
+                  fill: '#474747',
+                }}
               />
-            ))}
-            <Customized
-              component={
-                <SourceLabel source={source} linkToSource={linkToSource} />
-              }
-            />
-          </LineChart>
-        </ResponsiveContainer>
-        {enableSocialMediaSharing ? (
-          <div style={{ position: 'absolute', right: '0', bottom: '-0.8em' }}>
-            <ShareButton widgetId={id} />
-          </div>
-        ) : null}
+              {enablePopup ? (
+                <Tooltip
+                  formatter={(d, hoverLabel) => [
+                    formatDataNumber(d, locale, true),
+                    hoverLabel,
+                  ]}
+                  contentStyle={{
+                    padding: '10px',
+                    border: '1px solid #474747',
+                    borderRadius: '3px',
+                  }} // text box
+                  labelStyle={{
+                    fontFamily: 'Roboto Condensed',
+                    fontSize: '22px',
+                    color: '#474747',
+                    marginBottom: '10px',
+                    fontWeight: 'bold',
+                  }} //  year
+                  itemStyle={{
+                    paddingBottom: '5px',
+                    fontFamily: 'Roboto Condensed',
+                    fontSize: '16px',
+                  }}
+                />
+              ) : null}
+              <Legend
+                align="center"
+                layout="vertical"
+                iconType="circle"
+                wrapperStyle={{
+                  bottom: -30,
+                  left: 20,
+                  fontFamily: 'Roboto Condensed',
+                  fontSize: '14px',
+                  marginLeft: '60px',
+                }}
+                label={{ fontFamily: 'Roboto Condensed' }}
+                formatter={(value) => (
+                  <span style={{ color: 'rgb(71,71,71)' }}>{value}</span>
+                )}
+              />
+              {data.map((s, i) => (
+                <Line
+                  dataKey="value"
+                  data={s.seriesData}
+                  name={s.seriesLegend}
+                  key={s.seriesLegend}
+                  stroke={colours[i % colours.length]}
+                  strokeWidth={3}
+                  dot={{ strokeWidth: 5 }}
+                  activeDot={{ r: 10 }}
+                />
+              ))}
+              <Customized
+                component={
+                  <SourceLabel source={source} linkToSource={linkToSource} />
+                }
+              />
+            </LineChart>
+          </ResponsiveContainer>
+          {enableSocialMediaSharing ? (
+            <div style={{ position: 'absolute', right: '0', bottom: '-0.8em' }}>
+              <ShareButton widgetId={id} />
+            </div>
+          ) : null}
+        </div>
       </div>
     </div>
   )
