@@ -1197,9 +1197,9 @@ function GlobalMap({ mapboxgl }) {
 
     let mapboxStyle
     if (locale === 'nb-NO' || locale === 'sv-SE' || locale === 'de-DE') {
-      mapboxStyle = 'mapbox://styles/nrcmaps/clx7f18c2020y01qs23b7ela4'
+      mapboxStyle = 'mapbox://styles/nrcmaps/ckbhz9yj30zxx1imwrkxsyii2'
     } else if (locale === 'en-GB') {
-      mapboxStyle = 'mapbox://styles/nrcmaps/clx7f18c2020y01qs23b7ela4'
+      mapboxStyle = 'mapbox://styles/nrcmaps/ckbkyfeyn122k1ip8oxabxgvp'
     } else {
       console.log(
         'locale used with GlobalMap for which no locale is yet defined, talk to Eric'
