@@ -34,6 +34,8 @@ export default function (widgetParams) {
         return buildCountrySpecificFootnotes2021(t)
       case 2022:
         return buildCountrySpecificFootnotes2022(t)
+      case 2023:
+        return buildCountrySpecificFootnotes2023(t)
     }
   })()
 
@@ -919,6 +921,80 @@ export function buildCountrySpecificFootnotes2022(t) {
       countryCode: ['UA', 'RU', 'GB', 'MD', 'DE'],
       annotation: t(
         'RefugeeReport2023.CountrySpecificFootnote.UkraineRussiaUnitedkingdomMoldovaGermany'
+      ),
+    },
+  ]
+}
+
+export function buildCountrySpecificFootnotes2023(t) {
+  return [
+    // We've got twelve country-specific footnotes this year. Creating all from scratch.
+    {
+      countryCode: ['DZ', 'EH'],
+      annotation: t(
+        'RefugeeReport2024.CountrySpecificFootnote.AlgerieWesternSahara'
+      ),
+    },
+    {
+      countryCode: ['BS'],
+      annotation: t('RefugeeReport2024.CountrySpecificFootnote.Bahamas'),
+    },
+    {
+      countryCode: ['BG'],
+      annotation: t('RefugeeReport2024.CountrySpecificFootnote.Bulgaria'),
+    },
+    {
+      countryCode: ['CW'],
+      annotation: t('RefugeeReport2024.CountrySpecificFootnote.Curacaco'),
+    },
+    {
+      countryCode: ['EG', 'SD'],
+      annotation: t('RefugeeReport2024.CountrySpecificFootnote.EgyptSudan'),
+    },
+    {
+      countryCode: ['IQ', 'JO'],
+      annotation: t('RefugeeReport2024.CountrySpecificFootnote.IraqJordan'),
+    },
+    {
+      countryCode: ['AF', 'PK'],
+      annotation: t(
+        'RefugeeReport2024.CountrySpecificFootnote.AfghanistanPakistan'
+      ),
+    },
+    {
+      countryCode: ['PS'],
+      annotation: t('RefugeeReport2024.CountrySpecificFootnote.Palestine'),
+    },
+    {
+      countryCode: ['KO', 'RS'],
+      annotation: t('RefugeeReport2024.CountrySpecificFootnote.KosovoSerbia'),
+    },
+    {
+      countryCode: ['US'],
+      annotation: t('RefugeeReport2024.CountrySpecificFootnote.USA'),
+    },
+    {
+      countryCode: ['MD', 'ME', 'MK', 'UA', 'GB'],
+      annotation: t(
+        'RefugeeReport2024.CountrySpecificFootnote.MoldovaMontenegroNorthMacedoniaUkraineUnitedKingdom'
+      ),
+    },
+    {
+      countryCode: [
+        'AR',
+        'BO',
+        'BR',
+        'CO',
+        'CR',
+        'DO',
+        'GY',
+        'MX',
+        'PE',
+        'UY',
+        'VE',
+      ],
+      annotation: t(
+        'RefugeeReport2024.CountrySpecificFootnote.ArgentinaBoliviaBrazilColombiaCostaRicaDominicanRepublicGuyanaMexicoPeruUruguayVenezuela'
       ),
     },
   ]

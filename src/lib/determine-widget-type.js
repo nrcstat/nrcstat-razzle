@@ -40,12 +40,12 @@ export const determineWidgetType = async (widget) => {
   ) {
     return { locale, type: 'GlobalMap', periodYear: 2023 }
   } else if (/static/.test(widgetIdParam)) {
-    const [, periodYearString = '2019'] = widgetIdParam.match(/^(\d*)-.+/) || []
+    const [, periodYearString = '2023'] = widgetIdParam.match(/^(\d*)-.+/) || []
     let periodYear
     try {
       periodYear = parseInt(periodYearString)
     } catch (error) {
-      periodYear = 2019
+      periodYear = 2023
     }
     const [, tableType] = widgetIdParam.match(/static-(.+)/)
     return { locale, type: 'StaticTable', periodYear, tableType }
