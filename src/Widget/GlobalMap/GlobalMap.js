@@ -447,9 +447,7 @@ const START_ZOOM = MIN_ZOOM
 const MIN_COUNTRY_NAME_SIZE = 8
 const MAX_COUNTRY_NAME_SIZE = 26
 
-// const easing = BezierEasing(0.34, 0.58, 0.62, 1.11)
-const easingOpacity = BezierEasing(0.27, 1, 0.75, 0.72)
-const easing = BezierEasing(0.21, 0.55, 0.81, 0.35)
+const easing = BezierEasing(0.7, 0.46, 0.81, 0.35)
 
 const animationEvent =
   'webkitAnimationEnd oanimationend msAnimationEnd animationend'
@@ -1149,9 +1147,9 @@ function GlobalMap({ mapboxgl }) {
 
     let mapboxStyle
     if (locale === 'nb-NO' || locale === 'sv-SE' || locale === 'de-DE') {
-      mapboxStyle = 'mapbox://styles/nrcmaps/ckbhz9yj30zxx1imwrkxsyii2'
+      mapboxStyle = 'mapbox://styles/nrcmaps/clx7f18c2020y01qs23b7ela4'
     } else if (locale === 'en-GB') {
-      mapboxStyle = 'mapbox://styles/nrcmaps/ckbkyfeyn122k1ip8oxabxgvp'
+      mapboxStyle = 'mapbox://styles/nrcmaps/clx7f18c2020y01qs23b7ela4'
     } else {
       console.log(
         'locale used with GlobalMap for which no locale is yet defined, talk to Eric'
@@ -1404,7 +1402,8 @@ function GlobalMap({ mapboxgl }) {
         const zoom = map.getZoom()
         const zoomNormalized = (zoom - MIN_ZOOM) / (MAX_ZOOM - MIN_ZOOM)
         const factor = easing(zoomNormalized)
-        const factorOpacity = easing(zoomNormalized)
+        // const factorOpacity = easing(zoomNormalized)
+        const factorOpacity = 1
         const dimension = 30 + baseSize * factor
         const fontSize =
           MIN_COUNTRY_NAME_SIZE +
