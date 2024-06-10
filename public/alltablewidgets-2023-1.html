@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Table widgets</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Roboto:wght@300;400;700&display=swap"
+    />
+    <style>
+      * {
+        text-align: center;
+      }
+      /*
+        Note: the widget will "self-style" only the datatable part of itself, not the header or footer part.
+        Here, we apply some rules that will take care of styling the header and footer. The rules were
+        copied from the NRC website.
+      */
+      html {
+        font-family: Roboto;
+        position: relative;
+      }
+      body {
+        font-size: 18px;
+        line-height: 1.444444444444;
+      }
+      h4 {
+        font-size: 1.25em;
+        margin: 0 0 10px;
+        line-height: 1.2em;
+        font-family: Roboto, sans-serif;
+        font-weight: 300;
+        font-style: normal;
+      }
+    </style>
+
+    <script src="/widgetLib.js"></script>
+
+    <!--
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.9.1/d3.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="/assets/vendor/tooltipster.bundle.min.css" />
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+  <script type="text/javascript" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/pdfmake.min.js"></script>
+  <script type="text/javascript" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/vfs_fonts.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-2.2.4/dt-1.10.15/r-2.1.1/datatables.min.css"/>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.dataTables.min.css"/>
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/colreorder/1.3.3/css/colReorder.dataTables.min.css"/>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.2/css/fixedHeader.dataTables.min.css"/>
+
+
+  <script src="../assets/nrcwidgetlibv3.js"></script>
+  <link rel="stylesheet" href="../assets/nrcwidgetlib.css"/>
+  -->
+
+    <style>
+      hr.style-eight {
+        padding: 0;
+        border: none;
+        border-top: medium double #333;
+        color: #333;
+        text-align: center;
+        margin: 75px 0;
+      }
+
+      hr.style-eight:after {
+        content: '§';
+        display: inline-block;
+        position: relative;
+        top: -0.7em;
+        font-size: 1.5em;
+        padding: 0 0.25em;
+        background: white;
+      }
+
+      .alert {
+        margin-top: 100px;
+      }
+    </style>
+  </head>
+
+  <body style="margin: 30px 0">
+    <div class="container">
+      <div class="alert alert-success">
+        <h1>Hovedtabell</h1>
+      </div>
+
+      <!--- 2023-static-idps-per-worldzone--->
+      <div class="row">
+        <pre>ID: 2023-static-main-table</pre>
+        <div>
+          <div class="col-xs-12" id="2023-static-main-table"></div>
+        </div>
+      </div>
+
+      <div class="alert alert-success">
+        <h1>Internt fordrevne</h1>
+      </div>
+
+      <!--- 2023-static-new-idps-per-worldzone--->
+      <div class="row">
+        <pre>ID: 2023-static-new-idps-per-worldzone</pre>
+        <div>
+          <div class="col-xs-12" id="2023-static-new-idps-per-worldzone"></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-idps-per-worldzone--->
+      <div class="row">
+        <pre>ID: 2023-static-idps-per-worldzone</pre>
+        <div>
+          <div class="col-xs-12" id="2023-static-idps-per-worldzone"></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-countries-with-most-idps --->
+      <div class="row">
+        <pre>ID: 2023-static-countries-with-most-idps</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-countries-with-most-idps"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-countries-with-most-new-idps --->
+      <div class="row" style="margin-top: 50px">
+        <pre>ID: 2023-static-countries-with-most-new-idps</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-countries-with-most-new-idps"
+          ></div>
+        </div>
+      </div>
+
+      <!-- REFUGEES FROM -->
+      <div class="alert alert-success">
+        <h1>Flyktningers opprinnelsesland</h1>
+      </div>
+
+      <!--- 2023-static-countries-with-most-new-refugees-from-country --->
+      <div class="row">
+        <pre>ID: 2023-static-countries-with-most-new-refugees-from-country</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-countries-with-most-new-refugees-from-country"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-countries-with-most-refugees-from-country --->
+      <div class="row">
+        <pre>ID: 2023-static-countries-with-most-refugees-from-country</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-countries-with-most-refugees-from-country"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-new-refugees-from-country-per-worldzone --->
+      <div class="row">
+        <pre>ID: 2023-static-new-refugees-from-country-per-worldzone</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-new-refugees-from-country-per-worldzone"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-refugees-from-country-per-worldzone --->
+      <div class="row">
+        <pre>ID: 2023-static-refugees-from-country-per-worldzone</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-refugees-from-country-per-worldzone"
+          ></div>
+        </div>
+      </div>
+
+      <!-- REFUGEES TO -->
+      <div class="alert alert-success">
+        <h1>Flyktningers mottakerland</h1>
+      </div>
+
+      <!--- 2023-static-refugees-to-country-per-worldzone --->
+      <div class="row">
+        <pre>ID: 2023-static-refugees-to-country-per-worldzone</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-refugees-to-country-per-worldzone"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-new-refugees-to-country-per-worldzone --->
+      <div class="row">
+        <pre>ID: 2023-static-new-refugees-to-country-per-worldzone</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-new-refugees-to-country-per-worldzone"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-countries-with-most-refugees-to-country --->
+      <div class="row">
+        <pre>ID: 2023-static-countries-with-most-refugees-to-country</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-countries-with-most-refugees-to-country"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-countries-with-most-new-refugees-to-country --->
+      <div class="row" style="margin-top: 50px">
+        <pre>ID: 2023-static-countries-with-most-new-refugees-to-country</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-countries-with-most-new-refugees-to-country"
+          ></div>
+        </div>
+      </div>
+
+      <!-- VOLUNTARY RETURNS -->
+      <div class="alert alert-success">
+        <h1>Frivillig tilbakevending</h1>
+      </div>
+
+      <!--- 2023-static-countries-with-most-voluntary-returns --->
+      <div class="row">
+        <pre>ID: 2023-static-countries-with-most-voluntary-returns</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-countries-with-most-voluntary-returns"
+          ></div>
+        </div>
+      </div>
+
+      <!-- REFUGEES + IDPS -->
+      <div class="alert alert-success">
+        <h1>Flyktninger og internt fordrevne (sammenlagt)</h1>
+      </div>
+
+      <!--- 2023-static-refugees-plus-idps-from-origin-countries-per-worldzone --->
+      <div class="row">
+        <pre>
+ID: 2023-static-refugees-plus-idps-from-origin-countries-per-worldzone</pre
+        >
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-refugees-plus-idps-from-origin-countries-per-worldzone"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-refugees-plus-idps-in-host-countries-per-worldzone --->
+      <div class="row">
+        <pre>
+ID: 2023-static-refugees-plus-idps-in-host-countries-per-worldzone</pre
+        >
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-refugees-plus-idps-in-host-countries-per-worldzone"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-origin-countries-with-most-refugees-plus-idps-long --->
+      <div class="row">
+        <pre>
+ID: 2023-static-origin-countries-with-most-refugees-plus-idps-long</pre
+        >
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-origin-countries-with-most-refugees-plus-idps-long"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-origin-countries-with-most-refugees-plus-idps-short --->
+      <div class="row">
+        <pre>
+ID: 2023-static-origin-countries-with-most-refugees-plus-idps-short</pre
+        >
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-origin-countries-with-most-refugees-plus-idps-short"
+          ></div>
+        </div>
+      </div>
+
+      <!-- AFRICA -->
+      <div class="alert alert-success">
+        <h1>Afrika</h1>
+      </div>
+
+      <div class="alert alert-warning">
+        <h2>Lars:</h2>
+        <p>
+          Her følger widgets for fire regioner (Afrika, Amerika, Asia + Oseania
+          + Midtøsten, Europa). Hver region har seks widgets
+        </p>
+        <p>
+          Her følger widgets for fire regioner (Afrika, Amerika, Asia + Oseania
+          + Midtøsten, Europa).
+        </p>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-africa-countries-with-most-refugees-from --->
+      <div class="row">
+        <pre>ID: 2023-static-africa-countries-with-most-refugees-from</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-africa-countries-with-most-refugees-from"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-africa-countries-with-most-refugees-to-country --->
+      <div class="row">
+        <pre>
+ID: 2023-static-africa-countries-with-most-refugees-to-country</pre
+        >
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-africa-countries-with-most-refugees-to-country"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-africa-countries-with-most-new-refugees-to-country --->
+      <div class="row">
+        <pre>
+ID: 2023-static-africa-countries-with-most-new-refugees-to-country</pre
+        >
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-africa-countries-with-most-new-refugees-to-country"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-africa-countries-with-most-new-refugees-from --->
+      <div class="row">
+        <pre>ID: 2023-static-africa-countries-with-most-new-refugees-from</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-africa-countries-with-most-new-refugees-from"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-africa-countries-with-most-idps --->
+      <div class="row">
+        <pre>ID: 2023-static-africa-countries-with-most-idps</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-africa-countries-with-most-idps"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-africa-countries-with-most-new-idps --->
+      <div class="row">
+        <pre>ID: 2023-static-africa-countries-with-most-new-idps</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-africa-countries-with-most-new-idps"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!-- AMERICA -->
+      <div class="alert alert-success">
+        <h1>Amerika</h1>
+      </div>
+
+      <!--- 2023-static-america-countries-with-most-refugees-from --->
+      <div class="row">
+        <pre>ID: 2023-static-america-countries-with-most-refugees-from</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-america-countries-with-most-refugees-from"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-america-countries-with-most-refugees-to-country --->
+      <div class="row">
+        <pre>
+ID: 2023-static-america-countries-with-most-refugees-to-country</pre
+        >
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-america-countries-with-most-refugees-to-country"
+          ></div>
+        </div>
+      </div>
+
+      <!--- 2023-static-america-countries-with-most-new-refugees-to-country --->
+      <div class="row">
+        <pre>
+ID: 2023-static-america-countries-with-most-new-refugees-to-country</pre
+        >
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-america-countries-with-most-new-refugees-to-country"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-america-countries-with-most-new-refugees-from --->
+      <div class="row">
+        <pre>ID: 2023-static-america-countries-with-most-new-refugees-from</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-america-countries-with-most-new-refugees-from"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-america-countries-with-most-idps --->
+      <div class="row">
+        <pre>ID: 2023-static-america-countries-with-most-idps</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-america-countries-with-most-idps"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-america-countries-with-most-new-idps --->
+      <div class="row">
+        <pre>ID: 2023-static-america-countries-with-most-new-idps</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-america-countries-with-most-new-idps"
+          ></div>
+        </div>
+      </div>
+
+      <!-- ASIA, OCENIA, MIDDLE EAST -->
+      <div class="alert alert-success">
+        <h1>Asia, Oseania og Midtøsten</h1>
+      </div>
+
+      <!--- 2023-static-asia-oceania-middle-east-countries-with-most-refugees-from --->
+      <div class="row">
+        <pre>
+ID: 2023-static-asia-oceania-middle-east-countries-with-most-refugees-from</pre
+        >
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-asia-oceania-middle-east-countries-with-most-refugees-from"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-asia-oceania-middle-east-countries-with-most-refugees-to-country --->
+      <div class="row">
+        <pre>
+ID: 2023-static-asia-oceania-middle-east-countries-with-most-refugees-to-country</pre
+        >
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-asia-oceania-middle-east-countries-with-most-refugees-to-country"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-asia-oceania-middle-east-countries-with-most-new-refugees-to-country --->
+      <div class="row">
+        <pre>
+ID: 2023-static-asia-oceania-middle-east-countries-with-most-new-refugees-to-country</pre
+        >
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-asia-oceania-middle-east-countries-with-most-new-refugees-to-country"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-asia-oceania-middle-east-countries-with-most-new-refugees-from --->
+      <div class="row">
+        <pre>
+ID: 2023-static-asia-oceania-middle-east-countries-with-most-new-refugees-from</pre
+        >
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-asia-oceania-middle-east-countries-with-most-new-refugees-from"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-asia-oceania-middle-east-countries-with-most-idps --->
+      <div class="row">
+        <pre>
+ID: 2023-static-asia-oceania-middle-east-countries-with-most-idps</pre
+        >
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-asia-oceania-middle-east-countries-with-most-idps"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-asia-oceania-middle-east-countries-with-most-new-idps --->
+      <div class="row">
+        <pre>
+ID: 2023-static-asia-oceania-middle-east-countries-with-most-new-idps</pre
+        >
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-asia-oceania-middle-east-countries-with-most-new-idps"
+          ></div>
+        </div>
+      </div>
+
+      <!-- EUROPE -->
+      <div class="alert alert-success">
+        <h1>Europa</h1>
+      </div>
+
+      <!--- 2023-static-europe-countries-with-most-refugees-from --->
+      <div class="row">
+        <pre>ID: 2023-static-europe-countries-with-most-refugees-from</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-europe-countries-with-most-refugees-from"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-europe-countries-with-most-refugees-to-country --->
+      <div class="row">
+        <pre>
+ID: 2023-static-europe-countries-with-most-refugees-to-country</pre
+        >
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-europe-countries-with-most-refugees-to-country"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-europe-countries-with-most-new-refugees-to-country --->
+      <div class="row">
+        <pre>
+ID: 2023-static-europe-countries-with-most-new-refugees-to-country</pre
+        >
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-europe-countries-with-most-new-refugees-to-country"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-europe-countries-with-most-new-refugees-from --->
+      <div class="row">
+        <pre>ID: 2023-static-europe-countries-with-most-new-refugees-from</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-europe-countries-with-most-new-refugees-from"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-europe-countries-with-most-idps --->
+      <div class="row">
+        <pre>ID: 2023-static-europe-countries-with-most-idps</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-europe-countries-with-most-idps"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-europe-countries-with-most-new-idps --->
+      <div class="row">
+        <pre>ID: 2023-static-europe-countries-with-most-new-idps</pre>
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-europe-countries-with-most-new-idps"
+          ></div>
+        </div>
+      </div>
+
+      <!-- DATAPOINT WITH POPULATION RATIO -->
+      <div class="alert alert-success">
+        <h1>Flyktninger i forhold til folketallet</h1>
+      </div>
+
+      <!--- 2023-static-host-countries-with-most-refugees-in-ratio-to-population --->
+      <div class="row">
+        <pre>
+ID: 2023-static-host-countries-with-most-refugees-in-ratio-to-population</pre
+        >
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-host-countries-with-most-refugees-in-ratio-to-population"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-host-countries-with-most-new-refugees-in-ratio-to-population --->
+      <div class="row">
+        <pre>
+ID: 2023-static-host-countries-with-most-new-refugees-in-ratio-to-population</pre
+        >
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-host-countries-with-most-new-refugees-in-ratio-to-population"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+
+      <!--- 2023-static-host-countries-with-most-new-refugees-in-ratio-to-population --->
+      <div class="row">
+        <pre>
+ID: 2023-static-host-countries-with-most-resettlement-refugees-in-ratio-to-population</pre
+        >
+        <div>
+          <div
+            class="col-xs-12"
+            id="2023-static-host-countries-with-most-resettlement-refugees-in-ratio-to-population"
+          ></div>
+        </div>
+      </div>
+
+      <hr class="style-eight" />
+    </div>
+    <script>
+      var stuff = [
+        '2023-static-main-table',
+
+        '2023-static-countries-with-most-idps',
+        '2023-static-countries-with-most-new-idps',
+        '2023-static-idps-per-worldzone',
+        '2023-static-new-idps-per-worldzone',
+
+        '2023-static-new-refugees-from-country-per-worldzone',
+        '2023-static-refugees-from-country-per-worldzone',
+        '2023-static-countries-with-most-new-refugees-from-country',
+        '2023-static-countries-with-most-refugees-from-country',
+
+        '2023-static-refugees-to-country-per-worldzone',
+        '2023-static-new-refugees-to-country-per-worldzone',
+        '2023-static-countries-with-most-refugees-to-country',
+        '2023-static-countries-with-most-new-refugees-to-country',
+
+        '2023-static-countries-with-most-voluntary-returns',
+
+        '2023-static-refugees-plus-idps-from-origin-countries-per-worldzone',
+        '2023-static-refugees-plus-idps-in-host-countries-per-worldzone',
+        '2023-static-origin-countries-with-most-refugees-plus-idps-long',
+        '2023-static-origin-countries-with-most-refugees-plus-idps-short',
+
+        '2023-static-africa-countries-with-most-refugees-from',
+        '2023-static-africa-countries-with-most-refugees-to-country',
+        '2023-static-africa-countries-with-most-new-refugees-to-country',
+        '2023-static-africa-countries-with-most-new-refugees-from',
+        '2023-static-africa-countries-with-most-idps',
+        '2023-static-africa-countries-with-most-new-idps',
+
+        // '2023-static-america-countries-with-most-refugees-from',
+        // '2023-static-america-countries-with-most-refugees-to-country',
+        // '2023-static-america-countries-with-most-new-refugees-to-country',
+        // '2023-static-america-countries-with-most-new-refugees-from',
+        // '2023-static-america-countries-with-most-idps',
+        // '2023-static-america-countries-with-most-new-idps',
+
+        // '2023-static-asia-oceania-middle-east-countries-with-most-refugees-from',
+        // '2023-static-asia-oceania-middle-east-countries-with-most-refugees-to-country',
+        // '2023-static-asia-oceania-middle-east-countries-with-most-new-refugees-to-country',
+        // '2023-static-asia-oceania-middle-east-countries-with-most-new-refugees-from',
+        // '2023-static-asia-oceania-middle-east-countries-with-most-idps',
+        // '2023-static-asia-oceania-middle-east-countries-with-most-new-idps',
+
+        // '2023-static-europe-countries-with-most-refugees-from',
+        // '2023-static-europe-countries-with-most-refugees-to-country',
+        // '2023-static-europe-countries-with-most-new-refugees-to-country',
+        // '2023-static-europe-countries-with-most-new-refugees-from',
+        // '2023-static-europe-countries-with-most-idps',
+        // '2023-static-europe-countries-with-most-new-idps',
+
+        // '2023-static-host-countries-with-most-refugees-in-ratio-to-population',
+        // '2023-static-host-countries-with-most-new-refugees-in-ratio-to-population',
+
+        // '2023-static-host-countries-with-most-resettlement-refugees-in-ratio-to-population',
+      ]
+
+      for (var i = 0; i < stuff.length; i++) {
+        var s = stuff[i]
+        NrcStatWidgetLibrary.getInstance().generateWidget({
+          widgetId: s,
+          targetSelector: '#' + s,
+        })
+      }
+    </script>
+  </body>
+</html>

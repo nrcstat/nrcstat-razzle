@@ -226,6 +226,51 @@ const radialBarChartsMapSvSe2022 = chain(
   .mapValues('file')
   .value()
 
+const reqNbNo2023 = require.context(
+  './assets/pre-rendered-radial-bar-charts-2023/nb-NO',
+  false
+)
+// TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
+const radialBarChartsMapNbNo2023 = chain(
+  reqNbNo2023.keys().map((file) => ({
+    file: reqNbNo2023(file),
+    countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
+  }))
+)
+  .keyBy('countryCode')
+  .mapValues('file')
+  .value()
+
+const reqEnGb2023 = require.context(
+  './assets/pre-rendered-radial-bar-charts-2023/en-GB',
+  false
+)
+// TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
+const radialBarChartsMapEnGb2023 = chain(
+  reqEnGb2023.keys().map((file) => ({
+    file: reqEnGb2023(file),
+    countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
+  }))
+)
+  .keyBy('countryCode')
+  .mapValues('file')
+  .value()
+
+const reqSvSe2023 = require.context(
+  './assets/pre-rendered-radial-bar-charts-2023/sv-SE',
+  false
+)
+// TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
+const radialBarChartsMapSvSe2023 = chain(
+  reqSvSe2023.keys().map((file) => ({
+    file: reqSvSe2023(file),
+    countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
+  }))
+)
+  .keyBy('countryCode')
+  .mapValues('file')
+  .value()
+
 const radialBarChartsMap = {
   'en-GB': radialBarChartsMapEnGb,
   'nb-NO': radialBarChartsMapNbNo,
@@ -245,6 +290,11 @@ const radialBarChartsMap2022 = {
   'en-GB': radialBarChartsMapEnGb2022,
   'nb-NO': radialBarChartsMapNbNo2022,
   'sv-SE': radialBarChartsMapSvSe2022,
+}
+const radialBarChartsMap2023 = {
+  'en-GB': radialBarChartsMapEnGb2023,
+  'nb-NO': radialBarChartsMapNbNo2023,
+  'sv-SE': radialBarChartsMapSvSe2023,
 }
 
 let countryStatsCache = null
@@ -447,9 +497,7 @@ const START_ZOOM = MIN_ZOOM
 const MIN_COUNTRY_NAME_SIZE = 8
 const MAX_COUNTRY_NAME_SIZE = 26
 
-// const easing = BezierEasing(0.34, 0.58, 0.62, 1.11)
-const easingOpacity = BezierEasing(0.27, 1, 0.75, 0.72)
-const easing = BezierEasing(0.21, 0.55, 0.81, 0.35)
+const easing = BezierEasing(0.7, 0.46, 0.81, 0.35)
 
 const animationEvent =
   'webkitAnimationEnd oanimationend msAnimationEnd animationend'
@@ -1162,6 +1210,11 @@ function GlobalMap({ mapboxgl }) {
         )
     }
 
+    // This is the special new mapbox style for 2023 Iva and I developed
+    if (periodYear === 2023 || periodYear === '2023') {
+      mapboxStyle = 'mapbox://styles/nrcmaps/clx7f18c2020y01qs23b7ela4'
+    }
+
     mapboxElementRef.current = ref
     mapboxgl.accessToken =
       'pk.eyJ1IjoibnJjbWFwcyIsImEiOiJjaW5hNTM4MXMwMDB4d2tseWZhbmFxdWphIn0._w6LWU9OWnXak36BkzopcQ'
@@ -1404,7 +1457,8 @@ function GlobalMap({ mapboxgl }) {
         const zoom = map.getZoom()
         const zoomNormalized = (zoom - MIN_ZOOM) / (MAX_ZOOM - MIN_ZOOM)
         const factor = easing(zoomNormalized)
-        const factorOpacity = easing(zoomNormalized)
+        // const factorOpacity = easing(zoomNormalized)
+        const factorOpacity = 1
         const dimension = 30 + baseSize * factor
         const fontSize =
           MIN_COUNTRY_NAME_SIZE +
@@ -1624,6 +1678,8 @@ function GlobalMap({ mapboxgl }) {
             return radialBarChartsMap2021
           case 2022:
             return radialBarChartsMap2022
+          case 2023:
+            return radialBarChartsMap2023
           default:
             throw new Error('Invalid year passed to GlobalMap')
         }
