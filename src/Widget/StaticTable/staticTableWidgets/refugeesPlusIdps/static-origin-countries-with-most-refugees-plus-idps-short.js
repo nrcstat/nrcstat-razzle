@@ -1,28 +1,28 @@
-import generator from "../generic/generic-table-widget";
-import { thousandsFormatter } from "../../../../util/tableWidgetFormatters";
+import generator from '../generic/generic-table-widget'
+import { thousandsFormatter } from '../../../../util/tableWidgetFormatters'
 
 export default function (widgetParams) {
-  const { t, periodYear, locale } = widgetParams;
+  const { t, periodYear, locale } = widgetParams
 
   const title = t(
     `RefugeeReport${
       periodYear + 1
     }.IDP.RefugeeDataPointPlusIDPDataPoint.OriginCountriesWithMostRefugeesPlusIdps.ShortTable.Heading`
-  );
+  )
 
   const footerAnnotations = t(
     `RefugeeReport${
       periodYear + 1
     }.IDP.RefugeeDataPointPlusIDPDataPoint.OriginCountriesWithMostRefugeesPlusIdps.ShortTable.TableFooterText`
-  );
+  )
 
   const query = {
     where: {
       year: periodYear,
-      dataPoint: { inq: ["idpsInXInYear", "totalRefugeesFromX"] },
-      continentCode: { nin: ["WORLD"] },
+      dataPoint: { inq: ['idpsInXInYear', 'totalRefugeesFromX'] },
+      continentCode: { nin: ['WORLD'] },
     },
-  };
+  }
 
   return generator(
     title,
@@ -33,26 +33,27 @@ export default function (widgetParams) {
     t(`RefugeeReport${periodYear + 1}.MiscSharedLabels.country`),
     true,
     thousandsFormatter(locale)
-  );
+  )
 
   function process(data) {
+    data = subtractDoubleCountedPalestineIndividuals(data, 'totalRefugeesFromX')
     data = _(data)
-      .groupBy("countryCode")
-      .mapValues((countryDataPoints) => _.sumBy(countryDataPoints, "data"))
+      .groupBy('countryCode')
+      .mapValues((countryDataPoints) => _.sumBy(countryDataPoints, 'data'))
       .map((refugeesPlusIdps, countryCode) => {
-        return { countryCode, data: refugeesPlusIdps };
+        return { countryCode, data: refugeesPlusIdps }
       })
       .map((country) => {
         country.place = t(
           `NRC.Web.StaticTextDictionary.Contries.${country.countryCode}`
-        );
-        return country;
+        )
+        return country
       })
       .filter((country) => !!country.data)
-      .filter((country) => country.countryCode !== "MISC")
-      .orderBy((country) => country.data, "desc")
+      .filter((country) => country.countryCode !== 'MISC')
+      .orderBy((country) => country.data, 'desc')
       .take(10)
-      .value();
-    return data;
+      .value()
+    return data
   }
 }
