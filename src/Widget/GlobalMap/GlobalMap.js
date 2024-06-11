@@ -1692,6 +1692,8 @@ function GlobalMap({ mapboxgl }) {
         el.style.backgroundImage = `url(${radialBarChartsToUse[locale][iso]})`
         el.style.backgroundSize = 'cover'
         el.style.overflow = 'hidden'
+        el.style.zIndex = 10 // the legend overlay has z-index 100, this is to fix the problem
+        // that the pr-rendered radial bar charts used to cover it
 
         if (!isMobileDevice()) {
           el.addEventListener('mouseenter', showTooltip(marker))

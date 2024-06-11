@@ -94,14 +94,14 @@
     right: 0;
     background-color: #d3d3d3;
     opacity: 0.45;
-    z-index: 1;
+    z-index: 200;
   }
 
   .disappear {
-    -webkit-animation: overlay-disappear 1s linear;
-    -moz-animation: overlay-disappear 1s linear;
-    -o-animation: overlay-disappear 1s linear;
-    animation: overlay-disappear 1s linear;
+    -webkit-animation: overlay-disappear 0.35s linear;
+    -moz-animation: overlay-disappear 0.35s linear;
+    -o-animation: overlay-disappear 0.35s linear;
+    animation: overlay-disappear 0.35s linear;
   }
 
   @-webkit-keyframes overlay-disappear {
@@ -138,10 +138,10 @@
   }
 
   .appear {
-    -webkit-animation: overlay-appear 1s linear;
-    -moz-animation: overlay-appear 1s linear;
-    -o-animation: overlay-appear 1s linear;
-    animation: overlay-appear 1s linear;
+    -webkit-animation: overlay-appear 0.35s linear;
+    -moz-animation: overlay-appear 0.35s linear;
+    -o-animation: overlay-appear 0.35s linear;
+    animation: overlay-appear 0.35s linear;
   }
 
   @-webkit-keyframes overlay-appear {
@@ -190,7 +190,7 @@
     font-size: 120%;
     font-weight: normal;
     font-family: 'Roboto Condensed';
-    z-index: 3;
+    z-index: 250;
 
     &:hover {
       background-color: #fd5a00;
@@ -203,11 +203,11 @@
     -o-animation-name: open_button_color_change;
     animation-name: open_button_color_change;
 
-    -webkit-animation-duration: 1s;
-    -moz-animation-duration: 1s;
-    -ms-animation-duration: 1s;
-    -o-animation-duration: 1s;
-    animation-duration: 1s;
+    -webkit-animation-duration: 0.35s;
+    -moz-animation-duration: 0.35s;
+    -ms-animation-duration: 0.35s;
+    -o-animation-duration: 0.35s;
+    animation-duration: 0.35s;
   }
 
   @-webkit-keyframes open_button_color_change {
@@ -268,7 +268,7 @@
     font-size: 100%;
     font-weight: normal;
     font-family: 'Roboto Condensed';
-    z-index: 3;
+    z-index: 250;
 
     &hover {
       background-color: #fd5a00;
@@ -421,7 +421,6 @@
     top: 10px;
     left: 10px;
     overflow: auto;
-    z-index: 0;
     width: 265px;
     box-sizing: content-box;
     overflow: hidden;
@@ -492,6 +491,8 @@
       overflow: auto;
       padding: 10px 10px;
       overflow: hidden;
+      position: relative;
+      z-index: 100;
     }
   }
 
