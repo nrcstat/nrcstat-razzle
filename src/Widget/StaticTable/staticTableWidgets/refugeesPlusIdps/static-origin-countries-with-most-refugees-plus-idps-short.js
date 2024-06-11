@@ -1,5 +1,6 @@
 import generator from '../generic/generic-table-widget'
 import { thousandsFormatter } from '../../../../util/tableWidgetFormatters'
+import { subtractDoubleCountedPalestineIndividuals } from './helper-special-2023-palestine-subtract-because-of-double-counting'
 
 export default function (widgetParams) {
   const { t, periodYear, locale } = widgetParams

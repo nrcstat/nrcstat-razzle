@@ -1,4 +1,5 @@
 import { thousandsFormatter } from '@/util/tableWidgetFormatters.js'
+import { subtractDoubleCountedPalestineIndividuals } from './helper-special-2023-palestine-subtract-because-of-double-counting'
 
 import generator from '../generic/generic-table-widget'
 
