@@ -120,7 +120,7 @@ function Donut({ dataPoint }) {
             marginTop: '30px',
           }}
         >
-          {t(`dataPoint.${dataPoint}`)}
+          {t(`dataPoint.${dataPoint}`, { year: String(year) })}
         </p>
       </div>
     </div>

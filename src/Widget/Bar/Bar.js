@@ -75,17 +75,17 @@ function BarViz() {
       className={`container ${c.container}`}
       ref={findElementEpiServerAncestorResetHeight}
     >
-      <div style={{ marginLeft: '10px', textAlign: 'center' }}>
+      <div style={{ marginLeft: '10px' }}>
         {title && (
           <p
             style={{
               fontFamily: 'Roboto Condensed',
               color: '#474747',
-              fontSize: '24px',
+              fontSize: '20px',
               fontWeight: '400',
               margin: 0,
               padding: 0,
-              marginBottom: '12px',
+              marginBottom: '30px',
             }}
           >
             {title}
@@ -168,7 +168,7 @@ function BarViz() {
                 offset={{ bar: 20, column: 30 }[type]}
                 style={{
                   fontFamily: 'Roboto Condensed',
-                  fontSize: '18px',
+                  fontSize: '16px',
                   marginBottom: '10px',
                   fontWeight: 'bold',
                 }}
