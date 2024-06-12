@@ -438,7 +438,8 @@
     .gray-dot,
     .refugeesFrom-dot,
     .refugeesTo-dot,
-    .idps-dot {
+    .idps-dot,
+    .nrcProgramme-dot {
       height: 20px;
       width: 20px;
       border-radius: 50%;
@@ -459,6 +460,15 @@
     }
     .idps-dot {
       background-color: $dataPointColour__idps;
+    }
+    .nrcProgramme-dot {
+      background: repeating-linear-gradient(
+        135deg,
+        $dataPointColour__refugeesTo,
+        $dataPointColour__refugeesTo 3px,
+        white 3px,
+        white 6px
+      );
     }
 
     .legend-text {

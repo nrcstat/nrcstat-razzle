@@ -1041,6 +1041,10 @@ function GlobalMap({ mapboxgl }) {
                 'legend.totalNumberIdpsInCountry'
               )}</td>
           </tr>
+            <tr>
+              <td><span class="nrcProgramme-dot"></span></td>
+              <td class="legend-text">NRC Programme country</td>
+            </tr>
         </table>
         
         <p><span class="source">${t('legend.source')}</span></p>
@@ -1212,8 +1216,10 @@ function GlobalMap({ mapboxgl }) {
 
     // This is the special new mapbox style for 2023 Iva and I developed
     if (periodYear === 2023 || periodYear === '2023') {
-      mapboxStyle = 'mapbox://styles/nrcmaps/clx7f18c2020y01qs23b7ela4'
+      mapboxStyle = 'mapbox://styles/nrcmaps/clxawvt98024301pc05n856zb'
     }
+
+    mapboxStyle = 'mapbox://styles/nrcmaps/clxawvt98024301pc05n856zb'
 
     mapboxElementRef.current = ref
     mapboxgl.accessToken =
@@ -1618,15 +1624,15 @@ function GlobalMap({ mapboxgl }) {
 
         const dataHtml = [
           {
-            color: 'rgba(114,199,231,0.72)',
+            color: '#ffc6a6',
             data: getCountryStat(countryCode, 'idpsInXInYear').data,
           },
           {
-            color: 'rgba(255,121,0,0.72)',
+            color: '#fd9459',
             data: getCountryStat(countryCode, 'totalRefugeesFromX').data,
           },
           {
-            color: 'rgba(253,200,47,0.72)',
+            color: '#949494',
             data: getCountryStat(
               countryCode,
               'refugeesInXFromOtherCountriesInYear'
