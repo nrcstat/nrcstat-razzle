@@ -488,6 +488,13 @@ const blueCountryIso2 = {
   ],
 }
 
+const FOUR_MAPBOX_COUNTRY_LAYERS = [
+  'countries-africa',
+  'countries-asia-oceania',
+  'countries-europe',
+  'countries-americas',
+]
+
 const toggleFullScreenAnimationDuration = 300
 
 const MIN_ZOOM = 2
@@ -897,21 +904,6 @@ function GlobalMap({ mapboxgl }) {
           ],
         },
         {
-          icon: refugeesToIcon,
-          dataPoints: [
-            {
-              dataPointKey: 'refugeesInXFromOtherCountriesInYear',
-              dataPointName: t('countryInfoPopup.totalNumberRefugeesTo'),
-            },
-            {
-              dataPointKey: 'newRefugeesInXFromOtherCountriesInYear',
-              dataPointName: t('countryInfoPopup.newInYearX', {
-                year: periodYear,
-              }),
-            },
-          ],
-        },
-        {
           icon: idpsIcon,
           dataPoints: [
             {
@@ -920,6 +912,21 @@ function GlobalMap({ mapboxgl }) {
             },
             {
               dataPointKey: 'newIdpsInXInYear',
+              dataPointName: t('countryInfoPopup.newInYearX', {
+                year: periodYear,
+              }),
+            },
+          ],
+        },
+        {
+          icon: refugeesToIcon,
+          dataPoints: [
+            {
+              dataPointKey: 'refugeesInXFromOtherCountriesInYear',
+              dataPointName: t('countryInfoPopup.totalNumberRefugeesTo'),
+            },
+            {
+              dataPointKey: 'newRefugeesInXFromOtherCountriesInYear',
               dataPointName: t('countryInfoPopup.newInYearX', {
                 year: periodYear,
               }),
@@ -1248,10 +1255,48 @@ function GlobalMap({ mapboxgl }) {
         type: 'geojson',
         data: middleResolutionCountriesGeoJson,
       })
+      map.addSource('countries-africa', {
+        type: 'geojson',
+        data: {
+          ...middleResolutionCountriesGeoJson,
+          features: middleResolutionCountriesGeoJson.features.filter(
+            (item) => item.properties.continent === 'Africa'
+          ),
+        },
+      })
+      map.addSource('countries-europe', {
+        type: 'geojson',
+        data: {
+          ...middleResolutionCountriesGeoJson,
+          features: middleResolutionCountriesGeoJson.features.filter(
+            (item) => item.properties.continent === 'Europe'
+          ),
+        },
+      })
+      map.addSource('countries-asia-oceania', {
+        type: 'geojson',
+        data: {
+          ...middleResolutionCountriesGeoJson,
+          features: middleResolutionCountriesGeoJson.features.filter((item) =>
+            ['Asia', 'Oceania'].includes(item.properties.continent)
+          ),
+        },
+      })
+      map.addSource('countries-americas', {
+        type: 'geojson',
+        data: {
+          ...middleResolutionCountriesGeoJson,
+          features: middleResolutionCountriesGeoJson.features.filter((item) =>
+            ['North America', 'South America'].includes(
+              item.properties.continent
+            )
+          ),
+        },
+      })
 
       const sharedLayerProperties = {
         type: 'fill',
-        source: 'countries',
+        // source: 'countries',
         paint: {
           'fill-opacity': 1,
         },
@@ -1260,20 +1305,30 @@ function GlobalMap({ mapboxgl }) {
 
       map.addLayer(
         Object.assign(sharedLayerProperties, {
-          id: 'countries-highlighted',
-          paint: { 'fill-color': 'rgba(251, 251, 251, 1)' },
+          source: 'countries-africa',
+          id: 'countries-hovered-africa',
+          paint: { 'fill-color': '#d0ddce' },
         })
       )
       map.addLayer(
         Object.assign(sharedLayerProperties, {
-          id: 'countries-highlighted-nrc',
-          paint: { 'fill-color': 'rgba(255,119,0,0.36)' },
+          source: 'countries-europe',
+          id: 'countries-hovered-europe',
+          paint: { 'fill-color': '#e8e0c8' },
         })
       )
       map.addLayer(
         Object.assign(sharedLayerProperties, {
-          id: 'countries-highlighted-blue',
-          paint: { 'fill-color': 'rgba(212,212,212,0.84)' },
+          source: 'countries-asia-oceania',
+          id: 'countries-hovered-asia-oceania',
+          paint: { 'fill-color': '#e4d3d0' },
+        })
+      )
+      map.addLayer(
+        Object.assign(sharedLayerProperties, {
+          source: 'countries-americas',
+          id: 'countries-hovered-americas',
+          paint: { 'fill-color': '#c6e1e5' },
         })
       )
 
@@ -1289,67 +1344,71 @@ function GlobalMap({ mapboxgl }) {
             .css('cursor', 'default')
         }
 
-        map.setFilter('countries-highlighted-nrc', [
+        map.setFilter('countries-hovered-africa', [
           '==',
           'iso_a2',
-          _.includes(nrcCountryIso2[locale], hoverCountryIso2)
-            ? hoverCountryIso2
-            : '',
+          hoverCountryIso2,
         ])
-        map.setFilter('countries-highlighted-blue', [
+        map.setFilter('countries-hovered-europe', [
           '==',
           'iso_a2',
-          _.includes(blueCountryIso2[locale], hoverCountryIso2)
-            ? hoverCountryIso2
-            : '',
+          hoverCountryIso2,
         ])
-        const nrcAndBlueIso2 = nrcCountryIso2[locale].concat(
-          blueCountryIso2[locale]
-        )
-        map.setFilter('countries-highlighted', [
+        map.setFilter('countries-hovered-asia-oceania', [
           '==',
           'iso_a2',
-          !_.includes(nrcAndBlueIso2) ? hoverCountryIso2 : '',
+          hoverCountryIso2,
+        ])
+        map.setFilter('countries-hovered-americas', [
+          '==',
+          'iso_a2',
+          hoverCountryIso2,
         ])
       }
 
       // disable hover on mobile device otherwise country stays highlighted once popover is closed
       if (!isMobileDevice()) {
-        map.on('mousemove', 'countries', countryMouseMoveOverHandler)
-        map.on('mouseover', 'countries', countryMouseMoveOverHandler)
+        FOUR_MAPBOX_COUNTRY_LAYERS.forEach((layerId) => {
+          map.on('mousemove', layerId, countryMouseMoveOverHandler)
+          map.on('mouseover', layerId, countryMouseMoveOverHandler)
+        })
       }
 
-      map.on('click', 'countries', function (event) {
-        hideTooltip()
-        var selectedCountry = event.features[0].properties
+      FOUR_MAPBOX_COUNTRY_LAYERS.forEach((layerId) => {
+        map.on('click', layerId, function (event) {
+          hideTooltip()
+          var selectedCountry = event.features[0].properties
 
-        if (mobileLegendActive) {
-          $(targetSelector).find('.legend-container').css('display', 'none')
-          $(targetSelector)
-            .find('#legend-button')
-            .removeClass('legend-button-closed legend-button-open')
-            .addClass('legend-button-closed')
-          setLegendState(targetSelector)
-          $(targetSelector).find('.share-menu-container').css('display', 'none')
-          setShareMenuState(targetSelector)
-          isCountryInfoPopupOrPopoverActive = false
-        } else {
-          // insert Kosovo country code (has "name" but no "iso_a2" in natural earth data)
-          if (selectedCountry.name == 'Kosovo') {
-            selectedCountry.iso_a2 = 'KO'
-          }
+          if (mobileLegendActive) {
+            $(targetSelector).find('.legend-container').css('display', 'none')
+            $(targetSelector)
+              .find('#legend-button')
+              .removeClass('legend-button-closed legend-button-open')
+              .addClass('legend-button-closed')
+            setLegendState(targetSelector)
+            $(targetSelector)
+              .find('.share-menu-container')
+              .css('display', 'none')
+            setShareMenuState(targetSelector)
+            isCountryInfoPopupOrPopoverActive = false
+          } else {
+            // insert Kosovo country code (has "name" but no "iso_a2" in natural earth data)
+            if (selectedCountry.name == 'Kosovo') {
+              selectedCountry.iso_a2 = 'KO'
+            }
 
-          // countries without iso2 code in naturalearth data have value -99 instead
-          if (countryInfo__hasData(selectedCountry.iso_a2)) {
-            if (isMobileDevice() && selectedCountry.iso_a2 != -99) {
-              isCountryInfoPopupOrPopoverActive = true
-              countryInfo__showPopover(targetSelector, event)
-            } else if (selectedCountry.iso_a2 != -99) {
-              isCountryInfoPopupOrPopoverActive = true
-              countryInfo__showPopup(event, map)
+            // countries without iso2 code in naturalearth data have value -99 instead
+            if (countryInfo__hasData(selectedCountry.iso_a2)) {
+              if (isMobileDevice() && selectedCountry.iso_a2 != -99) {
+                isCountryInfoPopupOrPopoverActive = true
+                countryInfo__showPopover(targetSelector, event)
+              } else if (selectedCountry.iso_a2 != -99) {
+                isCountryInfoPopupOrPopoverActive = true
+                countryInfo__showPopup(event, map)
+              }
             }
           }
-        }
+        })
       })
 
       // event listener for closing legend and share menu by clicking on the non-country (e.g. sea)
@@ -1368,7 +1427,7 @@ function GlobalMap({ mapboxgl }) {
         }
       })
 
-      map.on('mouseleave', 'countries-highlighted', function () {
+      map.on('mouseleave', 'countries-hovered-africa', function () {
         $(targetSelector)
           .find('.mapboxgl-canvas-container')
           .css('cursor', 'grab')
@@ -1379,9 +1438,7 @@ function GlobalMap({ mapboxgl }) {
           .find('.mapboxgl-canvas-container')
           .css('cursor', '-moz-grab')
 
-        map.setFilter('countries-highlighted', ['==', 'iso_a2', ''])
-        map.setFilter('countries-highlighted-blue', ['==', 'iso_a2', ''])
-        map.setFilter('countries-highlighted-nrc', ['==', 'iso_a2', ''])
+        map.setFilter('countries-hovered-africa', ['==', 'iso_a2', ''])
       })
 
       map.on('dragstart', function () {
