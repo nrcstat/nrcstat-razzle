@@ -268,7 +268,7 @@
     font-size: 100%;
     font-weight: normal;
     font-family: 'Roboto Condensed';
-    z-index: 250;
+    z-index: 15;
 
     &hover {
       background-color: #fd5a00;
@@ -328,7 +328,7 @@
 
   .mapboxgl-popup-content {
     border: 1px solid #474747;
-    width: 31em;
+    width: 36em;
   }
 
   .mapboxgl-popup-content p {
