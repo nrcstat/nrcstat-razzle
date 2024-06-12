@@ -13,7 +13,6 @@ import {
 } from 'lodash'
 import BezierEasing from 'bezier-easing'
 import * as $ from 'jquery'
-import { useTranslation } from 'react-i18next'
 
 import {
   formatDataNumber,
@@ -1220,7 +1219,7 @@ function GlobalMap({ mapboxgl }) {
       mapboxStyle = 'mapbox://styles/nrcmaps/clxawvt98024301pc05n856zb'
     }
 
-    mapboxStyle = 'mapbox://styles/nrcmaps/clxawvt98024301pc05n856zb'
+    mapboxStyle = 'mapbox://styles/nrcmaps/clxbn4zi202a101pn5n0g2rgy'
 
     mapboxElementRef.current = ref
     mapboxgl.accessToken =
