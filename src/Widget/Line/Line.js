@@ -75,11 +75,11 @@ function LineWidget() {
       formatDataNumber(
         Math.max(
           ...flatten(data.map(({ seriesData }) => seriesData)).map(
-            (d) => d.value,
-          ),
+            (d) => d.value
+          )
         ),
-        locale,
-      ),
+        locale
+      )
     ) + 15
 
   // NOTE: the `container` class is added so that
@@ -169,31 +169,7 @@ function LineWidget() {
                   fill: '#474747',
                 }}
               />
-              {enablePopup ? (
-                <Tooltip
-                  formatter={(d, hoverLabel) => [
-                    formatDataNumber(d, locale, true),
-                    hoverLabel,
-                  ]}
-                  contentStyle={{
-                    padding: '10px',
-                    border: '1px solid #474747',
-                    borderRadius: '3px',
-                  }} // text box
-                  labelStyle={{
-                    fontFamily: 'Roboto Condensed',
-                    fontSize: '22px',
-                    color: '#474747',
-                    marginBottom: '10px',
-                    fontWeight: 'bold',
-                  }} //  year
-                  itemStyle={{
-                    paddingBottom: '5px',
-                    fontFamily: 'Roboto Condensed',
-                    fontSize: '16px',
-                  }}
-                />
-              ) : null}
+              {enablePopup ? <Tooltip content={<CustomTooltip />} /> : null}
               <Legend
                 align="center"
                 layout="vertical"
@@ -335,4 +311,68 @@ function measureText14RobotoCondensed(text) {
   ctx.font = "14px 'Roboto Condensed"
 
   return ctx.measureText(text).width
+}
+
+function CustomTooltip({ active, payload, label }) {
+  const { locale } = useContext(WidgetParamsContext)
+
+  if (active && payload && payload.length) {
+    return (
+      <div
+        className="custom-tooltip"
+        style={{
+          backgroundColor: '#fff',
+          border: '1px solid #474747',
+          padding: '10px',
+          borderRadius: '3px',
+        }}
+      >
+        <p
+          className="label"
+          style={{
+            fontFamily: 'Roboto Condensed',
+            fontSize: '22px',
+            color: '#474747',
+            marginBottom: '12px',
+            marginTop: '3px',
+          }}
+        >
+          {`${label}`}
+        </p>
+        {payload.map((entry, index) => (
+          <div
+            key={`item-${index}`}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: '8px',
+            }}
+          >
+            <div
+              style={{
+                width: '10px',
+                height: '10px',
+                backgroundColor: entry.color,
+                marginRight: '5px',
+                borderRadius: '50%',
+              }}
+            ></div>
+            <span
+              style={{
+                fontFamily: 'Roboto Condensed',
+                fontSize: '16px',
+                color: 'rgb(71, 71, 71)',
+              }}
+            >{`${entry.name}: ${formatDataNumber(
+              entry.value,
+              locale,
+              true
+            )}`}</span>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  return null
 }
