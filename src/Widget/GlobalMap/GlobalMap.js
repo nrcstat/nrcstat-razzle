@@ -1233,7 +1233,7 @@ function GlobalMap({ mapboxgl }) {
       mapboxStyle = 'mapbox://styles/nrcmaps/clxawvt98024301pc05n856zb'
     }
 
-    mapboxStyle = 'mapbox://styles/nrcmaps/clxbn4zi202a101pn5n0g2rgy'
+    mapboxStyle = 'mapbox://styles/nrcmaps/clxbsxkx502aq01pnezejd58g'
 
     mapboxElementRef.current = ref
     mapboxgl.accessToken =
