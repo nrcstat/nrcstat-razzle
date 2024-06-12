@@ -495,6 +495,13 @@ const FOUR_MAPBOX_COUNTRY_LAYERS = [
   'countries-americas',
 ]
 
+const FOUR_MAPBOX_COUNTRY_LAYERS_HOVERED = [
+  'countries-hovered-africa',
+  'countries-hovered-europe',
+  'countries-hovered-asia-oceania',
+  'countries-hovered-americas',
+]
+
 const toggleFullScreenAnimationDuration = 300
 
 const MIN_ZOOM = 2
@@ -1344,26 +1351,9 @@ function GlobalMap({ mapboxgl }) {
             .css('cursor', 'default')
         }
 
-        map.setFilter('countries-hovered-africa', [
-          '==',
-          'iso_a2',
-          hoverCountryIso2,
-        ])
-        map.setFilter('countries-hovered-europe', [
-          '==',
-          'iso_a2',
-          hoverCountryIso2,
-        ])
-        map.setFilter('countries-hovered-asia-oceania', [
-          '==',
-          'iso_a2',
-          hoverCountryIso2,
-        ])
-        map.setFilter('countries-hovered-americas', [
-          '==',
-          'iso_a2',
-          hoverCountryIso2,
-        ])
+        FOUR_MAPBOX_COUNTRY_LAYERS_HOVERED.forEach((layerId) => {
+          map.setFilter(layerId, ['==', 'iso_a2', hoverCountryIso2])
+        })
       }
 
       // disable hover on mobile device otherwise country stays highlighted once popover is closed
@@ -1427,18 +1417,22 @@ function GlobalMap({ mapboxgl }) {
         }
       })
 
-      map.on('mouseleave', 'countries-hovered-africa', function () {
-        $(targetSelector)
-          .find('.mapboxgl-canvas-container')
-          .css('cursor', 'grab')
-        $(targetSelector)
-          .find('.mapboxgl-canvas-container')
-          .css('cursor', '-webkit-grab')
-        $(targetSelector)
-          .find('.mapboxgl-canvas-container')
-          .css('cursor', '-moz-grab')
+      FOUR_MAPBOX_COUNTRY_LAYERS.forEach((layerId) => {
+        map.on('mouseleave', layerId, function () {
+          $(targetSelector)
+            .find('.mapboxgl-canvas-container')
+            .css('cursor', 'grab')
+          $(targetSelector)
+            .find('.mapboxgl-canvas-container')
+            .css('cursor', '-webkit-grab')
+          $(targetSelector)
+            .find('.mapboxgl-canvas-container')
+            .css('cursor', '-moz-grab')
 
-        map.setFilter('countries-hovered-africa', ['==', 'iso_a2', ''])
+          FOUR_MAPBOX_COUNTRY_LAYERS_HOVERED.forEach((layerId) => {
+            map.setFilter(layerId, ['==', 'iso_a2', ''])
+          })
+        })
       })
 
       map.on('dragstart', function () {
