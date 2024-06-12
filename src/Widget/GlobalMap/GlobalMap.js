@@ -1028,6 +1028,12 @@ function GlobalMap({ mapboxgl }) {
               <td class="legend-text">${t(
                 'legend.totalNumberRefugeesFromCountry'
               )}</td>
+          </tr> 
+          <tr>
+              <td><span class="idps-dot"></span></td>
+              <td class="legend-text">${t(
+                'legend.totalNumberIdpsInCountry'
+              )}</td>
           </tr>
           <tr>
               <td><span class="refugeesTo-dot"></span></td>
@@ -1035,16 +1041,11 @@ function GlobalMap({ mapboxgl }) {
                 'legend.totalNumberRefugeesToCountry'
               )}</td>
           </tr>
-          <tr>
-              <td><span class="idps-dot"></span></td>
-              <td class="legend-text">${t(
-                'legend.totalNumberIdpsInCountry'
-              )}</td>
-          </tr>
-            <tr>
+
+           <tr>
               <td><span class="nrcProgramme-dot"></span></td>
               <td class="legend-text">${t('legend.nrcCountryProgramme')}</td>
-            </tr>
+           </tr>
         </table>
         
         <p><span class="source">${t('legend.source')}</span></p>
