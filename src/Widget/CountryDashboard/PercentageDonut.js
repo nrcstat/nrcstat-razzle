@@ -105,6 +105,8 @@ function Donut({ dataPoint }) {
       <div
         style={{
           textAlign: 'center',
+          paddingLeft: '10px',
+          paddingRight: '10px',
         }}
       >
         <p

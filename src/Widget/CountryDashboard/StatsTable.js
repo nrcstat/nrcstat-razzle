@@ -21,6 +21,10 @@ export function StatsTable({ selectedYear, setSelectedYear }) {
 
   const YEAR_OPTIONS = [
     {
+      label: '2022',
+      value: 2022,
+    },
+    {
       label: '2021',
       value: 2021,
     },
@@ -46,10 +50,10 @@ export function StatsTable({ selectedYear, setSelectedYear }) {
       value: 2016,
     },
   ]
-  if (year === 2022 || year === '2022') {
+  if (year === 2023 || year === '2023') {
     YEAR_OPTIONS.unshift({
-      label: '2022',
-      value: 2022,
+      label: '2023',
+      value: 2023,
     })
   }
 

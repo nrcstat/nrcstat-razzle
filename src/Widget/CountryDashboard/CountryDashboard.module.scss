@@ -8,7 +8,7 @@
       flex: 1;
     }
     .ingress {
-      flex: 2;
+      flex: 1;
     }
   }
 
@@ -27,7 +27,7 @@
 
 .donut-table-wrapper {
   display: flex;
-  @media (min-width: 641px) {
+  @media (min-width: 900px) {
     flex-direction: row;
     .map {
       flex: 1;

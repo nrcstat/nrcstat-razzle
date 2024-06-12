@@ -344,7 +344,7 @@ const dataPointToLabel = (t) => ({
   refugeesInXFromOtherCountriesInYear: t('radialBarChart.label.refugeesTo'),
 })
 const dataPointToColour = {
-  idpsInXInYear: 'rgba(114,199,231,0.72)',
-  totalRefugeesFromX: 'rgba(255,121,0,0.72)',
-  refugeesInXFromOtherCountriesInYear: 'rgba(253,200,47,0.72)',
+  idpsInXInYear: '#ffc6a6',
+  totalRefugeesFromX: '#fd9459',
+  refugeesInXFromOtherCountriesInYear: '#949494',
 }
