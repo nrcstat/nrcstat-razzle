@@ -1043,7 +1043,9 @@ function GlobalMap({ mapboxgl }) {
           </tr>
             <tr>
               <td><span class="nrcProgramme-dot"></span></td>
-              <td class="legend-text">NRC Programme country</td>
+              <td class="legend-text">${t(
+                'legend.legend.nrcCountryProgramme'
+              )}</td>
             </tr>
         </table>
         
