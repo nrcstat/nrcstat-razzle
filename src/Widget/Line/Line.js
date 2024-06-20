@@ -205,11 +205,12 @@ function LineWidget() {
               />
             </LineChart>
           </ResponsiveContainer>
-          {enableSocialMediaSharing ? (
+          {/* sharing tmp disabled - sharing APIs of FB & twitter changed */}
+          {/* {enableSocialMediaSharing ? (
             <div style={{ position: 'absolute', right: '0', bottom: '-0.8em' }}>
               <ShareButton widgetId={id} />
             </div>
-          ) : null}
+          ) : null} */}
         </div>
       </div>
     </div>

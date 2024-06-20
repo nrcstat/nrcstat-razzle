@@ -192,11 +192,12 @@ function BarViz() {
           minHeight: enableSocialMediaSharing ? '3em' : '0',
         }}
       >
-        {enableSocialMediaSharing ? (
+        {/* sharing tmp disabled - sharing APIs of FB & twitter changed */}
+        {/* {enableSocialMediaSharing ? (
           <div className={c['share-button-wrapper']}>
             <ShareButton widgetId={id} />
           </div>
-        ) : null}
+        ) : null} */}
         {subtitle && (
           <p
             style={{
