@@ -33,7 +33,7 @@
     "datatables.net-colreorder": "^1.5.2",
     "datatables.net-fixedheader": "^3.1.7",
     "datatables.net-responsive": "^2.2.5",
-    "express": "^4.16.2",
+    "express": "^4.17.3",
     "i18next": "^19.4.5",
     "i18next-locize-backend": "^4.0.12",
     "imports-loader": "^0.8.0",
