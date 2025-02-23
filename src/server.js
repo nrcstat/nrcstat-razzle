@@ -6,6 +6,7 @@ import { renderToString } from 'react-dom/server'
 import { ChunkExtractor, ChunkExtractorManager } from '@loadable/server'
 import { mapValues } from 'lodash'
 import { determineWidgetType } from './lib/determine-widget-type'
+import { dataCache } from './services/DataCache'
 
 import Widget from './Widget/Widget'
 
@@ -34,7 +35,7 @@ const dataPreLoaders = {
       t: () => '',
     }
     return tableTypeToTableWidgetMap[widget.tableType](
-      widgetParams
+      widgetParams,
     ).loadWidgetData(widget)
   },
   Donut: loadDonutData,
@@ -50,7 +51,11 @@ const server = express()
 
 server.use(cors())
 
-const dataCache = {}
+// Initialize data cache when server starts
+dataCache.initialize().catch((error) => {
+  console.error('Failed to initialize data cache:', error)
+  process.exit(1)
+})
 
 server
   .disable('x-powered-by')
@@ -87,7 +92,7 @@ server
           // }
         }
         return enrichedWidget
-      })
+      }),
     )
 
     let extractor = new ChunkExtractor({
@@ -100,12 +105,12 @@ server
         {queue.map((props) => (
           <Widget key={props.widgetId} {...props} />
         ))}
-      </ChunkExtractorManager>
+      </ChunkExtractorManager>,
     )
 
     const languageLocaleData = mapValues(
       i18n.getDataByLanguage(queue[0].locale),
-      (namespace) => mapNestedObjectToPathKeyedObject(namespace)
+      (namespace) => mapNestedObjectToPathKeyedObject(namespace),
     )
 
     const payload = {
@@ -130,7 +135,7 @@ server
       return attrs || {}
     })
     payload.__LOADABLE_REQUIRED_CHUNKS__ = JSON.parse(
-      /<script.+>(.+)<\/script>/g.exec(js)[1]
+      /<script.+>(.+)<\/script>/g.exec(js)[1],
     )
 
     // const css = extractor.getStyleTags((attrs) => {
