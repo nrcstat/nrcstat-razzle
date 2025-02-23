@@ -4,7 +4,9 @@
     "start": "razzle start",
     "build": "razzle build",
     "test": "razzle test --env=jsdom",
-    "start:prod": "NODE_ENV=production node build/server.js"
+    "start:prod": "NODE_ENV=production node build/server.js",
+    "docker:stopremove": "docker stop nrcstat-razzle && docker rm nrcstat-razzle",
+    "docker:buildstart": " docker build -t nrcstat-razzle . && docker run -p 3000:3000 -p 3001:3001 -v \"$(pwd)\":/app -v /app/node_modules --name nrcstat-razzle nrcstat-razzle"
   },
   "dependencies": {
     "@babel/core": "^7.9.6",

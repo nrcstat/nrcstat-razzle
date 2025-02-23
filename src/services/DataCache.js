@@ -95,9 +95,78 @@ class DataCache {
   }
 
   query(filter) {
-    // For now, just return all data
-    // We'll implement filtering later
-    return this.data
+    let results = [...this.data]
+
+    if (filter?.where) {
+      const where = filter.where
+
+      // Handle year filter
+      if (where.year) {
+        if (typeof where.year === 'number') {
+          results = results.filter((d) => d.year === where.year)
+        } else if (where.year.inq) {
+          results = results.filter((d) => where.year.inq.includes(d.year))
+        }
+      }
+
+      // Handle dataPoint filter
+      if (where.dataPoint) {
+        if (typeof where.dataPoint === 'string') {
+          results = results.filter((d) => d.dataPoint === where.dataPoint)
+        } else if (where.dataPoint.inq) {
+          results = results.filter((d) =>
+            where.dataPoint.inq.includes(d.dataPoint),
+          )
+        }
+      }
+
+      // Handle countryCode filter
+      if (where.countryCode) {
+        if (typeof where.countryCode === 'string') {
+          results = results.filter((d) => d.countryCode === where.countryCode)
+        } else if (where.countryCode.inq) {
+          results = results.filter((d) =>
+            where.countryCode.inq.includes(d.countryCode),
+          )
+        }
+      }
+
+      // Handle continentCode filter with nin (not in) operator
+      if (where.continentCode?.nin) {
+        results = results.filter(
+          (d) => !where.continentCode.nin.includes(d.continentCode),
+        )
+      }
+
+      // Handle regionCodeNRC filter
+      if (where.regionCodeNRC) {
+        if (typeof where.regionCodeNRC === 'string') {
+          results = results.filter(
+            (d) => d.regionCodeNRC === where.regionCodeNRC,
+          )
+        } else if (where.regionCodeNRC.inq) {
+          results = results.filter((d) =>
+            where.regionCodeNRC.inq.includes(d.regionCodeNRC),
+          )
+        }
+      }
+    }
+
+    // Handle ordering
+    if (filter?.order) {
+      const [field, direction] = filter.order.split(' ')
+      results.sort((a, b) => {
+        const multiplier = direction?.toUpperCase() === 'DESC' ? -1 : 1
+        return ((a[field] || 0) - (b[field] || 0)) * multiplier
+      })
+    }
+
+    // Handle limit
+    if (filter?.limit) {
+      results = results.slice(0, filter.limit)
+    }
+
+    return results
   }
 }
 
