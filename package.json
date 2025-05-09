@@ -41,7 +41,7 @@
     "jszip": "^3.10.0",
     "lodash": "^4.17.15",
     "mapbox-gl": "^1.9.1",
-    "moment": "^2.26.0",
+    "moment": "^2.29.4",
     "node-fetch": "^2.6.0",
     "normalize.css": "^8.0.1",
     "razzle": "^3.0.0-alpha.0",
