@@ -62,38 +62,38 @@ server
   .use(express.static(process.env.RAZZLE_PUBLIC_DIR))
   .get('/render-widgets', async (req, res) => {
     let queue = JSON.parse(req.query.queue)
-    queue = await Promise.all(
-      queue.map(async (widget) => {
-        const widgetType = await determineWidgetType(widget)
-        const enrichedWidget = { ...widget, ...widgetType }
-        const dataLoader = dataPreLoaders[widgetType.type]
-        if (dataLoader) {
-          // Uncomment to restore the password-based data embargo mechanism. Remember that
-          // we last time we turned off the in-memory caching of data, we didn't find a way
-          // to combine it with the password authentication mechanism.
-          enrichedWidget.nrcstatpassword = req.headers.nrcstatpassword
-          const data = await dataLoader(enrichedWidget, {
-            nrcstatpassword: req.headers.nrcstatpassword,
-          })
-          enrichedWidget.preloadedWidgetData = data
+    const processedQueue = []
+    for (const widget of queue) {
+      const widgetType = await determineWidgetType(widget)
+      const enrichedWidget = { ...widget, ...widgetType }
+      const dataLoader = dataPreLoaders[widgetType.type]
+      if (dataLoader) {
+        // Uncomment to restore the password-based data embargo mechanism. Remember that
+        // we last time we turned off the in-memory caching of data, we didn't find a way
+        // to combine it with the password authentication mechanism.
+        enrichedWidget.nrcstatpassword = req.headers.nrcstatpassword
+        const data = await dataLoader(enrichedWidget, {
+          nrcstatpassword: req.headers.nrcstatpassword,
+        })
+        enrichedWidget.preloadedWidgetData = data
 
-          // Special case: if the widget ID is widget-wizard, it comes from the old
-          // widget wizard or the new widget builder. Either way, there is no point
-          // in caching data for these as they're not saved widgets.
-          // if (
-          //   dataCache[widget.widgetId] &&
-          //   !/widget-wizard/.test(widget.widgetId)
-          // ) {
-          //   widget.preloadedWidgetData = dataCache[widget.widgetId]
-          // } else {
-          //   const data = await dataLoader(widget)
-          //   widget.preloadedWidgetData = data
-          //   dataCache[widget.widgetId] = data
-          // }
-        }
-        return enrichedWidget
-      }),
-    )
+        // Special case: if the widget ID is widget-wizard, it comes from the old
+        // widget wizard or the new widget builder. Either way, there is no point
+        // in caching data for these as they're not saved widgets.
+        // if (
+        //   dataCache[widget.widgetId] &&
+        //   !/widget-wizard/.test(widget.widgetId)
+        // ) {
+        //   widget.preloadedWidgetData = dataCache[widget.widgetId]
+        // } else {
+        //   const data = await dataLoader(widget)
+        //   widget.preloadedWidgetData = data
+        //   dataCache[widget.widgetId] = data
+        // }
+      }
+      processedQueue.push(enrichedWidget)
+    }
+    queue = processedQueue
 
     let extractor = new ChunkExtractor({
       statsFile: pathLib.resolve('build/loadable-stats.json'),
