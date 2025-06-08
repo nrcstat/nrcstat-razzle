@@ -8,7 +8,7 @@ export const determineWidgetType = async (widget) => {
 
   const localesPipeDelimited = ENABLED_LOCALES.join('|')
   const localeSpecificMatch = widgetId.match(
-    `^(${localesPipeDelimited})-(\\S+)$`
+    `^(${localesPipeDelimited})-(\\S+)$`,
   )
   if (localeSpecificMatch) {
     ;[, locale, widgetIdParam] = localeSpecificMatch
@@ -99,7 +99,7 @@ export const determineWidgetType = async (widget) => {
 }
 
 async function loadWidgetObject(widgetId) {
-  return nodeFetch(`${API_URL}/widgets/${widgetId}`).then((resp) => resp.json())
+  return nodeFetch(`${API_URL}/widget/${widgetId}`).then((resp) => resp.json())
 }
 
 function removeLocaleLayer(widgetObject, locale) {
@@ -151,12 +151,12 @@ function removeLocaleLayer(widgetObject, locale) {
         widgetObject.customData.columns[0]
       ) {
         widgetObject.customData.columns = widgetObject.customData.columns.map(
-          (column) => ({ ...column, columnLabel: column.columnLabel[locale] })
+          (column) => ({ ...column, columnLabel: column.columnLabel[locale] }),
         )
       }
       if (widgetObject.customData.data && widgetObject.customData.data[0]) {
         widgetObject.customData.data = widgetObject.customData.data.map(
-          (item) => ({ ...item, label: item.label[locale] })
+          (item) => ({ ...item, label: item.label[locale] }),
         )
       }
     }
