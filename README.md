@@ -1,6 +1,9 @@
 # Usage Notes
 
 - Start server by running `yarn start`. This launches razzle, which in turn manages two webpack processes, one for the server, one for the client.
+- However the above isn't really working because it requires node v 14. So instead use docker and these two commands:
+  - `npm run docker:buildstart`
+  - `npm run docker:stopremove`
 
 # Notes on usage of repo
 

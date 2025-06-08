@@ -8,6 +8,7 @@ import { map, groupBy, find, findIndex, includes, each } from 'lodash'
 import { isServer } from '../../../util/utils'
 const continentColorMap = require('./continentColorMap.json')
 const async = require('async')
+import { dataCache } from '../../../services/DataCache'
 
 const CONTINENTS = ['AF', 'AS', 'EU', 'NA', 'OC', 'SA', 'MISC_AND_STATELESS']
 
@@ -40,7 +41,7 @@ export default function (widgetParams) {
   })()
 
   const footerAnnotations = t(
-    `RefugeeReport${periodYear + 1}.MainTable.TableFooterText`
+    `RefugeeReport${periodYear + 1}.MainTable.TableFooterText`,
   )
 
   const tableDataPoints = [
@@ -62,12 +63,10 @@ export default function (widgetParams) {
     var q = {
       where: { year: periodYear, continentCode: { nin: ['WORLD'] } },
     }
-    var urlQ = encodeURIComponent(JSON.stringify(q))
 
-    const url = `${API_URL}/datas?filter=${urlQ}`
-    return fetch(url, {
-      headers: { nrcstatpassword: widgetParams.nrcstatpassword },
-    }).then((resp) => resp.json())
+    const data = dataCache.query(q)
+
+    return Promise.resolve(data)
   }
 
   function render(widgetObject, widgetData, targetSelector, languageObject) {
@@ -129,10 +128,10 @@ export default function (widgetParams) {
         })
         data = map(data, (d) => {
           d.continent = t(
-            `NRC.Web.StaticTextDictionary.Continents.${d.continentCode}`
+            `NRC.Web.StaticTextDictionary.Continents.${d.continentCode}`,
           )
           d.country = t(
-            `NRC.Web.StaticTextDictionary.Contries.${d.countryCode}`
+            `NRC.Web.StaticTextDictionary.Contries.${d.countryCode}`,
           )
           return d
         })
@@ -151,7 +150,7 @@ export default function (widgetParams) {
             annotationIndex = findIndex(
               countryAnnotations,
               (annot) => includes(annot.countryCode, countryCode),
-              annotationIndex + 1
+              annotationIndex + 1,
             )
             if (annotationIndex !== -1) {
               annotations.push(countryAnnotations[annotationIndex].annotation)
@@ -199,13 +198,13 @@ export default function (widgetParams) {
             <select class="continent-selector"><option value="">${t(
               `RefugeeReport${
                 periodYear + 1
-              }.MainTable.CountryContientDropdown.all`
+              }.MainTable.CountryContientDropdown.all`,
             )}</option></select>
           <label>${t('columnNames.country')}:</label>
           <select class="country-selector"><option value="">${t(
             `RefugeeReport${
               periodYear + 1
-            }.MainTable.CountryContientDropdown.all`
+            }.MainTable.CountryContientDropdown.all`,
           )}</option></select>
         </div>
       <table id="datatable${id}" class="display responsive no-wrap row-border cell-border stripe hover order-column" style="width: 100%;">
@@ -217,41 +216,41 @@ export default function (widgetParams) {
             <th>${t(
               `RefugeeReport${
                 periodYear + 1
-              }.MainTable.Column.totalRefugeesFrom.label`
+              }.MainTable.Column.totalRefugeesFrom.label`,
             )}</th>
             <th>${t(
               `RefugeeReport${
                 periodYear + 1
-              }.MainTable.Column.totalRefugeesTo.label`
+              }.MainTable.Column.totalRefugeesTo.label`,
             )}</th>
             <th>${t(
-              `RefugeeReport${periodYear + 1}.MainTable.Column.totalIdps.label`
-            )}</th>
-            <th>${t(
-              `RefugeeReport${
-                periodYear + 1
-              }.MainTable.Column.newRefugeesFrom.label`
+              `RefugeeReport${periodYear + 1}.MainTable.Column.totalIdps.label`,
             )}</th>
             <th>${t(
               `RefugeeReport${
                 periodYear + 1
-              }.MainTable.Column.newRefugeesTo.label`
-            )}</th>
-            <th>${t(
-              `RefugeeReport${periodYear + 1}.MainTable.Column.newIdps.label`
-            )}</th>
-            <th>${t(
-              `RefugeeReport${periodYear + 1}.MainTable.Column.population.label`
+              }.MainTable.Column.newRefugeesFrom.label`,
             )}</th>
             <th>${t(
               `RefugeeReport${
                 periodYear + 1
-              }.MainTable.Column.percentageWomen.label`
+              }.MainTable.Column.newRefugeesTo.label`,
+            )}</th>
+            <th>${t(
+              `RefugeeReport${periodYear + 1}.MainTable.Column.newIdps.label`,
+            )}</th>
+            <th>${t(
+              `RefugeeReport${periodYear + 1}.MainTable.Column.population.label`,
             )}</th>
             <th>${t(
               `RefugeeReport${
                 periodYear + 1
-              }.MainTable.Column.percentageChildren.label`
+              }.MainTable.Column.percentageWomen.label`,
+            )}</th>
+            <th>${t(
+              `RefugeeReport${
+                periodYear + 1
+              }.MainTable.Column.percentageChildren.label`,
             )}</th>
             ${
               periodYear >= 2021
@@ -259,7 +258,7 @@ export default function (widgetParams) {
                <th>${t(
                  `RefugeeReport${
                    periodYear + 1
-                 }.MainTable.Column.resettlementRefugeesToXInYear.label`
+                 }.MainTable.Column.resettlementRefugeesToXInYear.label`,
                )}</th>
             `
                 : ``
@@ -272,7 +271,7 @@ export default function (widgetParams) {
           <div class="accordion-title" style="font-size: 16px; color: #474747; font-family: Roboto; font-weight: 200; cursor: pointer;"><i class="fa fa-plus-square-o" style="color: #FD5A00;"></i>&nbsp;${t(
             `RefugeeReport${
               periodYear + 1
-            }.MainTable.Footnotes.Title.countrySpecificNotes`
+            }.MainTable.Footnotes.Title.countrySpecificNotes`,
           )}</div>
           <div class="accordion-body" style="font-size: 12px; color: #474747; white-space: pre-line;">
             ${countrySpecificAnnotations}
@@ -282,7 +281,7 @@ export default function (widgetParams) {
           <div class="accordion-title" style="font-size: 16px; color: #474747; font-family: Roboto; font-weight: 200; cursor: pointer;"><i class="fa fa-plus-square-o" style="color: #FD5A00;"></i>&nbsp;${t(
             `RefugeeReport${
               periodYear + 1
-            }.MainTable.Footnotes.Title.generalNotes`
+            }.MainTable.Footnotes.Title.generalNotes`,
           )}</div>
           <div class="accordion-body" style="font-size: 12px; color: #474747; white-space: pre-line;">
             ${footerAnnotations}
@@ -345,11 +344,11 @@ export default function (widgetParams) {
             title: `<span class="nrcstat-tablewidget-header" >${t(
               `RefugeeReport${
                 periodYear + 1
-              }.MainTable.Column.totalRefugeesFrom.label`
+              }.MainTable.Column.totalRefugeesFrom.label`,
             )}</span><span class="nrcstat-widget-tooltip" title="${t(
               `RefugeeReport${
                 periodYear + 1
-              }.MainTable.Column.totalRefugeesFrom.hoverText`
+              }.MainTable.Column.totalRefugeesFrom.hoverText`,
             )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
             data: 'totalRefugeesFromX',
             render: (data, type, row) =>
@@ -360,11 +359,11 @@ export default function (widgetParams) {
             title: `<span class="nrcstat-tablewidget-header" >${t(
               `RefugeeReport${
                 periodYear + 1
-              }.MainTable.Column.totalRefugeesTo.label`
+              }.MainTable.Column.totalRefugeesTo.label`,
             )}</span><span class="nrcstat-widget-tooltip" title="${t(
               `RefugeeReport${
                 periodYear + 1
-              }.MainTable.Column.totalRefugeesTo.hoverText`
+              }.MainTable.Column.totalRefugeesTo.hoverText`,
             )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
             data: 'refugeesInXFromOtherCountriesInYear',
             render: (data, type, row) =>
@@ -373,11 +372,11 @@ export default function (widgetParams) {
           // Column 4: idpsInXInYear (Totalt internt fordrevne)
           {
             title: `<span class="nrcstat-tablewidget-header" >${t(
-              `RefugeeReport${periodYear + 1}.MainTable.Column.totalIdps.label`
+              `RefugeeReport${periodYear + 1}.MainTable.Column.totalIdps.label`,
             )}</span><span class="nrcstat-widget-tooltip" title="${t(
               `RefugeeReport${
                 periodYear + 1
-              }.MainTable.Column.totalIdps.hoverText`
+              }.MainTable.Column.totalIdps.hoverText`,
             )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
             data: 'idpsInXInYear',
             render: (data, type, row) =>
@@ -388,11 +387,11 @@ export default function (widgetParams) {
             title: `<span class="nrcstat-tablewidget-header" >${t(
               `RefugeeReport${
                 periodYear + 1
-              }.MainTable.Column.newRefugeesFrom.label`
+              }.MainTable.Column.newRefugeesFrom.label`,
             )}</span><span class="nrcstat-widget-tooltip" title="${t(
               `RefugeeReport${
                 periodYear + 1
-              }.MainTable.Column.newRefugeesFrom.hoverText`
+              }.MainTable.Column.newRefugeesFrom.hoverText`,
             )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
             data: 'newRefugeesFromXInYear',
             render: (data, type, row) =>
@@ -403,11 +402,11 @@ export default function (widgetParams) {
             title: `<span class="nrcstat-tablewidget-header" >${t(
               `RefugeeReport${
                 periodYear + 1
-              }.MainTable.Column.newRefugeesTo.label`
+              }.MainTable.Column.newRefugeesTo.label`,
             )}</span><span class="nrcstat-widget-tooltip" title="${t(
               `RefugeeReport${
                 periodYear + 1
-              }.MainTable.Column.newRefugeesTo.hoverText`
+              }.MainTable.Column.newRefugeesTo.hoverText`,
             )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
             data: 'newRefugeesInXFromOtherCountriesInYear',
             render: (data, type, row) =>
@@ -416,11 +415,11 @@ export default function (widgetParams) {
           // Column 7: newIdpsInXInYear (Nye internt fordrevne)
           {
             title: `<span class="nrcstat-tablewidget-header" >${t(
-              `RefugeeReport${periodYear + 1}.MainTable.Column.newIdps.label`
+              `RefugeeReport${periodYear + 1}.MainTable.Column.newIdps.label`,
             )}</span><span class="nrcstat-widget-tooltip" title="${t(
               `RefugeeReport${
                 periodYear + 1
-              }.MainTable.Column.newIdps.hoverText`
+              }.MainTable.Column.newIdps.hoverText`,
             )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
             data: 'newIdpsInXInYear',
             render: (data, type, row) =>
@@ -437,11 +436,11 @@ export default function (widgetParams) {
             title: `<span class="nrcstat-tablewidget-header" >${t(
               `RefugeeReport${
                 periodYear + 1
-              }.MainTable.Column.percentageWomen.label`
+              }.MainTable.Column.percentageWomen.label`,
             )}</span><span class="nrcstat-widget-tooltip" title="${t(
               `RefugeeReport${
                 periodYear + 1
-              }.MainTable.Column.percentageWomen.hoverText`
+              }.MainTable.Column.percentageWomen.hoverText`,
             )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
             data:
               periodYear < 2021
@@ -455,11 +454,11 @@ export default function (widgetParams) {
             title: `<span class="nrcstat-tablewidget-header" >${t(
               `RefugeeReport${
                 periodYear + 1
-              }.MainTable.Column.percentageChildren.label`
+              }.MainTable.Column.percentageChildren.label`,
             )}</span><span class="nrcstat-widget-tooltip" title="${t(
               `RefugeeReport${
                 periodYear + 1
-              }.MainTable.Column.percentageChildren.hoverText`
+              }.MainTable.Column.percentageChildren.hoverText`,
             )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
             data:
               periodYear < 2021
@@ -475,11 +474,11 @@ export default function (widgetParams) {
             title: `<span class="nrcstat-tablewidget-header" >${t(
               `RefugeeReport${
                 periodYear + 1
-              }.MainTable.Column.resettlementRefugeesToXInYear.label`
+              }.MainTable.Column.resettlementRefugeesToXInYear.label`,
             )}</span><span class="nrcstat-widget-tooltip" title="${t(
               `RefugeeReport${
                 periodYear + 1
-              }.MainTable.Column.resettlementRefugeesToXInYear.hoverText`
+              }.MainTable.Column.resettlementRefugeesToXInYear.hoverText`,
             )}"><i class="fa fa-info-circle" aria-hidden="true"></i></span>`,
             data: 'resettlementRefugeesToXInYear',
             render: (data, type, row) =>
@@ -516,7 +515,7 @@ export default function (widgetParams) {
               text: t(
                 `RefugeeReport${
                   periodYear + 1
-                }.MainTable.Actions.dowloadExcelFile`
+                }.MainTable.Actions.dowloadExcelFile`,
               ),
               title: tableTitle,
             },
@@ -524,14 +523,14 @@ export default function (widgetParams) {
               text: t(
                 `RefugeeReport${
                   periodYear + 1
-                }.MainTable.Actions.dowloadJsonFile`
+                }.MainTable.Actions.dowloadJsonFile`,
               ),
               action: function (e, dt, button, config) {
                 var data = dt.buttons.exportData()
 
                 $.fn.dataTable.fileSave(
                   new Blob([JSON.stringify(data)]),
-                  `${tableTitle}.json`
+                  `${tableTitle}.json`,
                 )
               },
             },
@@ -552,8 +551,8 @@ export default function (widgetParams) {
         CONTINENTS.forEach((k) => {
           continentSelector.append(
             `<option value="${k}">${t(
-              `NRC.Web.StaticTextDictionary.Continents.${k}`
-            )}</option>`
+              `NRC.Web.StaticTextDictionary.Continents.${k}`,
+            )}</option>`,
           )
         })
         tableData
@@ -561,8 +560,8 @@ export default function (widgetParams) {
           .forEach((iso2) => {
             countrySelector.append(
               `<option value="${iso2}">${t(
-                `NRC.Web.StaticTextDictionary.Contries.${iso2}`
-              )}</option>`
+                `NRC.Web.StaticTextDictionary.Contries.${iso2}`,
+              )}</option>`,
             )
           })
 
@@ -613,7 +612,7 @@ export function buildCountrySpecificFootnotes2019(t) {
     {
       countryCode: ['DZ', 'EH'],
       annotation: t(
-        `RefugeeReport2020.CountrySpecificFootnote.AlgerieWesternSahara`
+        `RefugeeReport2020.CountrySpecificFootnote.AlgerieWesternSahara`,
       ),
     },
     {
@@ -624,14 +623,14 @@ export function buildCountrySpecificFootnotes2019(t) {
     {
       countryCode: ['BD', 'MM'],
       annotation: t(
-        `RefugeeReport2020.CountrySpecificFootnote.BangladeshMyanmar`
+        `RefugeeReport2020.CountrySpecificFootnote.BangladeshMyanmar`,
       ),
     },
 
     {
       countryCode: ['IQ', 'SY', 'JO'],
       annotation: t(
-        `RefugeeReport2020.CountrySpecificFootnote.IraqJordanSyria`
+        `RefugeeReport2020.CountrySpecificFootnote.IraqJordanSyria`,
       ),
     },
 
@@ -648,7 +647,7 @@ export function buildCountrySpecificFootnotes2019(t) {
     {
       countryCode: ['JO', 'LB', 'PS', 'SY'],
       annotation: t(
-        `RefugeeReport2020.CountrySpecificFootnote.JordanLebanonPalestineSyria`
+        `RefugeeReport2020.CountrySpecificFootnote.JordanLebanonPalestineSyria`,
       ),
     },
     {
@@ -685,7 +684,7 @@ export function buildCountrySpecificFootnotes2019(t) {
         'UY',
       ],
       annotation: t(
-        `RefugeeReport2020.CountrySpecificFootnote.ArubaBrazilChileColombiaCuracaoDominicanRepublicEcuadorGuyanaMexicoPanamaParaguayPeruTrinidadTobagoUruguayVenezuela`
+        `RefugeeReport2020.CountrySpecificFootnote.ArubaBrazilChileColombiaCuracaoDominicanRepublicEcuadorGuyanaMexicoPanamaParaguayPeruTrinidadTobagoUruguayVenezuela`,
       ),
     },
 
@@ -701,7 +700,7 @@ export function buildCountrySpecificFootnotes2020(t) {
     {
       countryCode: ['DZ', 'EH'],
       annotation: t(
-        'RefugeeReport2021.CountrySpecificFootnote.AlgerieWesternSahara'
+        'RefugeeReport2021.CountrySpecificFootnote.AlgerieWesternSahara',
       ),
     },
     {
@@ -711,7 +710,7 @@ export function buildCountrySpecificFootnotes2020(t) {
     {
       countryCode: ['IQ', 'SY', 'JO'],
       annotation: t(
-        'RefugeeReport2021.CountrySpecificFootnote.IraqJordanSyria'
+        'RefugeeReport2021.CountrySpecificFootnote.IraqJordanSyria',
       ),
     },
 
@@ -728,7 +727,7 @@ export function buildCountrySpecificFootnotes2020(t) {
     {
       countryCode: ['JO', 'LB', 'PS', 'SY'],
       annotation: t(
-        'RefugeeReport2021.CountrySpecificFootnote.JordanLebanonPalestineSyria'
+        'RefugeeReport2021.CountrySpecificFootnote.JordanLebanonPalestineSyria',
       ),
     },
     {
@@ -759,7 +758,7 @@ export function buildCountrySpecificFootnotes2020(t) {
         'UY',
       ],
       annotation: t(
-        'RefugeeReport2021.CountrySpecificFootnote.ArubaBrazilChileColombiaCuracaoDominicanRepublicEcuadorGuyanaMexicoPanamaParaguayPeruTrinidadTobagoUruguayVenezuela'
+        'RefugeeReport2021.CountrySpecificFootnote.ArubaBrazilChileColombiaCuracaoDominicanRepublicEcuadorGuyanaMexicoPanamaParaguayPeruTrinidadTobagoUruguayVenezuela',
       ),
     },
     {
@@ -785,7 +784,7 @@ export function buildCountrySpecificFootnotes2021(t) {
     {
       countryCode: ['DZ', 'EH'],
       annotation: t(
-        'RefugeeReport2022.CountrySpecificFootnote.AlgerieWesternSahara'
+        'RefugeeReport2022.CountrySpecificFootnote.AlgerieWesternSahara',
       ),
     },
     {
@@ -795,7 +794,7 @@ export function buildCountrySpecificFootnotes2021(t) {
     {
       countryCode: ['IQ', 'SY', 'JO'],
       annotation: t(
-        'RefugeeReport2022.CountrySpecificFootnote.IraqJordanSyria'
+        'RefugeeReport2022.CountrySpecificFootnote.IraqJordanSyria',
       ),
     },
     {
@@ -805,7 +804,7 @@ export function buildCountrySpecificFootnotes2021(t) {
     {
       countryCode: ['JO', 'LB', 'PS', 'SY'],
       annotation: t(
-        'RefugeeReport2022.CountrySpecificFootnote.JordanLebanonPalestineSyria'
+        'RefugeeReport2022.CountrySpecificFootnote.JordanLebanonPalestineSyria',
       ),
     },
     {
@@ -831,7 +830,7 @@ export function buildCountrySpecificFootnotes2021(t) {
         'UY',
       ],
       annotation: t(
-        'RefugeeReport2022.CountrySpecificFootnote.ArubaBrazilChileColombiaCuracaoDominicanRepublicEcuadorGuyanaMexicoPanamaParaguayPeruTrinidadTobagoUruguayVenezuela'
+        'RefugeeReport2022.CountrySpecificFootnote.ArubaBrazilChileColombiaCuracaoDominicanRepublicEcuadorGuyanaMexicoPanamaParaguayPeruTrinidadTobagoUruguayVenezuela',
       ),
     },
     {
@@ -865,19 +864,19 @@ export function buildCountrySpecificFootnotes2022(t) {
     {
       countryCode: ['DZ', 'EH'],
       annotation: t(
-        'RefugeeReport2023.CountrySpecificFootnote.AlgerieWesternSahara'
+        'RefugeeReport2023.CountrySpecificFootnote.AlgerieWesternSahara',
       ),
     },
     {
       countryCode: ['IQ', 'SY', 'JO'],
       annotation: t(
-        'RefugeeReport2023.CountrySpecificFootnote.IraqJordanSyria'
+        'RefugeeReport2023.CountrySpecificFootnote.IraqJordanSyria',
       ),
     },
     {
       countryCode: ['JO', 'LB', 'PS', 'SY'],
       annotation: t(
-        'RefugeeReport2023.CountrySpecificFootnote.JordanLebanonPalestineSyria'
+        'RefugeeReport2023.CountrySpecificFootnote.JordanLebanonPalestineSyria',
       ),
     },
     {
@@ -903,7 +902,7 @@ export function buildCountrySpecificFootnotes2022(t) {
         'UY',
       ],
       annotation: t(
-        'RefugeeReport2023.CountrySpecificFootnote.ArubaBrazilChileColombiaCuracaoDominicanRepublicEcuadorGuyanaMexicoPanamaParaguayPeruTrinidadTobagoUruguayVenezuela'
+        'RefugeeReport2023.CountrySpecificFootnote.ArubaBrazilChileColombiaCuracaoDominicanRepublicEcuadorGuyanaMexicoPanamaParaguayPeruTrinidadTobagoUruguayVenezuela',
       ),
     },
     {
@@ -914,13 +913,13 @@ export function buildCountrySpecificFootnotes2022(t) {
     {
       countryCode: ['AF', 'IR'],
       annotation: t(
-        'RefugeeReport2023.CountrySpecificFootnote.AfghanistanIran'
+        'RefugeeReport2023.CountrySpecificFootnote.AfghanistanIran',
       ),
     },
     {
       countryCode: ['UA', 'RU', 'GB', 'MD', 'DE'],
       annotation: t(
-        'RefugeeReport2023.CountrySpecificFootnote.UkraineRussiaUnitedkingdomMoldovaGermany'
+        'RefugeeReport2023.CountrySpecificFootnote.UkraineRussiaUnitedkingdomMoldovaGermany',
       ),
     },
   ]
@@ -932,7 +931,7 @@ export function buildCountrySpecificFootnotes2023(t) {
     {
       countryCode: ['DZ', 'EH'],
       annotation: t(
-        'RefugeeReport2024.CountrySpecificFootnote.AlgerieWesternSahara'
+        'RefugeeReport2024.CountrySpecificFootnote.AlgerieWesternSahara',
       ),
     },
     {
@@ -958,7 +957,7 @@ export function buildCountrySpecificFootnotes2023(t) {
     {
       countryCode: ['AF', 'PK'],
       annotation: t(
-        'RefugeeReport2024.CountrySpecificFootnote.AfghanistanPakistan'
+        'RefugeeReport2024.CountrySpecificFootnote.AfghanistanPakistan',
       ),
     },
     {
@@ -976,7 +975,7 @@ export function buildCountrySpecificFootnotes2023(t) {
     {
       countryCode: ['MD', 'ME', 'MK', 'UA', 'GB'],
       annotation: t(
-        'RefugeeReport2024.CountrySpecificFootnote.MoldovaMontenegroNorthMacedoniaUkraineUnitedKingdom'
+        'RefugeeReport2024.CountrySpecificFootnote.MoldovaMontenegroNorthMacedoniaUkraineUnitedKingdom',
       ),
     },
     {
@@ -994,7 +993,7 @@ export function buildCountrySpecificFootnotes2023(t) {
         'VE',
       ],
       annotation: t(
-        'RefugeeReport2024.CountrySpecificFootnote.ArgentinaBoliviaBrazilColombiaCostaRicaDominicanRepublicGuyanaMexicoPeruUruguayVenezuela'
+        'RefugeeReport2024.CountrySpecificFootnote.ArgentinaBoliviaBrazilColombiaCostaRicaDominicanRepublicGuyanaMexicoPeruUruguayVenezuela',
       ),
     },
   ]

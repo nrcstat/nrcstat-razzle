@@ -1,4 +1,5 @@
 import nodeFetch from 'node-fetch'
+import { countryCodeToContinentCodeMap } from '../config'
 
 const GORS_API_URL =
   'https://xixk4r4p6g.execute-api.eu-west-1.amazonaws.com/dev/gors'
@@ -22,6 +23,7 @@ class DataCache {
           data: value,
           dataPoint,
           countryCode,
+          continentCode: countryCodeToContinentCodeMap[countryCode],
           year,
         })
       })
@@ -37,13 +39,13 @@ class DataCache {
       // Rename CountryCode to countryCode and extract year
       const {
         CountryCode: countryCode,
+        RegionCode_NRC: regionCodeNRC,
         year,
         // Exclude these fields from transformation
         CountryName_Norwegian,
         CountryName_English,
         RegionName_Norwegian,
         RegionName_English,
-        RegionCode_NRC,
         ...dataPoints
       } = record
 
@@ -53,6 +55,8 @@ class DataCache {
           data: value,
           dataPoint,
           countryCode,
+          regionCodeNRC,
+          continentCode: countryCodeToContinentCodeMap[countryCode],
           year,
         })
       })
@@ -131,10 +135,15 @@ class DataCache {
         }
       }
 
-      // Handle continentCode filter with nin (not in) operator
+      // Handle continentCode and regionCodeNRC filter with nin (not in) operator
       if (where.continentCode?.nin) {
         results = results.filter(
           (d) => !where.continentCode.nin.includes(d.continentCode),
+        )
+      }
+      if (where.regionCodeNRC?.nin) {
+        results = results.filter(
+          (d) => !where.regionCodeNRC.nin.includes(d.regionCodeNRC),
         )
       }
 

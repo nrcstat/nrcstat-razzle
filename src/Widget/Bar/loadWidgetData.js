@@ -2,6 +2,7 @@ import { API_URL } from '../../config'
 import nodeFetch from 'node-fetch'
 import { isServer } from '../../util/utils'
 import { isNumber } from 'lodash'
+import { dataCache } from '../../services/DataCache'
 
 let fetch
 
@@ -30,14 +31,7 @@ export async function loadWidgetData(context, headers = {}) {
     query.where.countryCode = { inq: countries }
   }
 
-  const url = `${API_URL}/datas?filter=${encodeURIComponent(
-    JSON.stringify(query)
-  )}`
-
-  const resp = await fetch(url, {
-    headers: { nrcstatpassword: headers.nrcstatpassword },
-  })
-  let data = await resp.json()
+  const data = dataCache.query(query)
 
   if (countries.length === 0) {
     // If no countries were selected, sum all data points where the only
@@ -56,7 +50,7 @@ export async function loadWidgetData(context, headers = {}) {
       return acc
     }, {})
     data = Object.values(data).map(
-      ({ countryCode, continentCode, regionCodeNRC, ...d }) => d
+      ({ countryCode, continentCode, regionCodeNRC, ...d }) => d,
     )
   }
 

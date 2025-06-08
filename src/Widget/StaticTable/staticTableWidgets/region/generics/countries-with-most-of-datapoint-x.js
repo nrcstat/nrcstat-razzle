@@ -9,6 +9,7 @@ import {
   buildCountrySpecificFootnotes2021,
   buildCountrySpecificFootnotes2022,
 } from '../../static-main-table'
+import { dataCache } from '../../../../../services/DataCache'
 const async = require('async')
 
 const $ = require('jquery')
@@ -26,7 +27,7 @@ export default function (
   countryLimit,
   title,
   foooterAnnotations,
-  widgetParams
+  widgetParams,
 ) {
   if (typeof regionCodeNRC === 'string') regionCodeNRC = [regionCodeNRC]
 
@@ -55,11 +56,8 @@ export default function (
       limit: countryLimit,
       order: 'data DESC',
     }
-    var urlQ = encodeURIComponent(JSON.stringify(q))
-    const url = `${API_URL}/datas?filter=${urlQ}`
-    return fetch(url, {
-      headers: { nrcstatpassword: widgetObject.nrcstatpassword },
-    }).then((resp) => resp.json())
+    const data = dataCache.query(q)
+    return Promise.resolve(data)
   }
 
   function render(widgetObject, widgetData, targetSelector, languageObject) {
@@ -101,7 +99,7 @@ export default function (
         })
         data = map(data, (d) => {
           d.country = t(
-            `NRC.Web.StaticTextDictionary.Contries.${d.countryCode}`
+            `NRC.Web.StaticTextDictionary.Contries.${d.countryCode}`,
           )
           return d
         })
@@ -121,7 +119,7 @@ export default function (
             annotationIndex = findIndex(
               countryAnnotations,
               (annot) => includes(annot.countryCode, countryCode),
-              annotationIndex + 1
+              annotationIndex + 1,
             )
             if (annotationIndex !== -1) {
               annotations.push(countryAnnotations[annotationIndex].annotation)
@@ -177,7 +175,7 @@ export default function (
         <div class="nrcstat-table-widget-annotations">
           <div class="accordion accordion-closed">
             <div class="accordion-title" style="font-size: 16px; color: #474747; font-family: Roboto; font-weight: 200; cursor: pointer;"><i class="fa fa-plus-square-o" style="color: #FD5A00;"></i>&nbsp;${t(
-              'footnotes.title'
+              'footnotes.title',
             )}</div>
             <div class="accordion-body" style="font-size: 12px; color: #474747; white-space: pre-line;">
               ${annotations}

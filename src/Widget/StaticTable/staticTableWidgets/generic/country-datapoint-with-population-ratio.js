@@ -6,6 +6,7 @@ import {
 import { API_URL } from '@/config.js'
 
 import { isServer } from '../../../../util/utils'
+import { dataCache } from '../../../../services/DataCache'
 const async = require('async')
 
 const $ = require('jquery')
@@ -27,16 +28,13 @@ export default function (
   dataProcessingFunction,
   dataPointColumnFormatter = thousandsFormatter,
   ratioColumnFormatter = percentFormatter,
-  orderingEnabled = true
+  orderingEnabled = true,
 ) {
   // module.exports = function (title, dataColumnName, dataProcessingFunction, queryObject, foooterAnnotations, placeColumnName = "Land", orderingEnabled = true, dataColumnFormatter = thousandsFormatter) {
 
   function loadWidgetData(widgetObject, headers = {}) {
-    var urlQ = encodeURIComponent(JSON.stringify(queryObject))
-    const url = `${API_URL}/datas?filter=${urlQ}`
-    return fetch(url, {
-      headers: { nrcstatpassword: widgetObject.nrcstatpassword },
-    }).then((resp) => resp.json())
+    const data = dataCache.query(queryObject)
+    return Promise.resolve(data)
   }
 
   function render(widgetObject, widgetData, targetSelector, languageObject, t) {
@@ -136,7 +134,7 @@ export default function (
         <div class="nrcstat-table-widget-annotations">
           <div class="accordion accordion-closed">
             <div class="accordion-title" style="font-size: 16px; color: #474747; font-family: Roboto; font-weight: 200; cursor: pointer;"><i class="fa fa-plus-square-o" style="color: #FD5A00;"></i>&nbsp;${t(
-              'footnotes.title'
+              'footnotes.title',
             )}</div>
             <div class="accordion-body" style="font-size: 12px; color: #474747; white-space: pre-line;">
               ${annotations}
