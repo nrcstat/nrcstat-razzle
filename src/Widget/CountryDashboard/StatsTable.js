@@ -21,6 +21,10 @@ export function StatsTable({ selectedYear, setSelectedYear }) {
 
   const YEAR_OPTIONS = [
     {
+      label: '2023',
+      value: 2023,
+    },
+    {
       label: '2022',
       value: 2022,
     },
@@ -50,10 +54,10 @@ export function StatsTable({ selectedYear, setSelectedYear }) {
       value: 2016,
     },
   ]
-  if (year === 2023 || year === '2023') {
+  if (year === 2024 || year === '2024') {
     YEAR_OPTIONS.unshift({
-      label: '2023',
-      value: 2023,
+      label: '2024',
+      value: 2024,
     })
   }
 
@@ -96,13 +100,13 @@ export function StatsTable({ selectedYear, setSelectedYear }) {
       data,
       countryCode,
       row.newInYearXDataPoint,
-      selectedYear
+      selectedYear,
     )
     const totalFigure = getCountryStat(
       data,
       countryCode,
       row.totalDataPoint,
-      selectedYear
+      selectedYear,
     )
     const currentYear = parseInt(selectedYear)
     const previousYear = currentYear - 1
@@ -112,7 +116,7 @@ export function StatsTable({ selectedYear, setSelectedYear }) {
       newInYearXDataPoint,
 
       previousYear,
-      currentYear
+      currentYear,
     )
 
     return (
@@ -122,14 +126,14 @@ export function StatsTable({ selectedYear, setSelectedYear }) {
           {formatDataNumber(
             totalFigure ? totalFigure.data : null,
             locale,
-            true
+            true,
           )}
         </td>
         <td className={c['data-cell']}>
           {formatDataNumber(
             newInFigure ? newInFigure.data : null,
             locale,
-            true
+            true,
           )}
         </td>
         <td className={c['trend-line-cell']}>
@@ -175,7 +179,7 @@ function determineTrendLineImage(
   countryCode,
   dataPoint,
   fromYear,
-  toYear
+  toYear,
 ) {
   const fromData = getCountryStat(data, countryCode, dataPoint, fromYear)
   const toData = getCountryStat(data, countryCode, dataPoint, toYear)
