@@ -47,14 +47,14 @@ middleResolutionCountriesGeoJson.features.push(gazaGeoJson.features[0])
 
 const reqNbNo = require.context(
   './assets/pre-rendered-radial-bar-charts/nb-NO',
-  false
+  false,
 )
 // TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
 const radialBarChartsMapNbNo = chain(
   reqNbNo.keys().map((file) => ({
     file: reqNbNo(file),
     countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
-  }))
+  })),
 )
   .keyBy('countryCode')
   .mapValues('file')
@@ -62,14 +62,14 @@ const radialBarChartsMapNbNo = chain(
 
 const reqEnGb = require.context(
   './assets/pre-rendered-radial-bar-charts/en-GB',
-  false
+  false,
 )
 // TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
 const radialBarChartsMapEnGb = chain(
   reqEnGb.keys().map((file) => ({
     file: reqEnGb(file),
     countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
-  }))
+  })),
 )
   .keyBy('countryCode')
   .mapValues('file')
@@ -77,14 +77,14 @@ const radialBarChartsMapEnGb = chain(
 
 const reqSvSe = require.context(
   './assets/pre-rendered-radial-bar-charts/sv-SE',
-  false
+  false,
 )
 // TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
 const radialBarChartsMapSvSe = chain(
   reqSvSe.keys().map((file) => ({
     file: reqSvSe(file),
     countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
-  }))
+  })),
 )
   .keyBy('countryCode')
   .mapValues('file')
@@ -92,14 +92,14 @@ const radialBarChartsMapSvSe = chain(
 
 const reqNbNo2020 = require.context(
   './assets/pre-rendered-radial-bar-charts-2020/nb-NO',
-  false
+  false,
 )
 // TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
 const radialBarChartsMapNbNo2020 = chain(
   reqNbNo2020.keys().map((file) => ({
     file: reqNbNo2020(file),
     countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
-  }))
+  })),
 )
   .keyBy('countryCode')
   .mapValues('file')
@@ -107,14 +107,14 @@ const radialBarChartsMapNbNo2020 = chain(
 
 const reqEnGb2020 = require.context(
   './assets/pre-rendered-radial-bar-charts-2020/en-GB',
-  false
+  false,
 )
 // TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
 const radialBarChartsMapEnGb2020 = chain(
   reqEnGb2020.keys().map((file) => ({
     file: reqEnGb2020(file),
     countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
-  }))
+  })),
 )
   .keyBy('countryCode')
   .mapValues('file')
@@ -122,14 +122,14 @@ const radialBarChartsMapEnGb2020 = chain(
 
 const reqSvSe2020 = require.context(
   './assets/pre-rendered-radial-bar-charts-2020/sv-SE',
-  false
+  false,
 )
 // TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
 const radialBarChartsMapSvSe2020 = chain(
   reqSvSe2020.keys().map((file) => ({
     file: reqSvSe2020(file),
     countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
-  }))
+  })),
 )
   .keyBy('countryCode')
   .mapValues('file')
@@ -137,14 +137,14 @@ const radialBarChartsMapSvSe2020 = chain(
 
 const reqNbNo2021 = require.context(
   './assets/pre-rendered-radial-bar-charts-2021/nb-NO',
-  false
+  false,
 )
 // TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
 const radialBarChartsMapNbNo2021 = chain(
   reqNbNo2021.keys().map((file) => ({
     file: reqNbNo2021(file),
     countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
-  }))
+  })),
 )
   .keyBy('countryCode')
   .mapValues('file')
@@ -152,14 +152,14 @@ const radialBarChartsMapNbNo2021 = chain(
 
 const reqEnGb2021 = require.context(
   './assets/pre-rendered-radial-bar-charts-2021/en-GB',
-  false
+  false,
 )
 // TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
 const radialBarChartsMapEnGb2021 = chain(
   reqEnGb2021.keys().map((file) => ({
     file: reqEnGb2021(file),
     countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
-  }))
+  })),
 )
   .keyBy('countryCode')
   .mapValues('file')
@@ -167,14 +167,14 @@ const radialBarChartsMapEnGb2021 = chain(
 
 const reqSvSe2021 = require.context(
   './assets/pre-rendered-radial-bar-charts-2021/sv-SE',
-  false
+  false,
 )
 // TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
 const radialBarChartsMapSvSe2021 = chain(
   reqSvSe2021.keys().map((file) => ({
     file: reqSvSe2021(file),
     countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
-  }))
+  })),
 )
   .keyBy('countryCode')
   .mapValues('file')
@@ -182,14 +182,14 @@ const radialBarChartsMapSvSe2021 = chain(
 
 const reqNbNo2022 = require.context(
   './assets/pre-rendered-radial-bar-charts-2022/nb-NO',
-  false
+  false,
 )
 // TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
 const radialBarChartsMapNbNo2022 = chain(
   reqNbNo2022.keys().map((file) => ({
     file: reqNbNo2022(file),
     countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
-  }))
+  })),
 )
   .keyBy('countryCode')
   .mapValues('file')
@@ -197,14 +197,14 @@ const radialBarChartsMapNbNo2022 = chain(
 
 const reqEnGb2022 = require.context(
   './assets/pre-rendered-radial-bar-charts-2022/en-GB',
-  false
+  false,
 )
 // TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
 const radialBarChartsMapEnGb2022 = chain(
   reqEnGb2022.keys().map((file) => ({
     file: reqEnGb2022(file),
     countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
-  }))
+  })),
 )
   .keyBy('countryCode')
   .mapValues('file')
@@ -212,14 +212,14 @@ const radialBarChartsMapEnGb2022 = chain(
 
 const reqSvSe2022 = require.context(
   './assets/pre-rendered-radial-bar-charts-2022/sv-SE',
-  false
+  false,
 )
 // TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
 const radialBarChartsMapSvSe2022 = chain(
   reqSvSe2022.keys().map((file) => ({
     file: reqSvSe2022(file),
     countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
-  }))
+  })),
 )
   .keyBy('countryCode')
   .mapValues('file')
@@ -227,14 +227,14 @@ const radialBarChartsMapSvSe2022 = chain(
 
 const reqNbNo2023 = require.context(
   './assets/pre-rendered-radial-bar-charts-2023/nb-NO',
-  false
+  false,
 )
 // TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
 const radialBarChartsMapNbNo2023 = chain(
   reqNbNo2023.keys().map((file) => ({
     file: reqNbNo2023(file),
     countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
-  }))
+  })),
 )
   .keyBy('countryCode')
   .mapValues('file')
@@ -242,14 +242,14 @@ const radialBarChartsMapNbNo2023 = chain(
 
 const reqEnGb2023 = require.context(
   './assets/pre-rendered-radial-bar-charts-2023/en-GB',
-  false
+  false,
 )
 // TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
 const radialBarChartsMapEnGb2023 = chain(
   reqEnGb2023.keys().map((file) => ({
     file: reqEnGb2023(file),
     countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
-  }))
+  })),
 )
   .keyBy('countryCode')
   .mapValues('file')
@@ -257,14 +257,57 @@ const radialBarChartsMapEnGb2023 = chain(
 
 const reqSvSe2023 = require.context(
   './assets/pre-rendered-radial-bar-charts-2023/sv-SE',
-  false
+  false,
 )
 // TOOD: use flow here instead, fp style, this below probably imports a lot of stuf
 const radialBarChartsMapSvSe2023 = chain(
   reqSvSe2023.keys().map((file) => ({
     file: reqSvSe2023(file),
     countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
-  }))
+  })),
+)
+  .keyBy('countryCode')
+  .mapValues('file')
+  .value()
+
+// 2024
+const reqNbNo2024 = require.context(
+  './assets/pre-rendered-radial-bar-charts-2024/nb-NO',
+  false,
+)
+const radialBarChartsMapNbNo2024 = chain(
+  reqNbNo2024.keys().map((file) => ({
+    file: reqNbNo2024(file),
+    countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
+  })),
+)
+  .keyBy('countryCode')
+  .mapValues('file')
+  .value()
+
+const reqEnGb2024 = require.context(
+  './assets/pre-rendered-radial-bar-charts-2024/en-GB',
+  false,
+)
+const radialBarChartsMapEnGb2024 = chain(
+  reqEnGb2024.keys().map((file) => ({
+    file: reqEnGb2024(file),
+    countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
+  })),
+)
+  .keyBy('countryCode')
+  .mapValues('file')
+  .value()
+
+const reqSvSe2024 = require.context(
+  './assets/pre-rendered-radial-bar-charts-2024/sv-SE',
+  false,
+)
+const radialBarChartsMapSvSe2024 = chain(
+  reqSvSe2024.keys().map((file) => ({
+    file: reqSvSe2024(file),
+    countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
+  })),
 )
   .keyBy('countryCode')
   .mapValues('file')
@@ -294,6 +337,11 @@ const radialBarChartsMap2023 = {
   'en-GB': radialBarChartsMapEnGb2023,
   'nb-NO': radialBarChartsMapNbNo2023,
   'sv-SE': radialBarChartsMapSvSe2023,
+}
+const radialBarChartsMap2024 = {
+  'en-GB': radialBarChartsMapEnGb2024,
+  'nb-NO': radialBarChartsMapNbNo2024,
+  'sv-SE': radialBarChartsMapSvSe2024,
 }
 
 let countryStatsCache = null
@@ -521,7 +569,7 @@ const centroids = centroidsRaw
   .filter((centroid) =>
     middleResolutionCountriesGeoJson.features
       .map((v) => v.properties.iso_a2)
-      .includes(centroid.iso)
+      .includes(centroid.iso),
   )
 
 function getCountryStats(countryIso2Code) {
@@ -604,7 +652,7 @@ function GlobalMap({ mapboxgl }) {
     function countryInfo__showPopover(targetSelector, event) {
       var selectedCountryIso2 = event.features[0].properties.iso_a2
       const countryName = t(
-        `NRC.Web.StaticTextDictionary.Contries.${selectedCountryIso2}`
+        `NRC.Web.StaticTextDictionary.Contries.${selectedCountryIso2}`,
       )
 
       const population = getCountryStat(selectedCountryIso2, 'population').data
@@ -614,18 +662,18 @@ function GlobalMap({ mapboxgl }) {
       let countryLink = ''
 
       const countriesWithReadMoreLink = t(
-        'CountryStatisticsPopup.countriesWithReadMoreLink'
+        'CountryStatisticsPopup.countriesWithReadMoreLink',
       )
         .split('\n')
         .filter((countryCode) => countryCode)
       if (countriesWithReadMoreLink.includes(selectedCountryIso2)) {
         const countryUrl = t(
-          `CountryStatisticsPopup.CountryReadMoreLink.${selectedCountryIso2}`
+          `CountryStatisticsPopup.CountryReadMoreLink.${selectedCountryIso2}`,
         )
         if (countryUrl) {
           countryLink = `<p class="country-link"><a href="${countryUrl}" target="_blank">${t(
             'countryInfoPopup.readMoreAboutCountryLink',
-            { countryName: countryName }
+            { countryName: countryName },
           )}</a></p>`
         }
       }
@@ -660,7 +708,7 @@ function GlobalMap({ mapboxgl }) {
       $(targetSelector).append(popupHtml)
       $('.close-popup-img').attr('src', closeButton)
       $(
-        '.nrcstat-radialchartmap-country-info-popover-wrapper .close-popover'
+        '.nrcstat-radialchartmap-country-info-popover-wrapper .close-popover',
       ).click(() => {
         $('.nrcstat-radialchartmap-country-info-popover-wrapper').remove()
         isCountryInfoPopupOrPopoverActive = false
@@ -793,7 +841,7 @@ function GlobalMap({ mapboxgl }) {
 
         $('header.page-header').css(
           'z-index',
-          beforeFullScreenNrcPageHeaderZIndex
+          beforeFullScreenNrcPageHeaderZIndex,
         )
         target.animate(
           beforeFullScreenCssProps,
@@ -803,7 +851,7 @@ function GlobalMap({ mapboxgl }) {
             // const cssAttr = _.map(beforeFullScreenCssProps, (v, k) => `${k}: ${v}`).join(";") + ";"
             // target.attr('style', cssAttr)
             callbackCb()
-          }
+          },
         )
       }
     }
@@ -835,7 +883,7 @@ function GlobalMap({ mapboxgl }) {
     function countryInfo__showPopup(event, map) {
       var selectedCountryIso2 = event.features[0].properties.iso_a2
       const countryName = t(
-        `NRC.Web.StaticTextDictionary.Contries.${selectedCountryIso2}`
+        `NRC.Web.StaticTextDictionary.Contries.${selectedCountryIso2}`,
       )
       var fullCountryName = '<h1>' + countryName + '</h1>'
       var loader = '<div class="loader"></div>'
@@ -846,7 +894,7 @@ function GlobalMap({ mapboxgl }) {
       })
         .setLngLat([event.lngLat.lng, event.lngLat.lat])
         .setHTML(
-          '<div class="popup-container">' + fullCountryName + loader + '</div>'
+          '<div class="popup-container">' + fullCountryName + loader + '</div>',
         )
         .addTo(map)
 
@@ -855,18 +903,18 @@ function GlobalMap({ mapboxgl }) {
       let countryLink = ''
 
       const countriesWithReadMoreLink = t(
-        'CountryStatisticsPopup.countriesWithReadMoreLink'
+        'CountryStatisticsPopup.countriesWithReadMoreLink',
       )
         .split('\n')
         .filter((countryCode) => countryCode)
       if (countriesWithReadMoreLink.includes(selectedCountryIso2)) {
         const countryUrl = t(
-          `CountryStatisticsPopup.CountryReadMoreLink.${selectedCountryIso2}`
+          `CountryStatisticsPopup.CountryReadMoreLink.${selectedCountryIso2}`,
         )
         if (countryUrl) {
           countryLink = `<p class="country-link"><a href="${countryUrl}" target="_blank">${t(
             'countryInfoPopup.readMoreAboutCountryLink',
-            { countryName: countryName }
+            { countryName: countryName },
           )}</a></p>`
         }
       }
@@ -874,7 +922,7 @@ function GlobalMap({ mapboxgl }) {
       const population = getCountryStat(selectedCountryIso2, 'population').data
       const populationHtml = `<p class="population">${t(
         'countryInfoPopup.population',
-        { populationInMillions: population }
+        { populationInMillions: population },
       )}</p>`
 
       countryInfo__mapboxPopup.setHTML(
@@ -883,7 +931,7 @@ function GlobalMap({ mapboxgl }) {
           populationHtml +
           statsTable +
           countryLink +
-          '</div>'
+          '</div>',
       )
 
       countryInfo__mapboxPopup.on('close', () => {
@@ -951,7 +999,7 @@ function GlobalMap({ mapboxgl }) {
                 'percentageWomenFleeingToCountry',
                 'percentageChildrenFleeingToCountry',
               ],
-              dp.dataPointKey
+              dp.dataPointKey,
             )
           ) {
             dataPointValue = formatDataPercentage(dataPointValue, 'nb-NO')
@@ -973,7 +1021,7 @@ function GlobalMap({ mapboxgl }) {
             ${section.dataPoints[0].dataPointName}: <strong>${section.dataPoints[0].dataPointValue}</strong><br />
             ${section.dataPoints[1].dataPointName}: <strong>${section.dataPoints[1].dataPointValue}</strong>
           </td>
-        </tr>`
+        </tr>`,
         )
         .join('\n')
 
@@ -1039,19 +1087,19 @@ function GlobalMap({ mapboxgl }) {
           <tr>
               <td><span class="refugeesFrom-dot"></span></td>
               <td class="legend-text">${t(
-                'legend.totalNumberRefugeesFromCountry'
+                'legend.totalNumberRefugeesFromCountry',
               )}</td>
           </tr> 
           <tr>
               <td><span class="idps-dot"></span></td>
               <td class="legend-text">${t(
-                'legend.totalNumberIdpsInCountry'
+                'legend.totalNumberIdpsInCountry',
               )}</td>
           </tr>
           <tr>
               <td><span class="refugeesTo-dot"></span></td>
               <td class="legend-text">${t(
-                'legend.totalNumberRefugeesToCountry'
+                'legend.totalNumberRefugeesToCountry',
               )}</td>
           </tr>
 
@@ -1063,7 +1111,7 @@ function GlobalMap({ mapboxgl }) {
         
         <p><span class="source">${t('legend.source')}</span></p>
         <p style="margin: 10px 0 -6px -1px;"><span class="credit">${t(
-          'legend.developedByBinaryLights'
+          'legend.developedByBinaryLights',
         )}</span></p>
       `
 
@@ -1078,14 +1126,14 @@ function GlobalMap({ mapboxgl }) {
               </a>
             </div>
             <div id="legend-container" class="legend-container" style="display: none;"></div>
-            `
+            `,
       )
       $(legend).find('.legend-container').append($(fullLegend))
     }
 
     function addLegendTabletDesktop(legend) {
       $(legend).append(
-        '<div id="legend-container" class="legend-container-desktop"></div>'
+        '<div id="legend-container" class="legend-container-desktop"></div>',
       )
       $(legend).find('.legend-container-desktop').append($(fullLegend))
     }
@@ -1207,7 +1255,7 @@ function GlobalMap({ mapboxgl }) {
         })
         .catch(function (err) {
           console.log(
-            'error occurred during loading country stats data from loopback:'
+            'error occurred during loading country stats data from loopback:',
           )
           console.log(err)
         })
@@ -1220,11 +1268,11 @@ function GlobalMap({ mapboxgl }) {
       mapboxStyle = 'mapbox://styles/nrcmaps/ckbkyfeyn122k1ip8oxabxgvp'
     } else {
       console.log(
-        'locale used with GlobalMap for which no locale is yet defined, talk to Eric'
+        'locale used with GlobalMap for which no locale is yet defined, talk to Eric',
       )
       isClient() &&
         window.alert(
-          'locale used with GlobalMap for which no locale is yet defined, talk to Eric'
+          'locale used with GlobalMap for which no locale is yet defined, talk to Eric',
         )
     }
 
@@ -1267,7 +1315,7 @@ function GlobalMap({ mapboxgl }) {
         data: {
           ...middleResolutionCountriesGeoJson,
           features: middleResolutionCountriesGeoJson.features.filter(
-            (item) => item.properties.continent === 'Africa'
+            (item) => item.properties.continent === 'Africa',
           ),
         },
       })
@@ -1276,7 +1324,7 @@ function GlobalMap({ mapboxgl }) {
         data: {
           ...middleResolutionCountriesGeoJson,
           features: middleResolutionCountriesGeoJson.features.filter(
-            (item) => item.properties.continent === 'Europe'
+            (item) => item.properties.continent === 'Europe',
           ),
         },
       })
@@ -1285,7 +1333,7 @@ function GlobalMap({ mapboxgl }) {
         data: {
           ...middleResolutionCountriesGeoJson,
           features: middleResolutionCountriesGeoJson.features.filter((item) =>
-            ['Asia', 'Oceania'].includes(item.properties.continent)
+            ['Asia', 'Oceania'].includes(item.properties.continent),
           ),
         },
       })
@@ -1295,8 +1343,8 @@ function GlobalMap({ mapboxgl }) {
           ...middleResolutionCountriesGeoJson,
           features: middleResolutionCountriesGeoJson.features.filter((item) =>
             ['North America', 'South America'].includes(
-              item.properties.continent
-            )
+              item.properties.continent,
+            ),
           ),
         },
       })
@@ -1315,28 +1363,28 @@ function GlobalMap({ mapboxgl }) {
           source: 'countries-africa',
           id: 'countries-hovered-africa',
           paint: { 'fill-color': '#d0ddce' },
-        })
+        }),
       )
       map.addLayer(
         Object.assign(sharedLayerProperties, {
           source: 'countries-europe',
           id: 'countries-hovered-europe',
           paint: { 'fill-color': '#e8e0c8' },
-        })
+        }),
       )
       map.addLayer(
         Object.assign(sharedLayerProperties, {
           source: 'countries-asia-oceania',
           id: 'countries-hovered-asia-oceania',
           paint: { 'fill-color': '#e4d3d0' },
-        })
+        }),
       )
       map.addLayer(
         Object.assign(sharedLayerProperties, {
           source: 'countries-americas',
           id: 'countries-hovered-americas',
           paint: { 'fill-color': '#c6e1e5' },
-        })
+        }),
       )
 
       function countryMouseMoveOverHandler(e) {
@@ -1475,7 +1523,7 @@ function GlobalMap({ mapboxgl }) {
             getCountryStat(iso, 'totalRefugeesFromX').data,
             getCountryStat(iso, 'refugeesInXFromOtherCountriesInYear').data,
             getCountryStat(iso, 'idpsInXInYear').data,
-          ]
+          ],
         )
         return maxFigure
       }
@@ -1484,13 +1532,13 @@ function GlobalMap({ mapboxgl }) {
         type: 'FeatureCollection',
         features: centroids.map((centroid) => {
           const [sizeFactor, sizeClass] = calculateSizeFactor(
-            getMaxSet3FigureFromData(centroid.iso)
+            getMaxSet3FigureFromData(centroid.iso),
           )
           return {
             type: 'Feature',
             properties: {
               countryLabel: t(
-                `NRC.Web.StaticTextDictionary.Contries.${centroid.iso}`
+                `NRC.Web.StaticTextDictionary.Contries.${centroid.iso}`,
               ),
               countryShortLabel: centroid.iso,
               iso: centroid.iso,
@@ -1543,7 +1591,7 @@ function GlobalMap({ mapboxgl }) {
           map.setLayoutProperty(
             `country-labels-${sizeClass}`,
             'text-size',
-            fontSize
+            fontSize,
           )
         })
         elements.forEach((el) => {
@@ -1635,7 +1683,7 @@ function GlobalMap({ mapboxgl }) {
         const mouseX = e.offsetX
         const mouseY = e.offsetY
         const mouseHorizontalDistanceFromCenter = Math.abs(
-          targetCenterX - mouseX
+          targetCenterX - mouseX,
         )
         const mouseVerticalDistanceFromCenter = Math.abs(targetCenterY - mouseY)
         let horizontalDistanceThreshold
@@ -1669,8 +1717,8 @@ function GlobalMap({ mapboxgl }) {
           .children('.top')
           .html(
             `<p class="top-header">${t(
-              `NRC.Web.StaticTextDictionary.Contries.${countryCode}`
-            )}</p><h3>${t('hoverBox.totally')}</h3>`
+              `NRC.Web.StaticTextDictionary.Contries.${countryCode}`,
+            )}</p><h3>${t('hoverBox.totally')}</h3>`,
           )
 
         const dataHtml = [
@@ -1686,7 +1734,7 @@ function GlobalMap({ mapboxgl }) {
             color: '#949494',
             data: getCountryStat(
               countryCode,
-              'refugeesInXFromOtherCountriesInYear'
+              'refugeesInXFromOtherCountriesInYear',
             ).data,
           },
         ]
@@ -1696,7 +1744,7 @@ function GlobalMap({ mapboxgl }) {
           })
           .map(
             (d) =>
-              `<div class="line"><div class="dot" style="background-color: ${d.color}"></div>${d.data}</div></div>`
+              `<div class="line"><div class="dot" style="background-color: ${d.color}"></div>${d.data}</div></div>`,
           )
           .join('\n')
         hoverPopup.children('.data').html(dataHtml)
@@ -1737,6 +1785,8 @@ function GlobalMap({ mapboxgl }) {
             return radialBarChartsMap2022
           case 2023:
             return radialBarChartsMap2023
+          case 2024:
+            return radialBarChartsMap2024
           default:
             throw new Error('Invalid year passed to GlobalMap')
         }
@@ -1763,7 +1813,7 @@ function GlobalMap({ mapboxgl }) {
         elements.push(el)
 
         const centroidFromLeonardoData = centroidsRaw.filter(
-          (centroid) => centroid.iso === iso
+          (centroid) => centroid.iso === iso,
         )
         if (centroidFromLeonardoData.length > 0) {
           const leonardoCentroid = centroidFromLeonardoData[0]
