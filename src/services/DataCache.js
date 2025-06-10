@@ -19,8 +19,15 @@ class DataCache {
 
       // Convert each data point into a separate entry
       Object.entries(dataPoints).forEach(([dataPoint, value]) => {
+        let data = null
+        if (value) {
+          data = parseFloat(value)
+          if (isNaN(data)) {
+            data = null
+          }
+        }
         transformedData.push({
-          data: parseFloat(value), // on 10.06.2025 (see Slack) we discovered NDX may return data fields as strings, so we parse them to numbers
+          data, // on 10.06.2025 (see Slack) we discovered NDX may return data fields as strings, so we parse them to numbers
           dataPoint,
           countryCode,
           continentCode: countryCodeToContinentCodeMap[countryCode],
@@ -51,8 +58,15 @@ class DataCache {
 
       // Convert each remaining data point into a separate entry
       Object.entries(dataPoints).forEach(([dataPoint, value]) => {
+        let data = null
+        if (value) {
+          data = parseFloat(value)
+          if (isNaN(data)) {
+            data = null
+          }
+        }
         transformedData.push({
-          data: parseFloat(value), // on 10.06.2025 (see Slack) we discovered NDX may return data fields as strings, so we parse them to numbers
+          data, // on 10.06.2025 (see Slack) we discovered NDX may return data fields as strings, so we parse them to numbers
           dataPoint,
           countryCode,
           regionCodeNRC,
