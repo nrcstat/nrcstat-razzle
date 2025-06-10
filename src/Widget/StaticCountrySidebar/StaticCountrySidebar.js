@@ -26,7 +26,7 @@ function StaticCountrySidebar() {
 
     default:
       throw new Error(
-        'Datapoints passed to <StaticCountrySidebar /> contain a mix of global displacement data points and GORS data points. It has to be either.'
+        'Datapoints passed to <StaticCountrySidebar /> contain a mix of global displacement data points and GORS data points. It has to be either.',
       )
   }
 }
@@ -61,7 +61,7 @@ function GlobalDisplacementVariant() {
   ))
 
   const readMoreUrl = t(
-    `CountryStatisticsPopup.CountryReadMoreLink.${countryCode}`
+    `CountryStatisticsPopup.CountryReadMoreLink.${countryCode}`,
   )
   cells.push(
     <div key="read-more" className={c['grid-cell']}>
@@ -69,11 +69,11 @@ function GlobalDisplacementVariant() {
         <a href={readMoreUrl} className={c['read-more-link']}>
           {t('readMoreLink').replace(
             '{countryName}',
-            t(`NRC.Web.StaticTextDictionary.Contries.${countryCode}`)
+            t(`NRC.Web.StaticTextDictionary.Contries.${countryCode}`),
           )}
         </a>
       </div>
-    </div>
+    </div>,
   )
 
   let renderCaptionBelowGrid = true
@@ -85,7 +85,7 @@ function GlobalDisplacementVariant() {
         <div className={c['grid-cell-content']}>
           <Caption align="right" />
         </div>
-      </div>
+      </div>,
     )
   }
 
@@ -116,7 +116,7 @@ function GorsVariant() {
   ])
 
   const readMoreUrl = t(
-    `CountryStatisticsPopup.CountryReadMoreLink.${countryCode}`
+    `CountryStatisticsPopup.CountryReadMoreLink.${countryCode}`,
   )
 
   return (
@@ -124,7 +124,7 @@ function GorsVariant() {
       <caption>
         {t('gorsVariant.title', {
           countryName: t(
-            `NRC.Web.StaticTextDictionary.Contries.${countryCode}`
+            `NRC.Web.StaticTextDictionary.Contries.${countryCode}`,
           ),
           year: String(year),
         })}
@@ -136,7 +136,7 @@ function GorsVariant() {
           return (
             <div key={dataPoint} className={c['core-competency-item']}>
               <figure className={c['core-competency-icon']}>
-                <Icon fillColor="#FD5A00" />
+                {Icon ? <Icon fillColor="#FD5A00" /> : null}
               </figure>
               <dt
                 className={`${c['core-competency-label']} ${c['datapoint-label']}`}
@@ -161,7 +161,7 @@ function GorsVariant() {
           <a href={readMoreUrl} className={c['read-more-link']}>
             {t('readMoreLink').replace(
               '{countryName}',
-              t(`NRC.Web.StaticTextDictionary.Contries.${countryCode}`)
+              t(`NRC.Web.StaticTextDictionary.Contries.${countryCode}`),
             )}
           </a>
         </div>
@@ -174,7 +174,7 @@ function makeDataPointToDataMap(dataPoints, preloadedWidgetData) {
   const dataMap = {}
   dataPoints.forEach((dataPoint) => {
     dataMap[dataPoint] = preloadedWidgetData.find(
-      (d) => d.dataPoint === dataPoint
+      (d) => d.dataPoint === dataPoint,
     ).data
   })
   return dataMap
@@ -219,6 +219,8 @@ const gorsDataPoints = [
   'gors_lfs',
   'gors_shelter',
   'gors_wash',
+  'gors_wash',
+  'gors_total_beneficiaries',
 ]
 
 const gorsDataPointToIconMap = {
@@ -228,4 +230,5 @@ const gorsDataPointToIconMap = {
   gors_lfs: FoodIcon,
   gors_shelter: ShelterIcon,
   gors_wash: WASHIcon,
+  gors_total_beneficiaries: null,
 }
