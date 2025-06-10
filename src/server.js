@@ -72,18 +72,18 @@ server
         // we last time we turned off the in-memory caching of data, we didn't find a way
         // to combine it with the password authentication mechanism.
         const isAuthFor2024 = req.headers.bypass === 'vS!i@Z#No7Fa$SJ!GXN2'
-        let data = await dataLoader(enrichedWidget, {
-          bypass: req.headers.bypass,
-        })
-        data = data.map((x) => {
-          const newX = { ...x }
-          if (x.year === 2024) {
-            if (!isAuthFor2024) {
-              newX.data = 0
+        let data = await dataLoader(enrichedWidget)
+        if (data) {
+          data = data.map((x) => {
+            const newX = { ...x }
+            if (x.year === 2024) {
+              if (!isAuthFor2024) {
+                newX.data = 0
+              }
             }
-          }
-          return newX
-        })
+            return newX
+          })
+        }
         enrichedWidget.preloadedWidgetData = data
 
         // Special case: if the widget ID is widget-wizard, it comes from the old
