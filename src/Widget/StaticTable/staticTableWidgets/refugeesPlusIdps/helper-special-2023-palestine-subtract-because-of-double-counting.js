@@ -12,11 +12,14 @@
  * they're not counted twice in the computed totals.
  * The below function scans an array of data points returned fromt the Loopback /datas endpoint, and acts on
  * a datapoint to manually subtract 1197000 from it.
+ *
+ * Followw-up written 10 June 2025:
+ * Same issue applies this year for 2024 data. We're deducting 1422400 this year.
  */
 
 export function subtractDoubleCountedPalestineIndividuals(
   datas,
-  dataPointToSubtractFrom
+  dataPointToSubtractFrom,
 ) {
   datas = datas.map((data) => {
     if (
@@ -25,6 +28,13 @@ export function subtractDoubleCountedPalestineIndividuals(
       data.dataPoint === dataPointToSubtractFrom
     ) {
       data.data -= 1197000
+    }
+    if (
+      data.year === 2024 &&
+      data.countryCode === 'PS' &&
+      data.dataPoint === dataPointToSubtractFrom
+    ) {
+      data.data -= 1422400
     }
     return data
   })
