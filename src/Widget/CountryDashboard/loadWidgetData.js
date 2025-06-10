@@ -1,6 +1,7 @@
 import { API_URL } from '../../config'
 import nodeFetch from 'node-fetch'
 import { isServer } from '../../util/utils'
+import { dataCache } from '../../services/DataCache'
 
 let fetch
 
@@ -19,10 +20,5 @@ export function loadWidgetData(context, headers = {}) {
     },
   }
 
-  const url = `${API_URL}/datas?filter=${encodeURIComponent(
-    JSON.stringify(query)
-  )}`
-  return fetch(url, {
-    headers: { nrcstatpassword: headers.nrcstatpassword },
-  }).then((resp) => resp.json())
+  return Promise.resolve(dataCache.query(query))
 }

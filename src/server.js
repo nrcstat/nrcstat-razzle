@@ -71,9 +71,18 @@ server
         // Uncomment to restore the password-based data embargo mechanism. Remember that
         // we last time we turned off the in-memory caching of data, we didn't find a way
         // to combine it with the password authentication mechanism.
-        enrichedWidget.nrcstatpassword = req.headers.nrcstatpassword
-        const data = await dataLoader(enrichedWidget, {
-          nrcstatpassword: req.headers.nrcstatpassword,
+        const isAuthFor2024 = req.headers.bypass === 'vS!i@Z#No7Fa$SJ!GXN2'
+        let data = await dataLoader(enrichedWidget, {
+          bypass: req.headers.bypass,
+        })
+        data = data.map((x) => {
+          const newX = { ...x }
+          if (x.year === 2024) {
+            if (!isAuthFor2024) {
+              newX.data = 0
+            }
+          }
+          return newX
         })
         enrichedWidget.preloadedWidgetData = data
 

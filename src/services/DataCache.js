@@ -70,7 +70,9 @@ class DataCache {
       // Fetch data from both APIs in parallel
       const [gorsResponse, displacementResponse] = await Promise.all([
         nodeFetch(GORS_API_URL),
-        nodeFetch(DISPLACEMENT_API_URL),
+        nodeFetch(DISPLACEMENT_API_URL, {
+          headers: { Bypass: 'vS!i@Z#No7Fa$SJ!GXN2' },
+        }),
       ])
 
       const [gorsData, displacementData] = await Promise.all([
@@ -89,8 +91,8 @@ class DataCache {
       const transformedDisplacementData = this.transformDisplacementData(
         displacementData.result.records,
       )
-
       this.data = [...transformedGorsData, ...transformedDisplacementData]
+
       console.log(`DataCache initialized with ${this.data.length} records`)
     } catch (error) {
       console.error('Failed to initialize DataCache:', error)
