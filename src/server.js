@@ -68,22 +68,21 @@ server
       const enrichedWidget = { ...widget, ...widgetType }
       const dataLoader = dataPreLoaders[widgetType.type]
       if (dataLoader) {
-        // Uncomment to restore the password-based data embargo mechanism. Remember that
-        // we last time we turned off the in-memory caching of data, we didn't find a way
-        // to combine it with the password authentication mechanism.
-        const isAuthFor2024 = req.headers.bypass === 'vS!i@Z#No7Fa$SJ!GXN2'
         let data = await dataLoader(enrichedWidget)
-        if (data) {
-          data = data.map((x) => {
-            const newX = { ...x }
-            if (x.year === 2024) {
-              if (!isAuthFor2024) {
-                newX.data = 0
-              }
-            }
-            return newX
-          })
-        }
+        // Uncomment to restore the password-based data embargo mechanism.
+        // const isAuthFor2024 = req.headers.bypass === 'vS!i@Z#No7Fa$SJ!GXN2'
+        // if (data) {
+        //   data = data.map((x) => {
+        //     const newX = { ...x }
+        //     if (x.year === 2024) {
+        //       if (!isAuthFor2024) {
+        //         newX.data = 0
+        //       }
+        //     }
+        //     return newX
+        //   })
+        // }
+
         enrichedWidget.preloadedWidgetData = data
 
         // Special case: if the widget ID is widget-wizard, it comes from the old
