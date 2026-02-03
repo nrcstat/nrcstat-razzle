@@ -45,14 +45,14 @@ export function StatsTable({ selectedYear, setSelectedYear }) {
       value: 2018,
     },
 
-    {
-      label: '2017',
-      value: 2017,
-    },
-    {
-      label: '2016',
-      value: 2016,
-    },
+    // {
+    //   label: '2017',
+    //   value: 2017,
+    // },
+    // {
+    //   label: '2016',
+    //   value: 2016,
+    // },
   ]
   if (year === 2024 || year === '2024') {
     YEAR_OPTIONS.unshift({
