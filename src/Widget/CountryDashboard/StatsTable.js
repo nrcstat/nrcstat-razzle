@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { getCountryStat } from './get-country-stat'
 import c from './StatsTable.module.scss'
 import { formatDataNumber } from '@/util/widgetHelpers.js'
@@ -19,7 +19,47 @@ export function StatsTable({ selectedYear, setSelectedYear }) {
   const { countryCode, year, locale } = widgetParams
   const t = getNsFixedT(['Widget.Static.CountryDashboard', 'GeographicalNames'])
 
+  const [expanded, setExpanded] = useState(false)
+  const [hasOverflow, setHasOverflow] = useState(false)
+  const yearListRef = useRef(null)
+  const didInitialExpandRef = useRef(false)
+  const moreLabel = t('yearPicker.moreYears', { defaultValue: 'Flere år' })
+  const fewerLabel = t('yearPicker.fewerYears', { defaultValue: 'Færre år' })
+
+  // CSS clamps the year row to a single line and hides whatever overflows; this
+  // only measures *whether* the row overflows (never which year is which) so the
+  // "Flere år" button shows only when there's something hidden to reveal.
+  useEffect(() => {
+    const list = yearListRef.current
+    if (!list) return
+    const measure = () => {
+      const firstBtn = list.firstElementChild
+      if (!firstBtn) return
+      const oneRow = firstBtn.offsetHeight
+      const overflowing = list.scrollHeight > oneRow + 4
+      setHasOverflow(overflowing)
+      // One-time: if the active year starts in the hidden overflow, open the row.
+      if (!didInitialExpandRef.current) {
+        didInitialExpandRef.current = true
+        if (overflowing) {
+          const activeBtn = list.querySelector('[data-active="true"]')
+          if (activeBtn && activeBtn.offsetTop > firstBtn.offsetTop + 4) {
+            setExpanded(true)
+          }
+        }
+      }
+    }
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(list)
+    return () => ro.disconnect()
+  }, [])
+
   const YEAR_OPTIONS = [
+    {
+      label: '2024',
+      value: 2024,
+    },
     {
       label: '2023',
       value: 2023,
@@ -44,20 +84,19 @@ export function StatsTable({ selectedYear, setSelectedYear }) {
       label: '2018',
       value: 2018,
     },
-
-    // {
-    //   label: '2017',
-    //   value: 2017,
-    // },
-    // {
-    //   label: '2016',
-    //   value: 2016,
-    // },
+    {
+      label: '2017',
+      value: 2017,
+    },
+    {
+      label: '2016',
+      value: 2016,
+    },
   ]
-  if (year === 2024 || year === '2024') {
+  if (year === 2025 || year === '2025') {
     YEAR_OPTIONS.unshift({
-      label: '2024',
-      value: 2024,
+      label: '2025',
+      value: 2025,
     })
   }
 
@@ -145,17 +184,28 @@ export function StatsTable({ selectedYear, setSelectedYear }) {
 
   return (
     <>
-      <div className={c['year-picker']}>
-        {YEAR_OPTIONS.map(({ value, label }) => (
-          <button
-            className={`${c['year-button']} ${
-              value === selectedYear ? c['year-button-active'] : ''
-            }`}
-            onClick={() => setSelectedYear(value)}
-          >
-            {label}
-          </button>
-        ))}
+      <div className={`${c['year-picker']} ${expanded ? c['is-expanded'] : ''}`}>
+        <div className={c['year-list']} ref={yearListRef}>
+          {YEAR_OPTIONS.map(({ value, label }) => (
+            <button
+              key={value}
+              data-active={value === selectedYear ? 'true' : 'false'}
+              className={`${c['year-button']} ${
+                value === selectedYear ? c['year-button-active'] : ''
+              }`}
+              onClick={() => setSelectedYear(value)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <button
+          className={`${c['more-button']} ${hasOverflow ? '' : c['is-hidden']}`}
+          aria-expanded={expanded}
+          onClick={() => setExpanded((v) => !v)}
+        >
+          {expanded ? fewerLabel : moreLabel} {expanded ? '▴' : '▾'}
+        </button>
       </div>
       <div className={c['main-data-table-wrapper']}>
         <table className={c['main-data-table']}>

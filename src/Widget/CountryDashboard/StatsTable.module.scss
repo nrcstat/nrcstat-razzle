@@ -48,10 +48,30 @@ table.main-data-table td:first-child {
 .year-picker {
   margin-left: $desktopMarginHorizontal;
   margin-right: $desktopMarginHorizontal;
+  margin-bottom: 1em;
 
   display: flex;
   flex-direction: row;
-  margin-bottom: 1em;
+  align-items: flex-start;
+
+  .year-list {
+    flex: 1 1 auto;
+    min-width: 0;
+
+    display: flex;
+    flex-flow: row wrap;
+    row-gap: 0.25em;
+
+    // Clamp to a single row; years that wrap onto further rows overflow and are
+    // hidden. The "more" button removes the clamp to reveal them.
+    max-height: 36px;
+    overflow: hidden;
+  }
+
+  &.is-expanded .year-list {
+    max-height: none;
+    overflow: visible;
+  }
 
   .year-button {
     background: none;
@@ -69,6 +89,25 @@ table.main-data-table td:first-child {
       color: $text;
       text-decoration: underline;
       text-decoration-color: $nrcOrange;
+    }
+  }
+
+  .more-button {
+    flex: 0 0 auto;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: $text50;
+    font-family: Roboto;
+    font-size: 1.2em;
+    font-weight: 400;
+    line-height: 36px;
+    white-space: nowrap;
+
+    // Reserve space rather than display:none, so toggling the button's visibility
+    // doesn't change the row width and re-trigger overflow measurement.
+    &.is-hidden {
+      visibility: hidden;
     }
   }
 }
