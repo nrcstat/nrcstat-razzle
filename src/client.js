@@ -21,7 +21,28 @@ if (isClient()) {
   window.razzleReactDOM = ReactDOM
 }
 
+// Our widgets render Roboto / Roboto Condensed (CSS vars, charts, map
+// labels). We don't ship the font ourselves, so we depend on the host
+// page providing it. Some embeds load it via a <script> tag instead of a
+// stylesheet, which the browser rejects ("Refused to execute script ...
+// MIME type 'text/css'"), leaving Roboto Condensed missing. Inject the
+// stylesheet ourselves (once) so widgets look right regardless of embed.
+const FONTS_HREF =
+  'https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Roboto:wght@300;400;700&display=swap'
+
+function ensureWidgetFonts() {
+  if (!isClient()) return
+  if (document.querySelector(`link[rel="stylesheet"][href="${FONTS_HREF}"]`)) {
+    return
+  }
+  const link = document.createElement('link')
+  link.rel = 'stylesheet'
+  link.href = FONTS_HREF
+  document.head.appendChild(link)
+}
+
 loadableReady(() => {
+  ensureWidgetFonts()
   window.nrcStatDrawWidgetQueue.forEach((params) => {
     ReactDOM.render(
       <Widget {...params} />,
