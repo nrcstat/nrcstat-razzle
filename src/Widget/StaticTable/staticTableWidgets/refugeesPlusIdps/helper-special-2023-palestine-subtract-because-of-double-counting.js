@@ -15,6 +15,10 @@
  *
  * Followw-up written 10 June 2025:
  * Same issue applies this year for 2024 data. We're deducting 1422400 this year.
+ *
+ * Follow up written on 4 June 2026:
+ * Same thing for 2025 data. This time 1424500. Source of decision:
+ * https://binarynrc.slack.com/archives/DUGG268AW/p1780480738621439
  */
 
 export function subtractDoubleCountedPalestineIndividuals(
@@ -35,6 +39,13 @@ export function subtractDoubleCountedPalestineIndividuals(
       data.dataPoint === dataPointToSubtractFrom
     ) {
       data.data -= 1422400
+    }
+    if (
+      data.year === 2025 &&
+      data.countryCode === 'PS' &&
+      data.dataPoint === dataPointToSubtractFrom
+    ) {
+      data.data -= 1424500
     }
     return data
   })
