@@ -189,6 +189,7 @@ export const countryCodeToContinentCodeMap = {
   PL: 'EU',
   PR: 'NA',
   KP: 'AS',
+  PF: 'OC',
   PT: 'EU',
   PY: 'SA',
   PS: 'AS',
