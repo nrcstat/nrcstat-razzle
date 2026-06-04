@@ -93,6 +93,10 @@ export function StatsTable({ selectedYear, setSelectedYear }) {
       value: 2016,
     },
   ]
+
+  // Only add the 2025 option on widgets explicitly set to year=2025. These live in unpublished
+  // "preview mode" articles until RefRep2025 launches, so 2025 must work without exposing it on
+  // the older (2024-and-earlier) dashboards.
   if (year === 2025 || year === '2025') {
     YEAR_OPTIONS.unshift({
       label: '2025',
@@ -184,7 +188,9 @@ export function StatsTable({ selectedYear, setSelectedYear }) {
 
   return (
     <>
-      <div className={`${c['year-picker']} ${expanded ? c['is-expanded'] : ''}`}>
+      <div
+        className={`${c['year-picker']} ${expanded ? c['is-expanded'] : ''}`}
+      >
         <div className={c['year-list']} ref={yearListRef}>
           {YEAR_OPTIONS.map(({ value, label }) => (
             <button
