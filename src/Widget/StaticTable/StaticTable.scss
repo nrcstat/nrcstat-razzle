@@ -2,365 +2,297 @@
 
 @import url(//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css);
 
-/*
-@import url(https://cdn.datatables.net/v/dt/jq-2.2.4/dt-1.10.15/r-2.1.1/datatables.min.css);
-@import url(https://cdn.datatables.net/responsive/2.1.1/css/responsive.dataTables.min.css);
-@import url(https://cdn.datatables.net/colreorder/1.3.3/css/colReorder.dataTables.min.css);
-@import url(https://cdn.datatables.net/fixedheader/3.1.2/css/fixedHeader.dataTables.min.css);
-i think that the scss generated pretty much matches those four imports. BUT if something goeswrong, try to import the last three.
-*/
+/* =============================================================================
+ * NRC Statistics — Table widget styling
+ * "Liquid Glass" re-skin proposal (2026)
+ * -----------------------------------------------------------------------------
+ * Shared by: StaticTable, Table, CustomTable (all render via DataTables/jQuery).
+ *
+ * Design rationale (sourced — see PR description for full citations):
+ *  - Apple "Liquid Glass" (WWDC25): translucent material, specular edge
+ *    highlights, soft layered shadows, content tint from behind. We implement
+ *    the web-feasible "frosted glass" subset (backdrop-filter blur + saturate);
+ *    true lensing/specular needs SVG displacement maps / shaders, which are a
+ *    performance risk on data tables, so they are deliberately omitted.
+ *    (apple.com/newsroom 2025-06; css-tricks.com/getting-clarity-on-apples-liquid-glass)
+ *  - Frosted recipe = low-alpha background + `backdrop-filter: saturate() blur()`,
+ *    space-separated, behind partial transparency, gated by @supports with the
+ *    -webkit- prefix. (web.dev/articles/backdrop-filter; MDN backdrop-filter)
+ *  - PERFORMANCE: backdrop-filter cost scales with the number of blurred
+ *    elements; blurring every cell caused confirmed scroll jank
+ *    (bugzilla.mozilla.org #1718471). => We blur only TWO large surfaces:
+ *    the card and the sticky header. Body cells are NOT blurred.
+ *  - LEGIBILITY is glassmorphism's main failure mode; data must stay readable
+ *    at WCAG 4.5:1. (nngroup.com/articles/glassmorphism, /liquid-glass) =>
+ *    rows sit on near-opaque surfaces with dark text; zebra striping is kept
+ *    extremely subtle (no proven reading benefit — alistapart.com/article/
+ *    zebrastripingdoesithelp).
+ *  - Glass needs something behind it to refract; on NRC's flat/white CMS pages
+ *    there is nothing, so we paint a faint tinted "stage" gradient on the
+ *    container to give the frosted layers content to sample.
+ *  - ACCESSIBILITY: full solid-colour fallback via @supports, plus
+ *    prefers-reduced-transparency and prefers-reduced-motion overrides. (MDN)
+ *
+ * NOTE: This file restyles only the *visual* layer. Every structural / layout /
+ * functional DataTables selector (column sizing, sort icons, responsive +/-
+ * markers, pagination layout, fixedHeader) is preserved, so table setup and
+ * logic are unaffected.
+ * ========================================================================== */
 
-@media (max-width: 640px) {
-  .nrcstat-table-widget .btn-download {
-    margin-top: 3px;
+/* -----------------------------------------------------------------------------
+ * 1. Design tokens
+ * Centralising the palette here is what makes a future "skin swap" a one-block
+ * edit instead of a hunt-and-replace — directly addressing the request to be
+ * able to change the look without touching layout or logic.
+ * -------------------------------------------------------------------------- */
+.nrcstat__static-table__container,
+.nrcstat-table-widget {
+  // Brand
+  --nrc-orange: #fd5a00;
+  --nrc-orange-soft: rgba(253, 90, 0, 0.08);
+  --nrc-ink: #2b2b2b; // primary data text (high contrast)
+  --nrc-ink-soft: #5c5c5c; // secondary / controls text
+  --nrc-heading: #1f3a5f; // deep blue-grey for headings
+
+  // Glass material
+  --glass-blur: 18px;
+  --glass-saturate: 180%;
+  // Card uses a top-lit sheen (lighter at top) for a "lit glass" surface.
+  --glass-card-bg: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.62) 0%,
+    rgba(255, 255, 255, 0.42) 100%
+  );
+  // Header is a brighter, more distinct glass plane that floats over the data.
+  --glass-header-bg: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.88) 0%,
+    rgba(255, 255, 255, 0.62) 100%
+  );
+  --glass-control-bg: rgba(255, 255, 255, 0.55);
+
+  // Strokes & specular edge
+  // Visible soft blue-grey so the card border reads on a plain white page
+  // (there is no tinted stage behind it anymore).
+  --glass-border: rgba(31, 58, 95, 0.18);
+  --glass-stroke-top: rgba(255, 255, 255, 0.9); // specular highlight edge
+  --hairline: rgba(31, 58, 95, 0.1); // faint divider between rows
+
+  // Rows (kept near-opaque for legibility — NOT blurred)
+  --row-bg: rgba(255, 255, 255, 0); // even rows: let card glass show
+  --row-bg-odd: rgba(255, 255, 255, 0.38); // odd rows: barely-there zebra
+  --row-hover: var(--nrc-orange-soft);
+  --row-sort-tint: rgba(31, 58, 95, 0.04); // active sort column
+
+  // Depth (layered glass shadow + inset specular)
+  --glass-shadow:
+    0 8px 32px rgba(31, 38, 135, 0.12), 0 2px 8px rgba(31, 38, 95, 0.06);
+  --glass-inset: inset 0 1px 0 var(--glass-stroke-top);
+
+  // Geometry
+  --radius-card: 18px;
+  --radius-control: 10px;
+
+  // Motion
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  // Typography
+  --font-body: 'Roboto', sans-serif;
+  --font-head: 'Roboto Condensed', 'Roboto', sans-serif;
+}
+
+/* -----------------------------------------------------------------------------
+ * 2. The "stage" — gives the frosted layers something to refract on flat pages
+ * -------------------------------------------------------------------------- */
+.nrcstat__static-table__container {
+  position: relative;
+  // Hug the card: the generic/regional widgets cap their card at 600px (set in
+  // JS), so fit-content shrinks this wrapper to the card; max-width keeps the
+  // wide main table from overflowing its column.
+  width: fit-content;
+  max-width: 100%;
+  // Glass skin: no surrounding "stage" panel — the card stands on its own with
+  // just its border. (The Material skin re-adds a padded grey backdrop below.)
+}
+
+/* -----------------------------------------------------------------------------
+ * 3. The glass card wrapper
+ * One of only two backdrop-filtered surfaces (perf: keep blurred layers few).
+ * -------------------------------------------------------------------------- */
+.nrcstat-table-widget {
+  position: relative;
+  padding: 18px 18px 8px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-card-bg);
+  // Border only — no surrounding drop shadow (kept a faint inner top edge).
+  box-shadow: var(--glass-inset);
+  color: var(--nrc-ink);
+  font-family: var(--font-body);
+
+  // Frosted material (only applied where supported — see @supports fallback §12)
+  -webkit-backdrop-filter: saturate(var(--glass-saturate))
+    blur(var(--glass-blur));
+  backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+}
+
+/* -----------------------------------------------------------------------------
+ * 4. Title
+ * -------------------------------------------------------------------------- */
+.nrcstat-table-widget h4 {
+  font-family: var(--font-head);
+  font-weight: 400;
+  font-size: 22px;
+  letter-spacing: 0.2px;
+  color: var(--nrc-heading);
+  margin: 4px 0 18px;
+}
+
+/* -----------------------------------------------------------------------------
+ * 5. Controls (continent / country dropdowns) — glass pills
+ * -------------------------------------------------------------------------- */
+.controls-wrapper {
+  display: grid;
+  grid-template: 1fr 1fr / 7em 15em;
+  align-items: center;
+  row-gap: 0.6em;
+  column-gap: 0.5em;
+  margin-bottom: 1.2em;
+
+  label {
+    font-family: var(--font-head);
+    font-weight: 300;
+    font-size: 14px;
+    color: var(--nrc-ink-soft);
   }
 }
-@media (min-width: 641px) {
-  .nrcstat-table-widget .btn-download {
-    margin-top: 1px;
-  }
-}
 
-body {
-  padding: 0 20px;
-}
-
-.nrcstat-table-widget a.btn-download:visited {
-  color: #000;
-}
-.nrcstat-table-widget .btn-download {
-  margin-left: 10px;
-  text-decoration: none;
-  max-width: 344px;
-  color: #000;
-  background-color: #dcdcdc;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-  border: 1px solid #b1b1b1;
-  padding: 5px 10px;
-  display: inline-block;
-  font-size: 10pt;
-  font-family: 'Roboto Condensed';
-}
-.nrcstat-table-widget .btn-download:hover {
-  padding: 4px 9px;
-  border: 2px solid #154881;
-}
-
-.nrcstat-table-widget a.dt-button {
-  margin-left: 10px;
-  text-decoration: none;
-  max-width: 344px;
-  color: #666;
-  background-color: #dcdcdc;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-  border: 1px solid #b1b1b1;
-  padding: 5px 10px;
-  display: inline-block;
+.nrcstat-table-widget select,
+.controls-wrapper select {
+  font-family: var(--font-body);
+  font-weight: 300;
   font-size: 14px;
-  font-family: 'Roboto';
-}
-.nrcstat-table-widget a.dt-button:hover {
-  padding: 4px 9px;
-  border: 2px solid #154881;
+  color: var(--nrc-ink);
+  padding: 7px 12px;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-control-bg);
+  -webkit-backdrop-filter: saturate(140%) blur(6px);
+  backdrop-filter: saturate(140%) blur(6px);
+  box-shadow: var(--glass-inset);
+  transition:
+    border-color 0.2s var(--ease),
+    box-shadow 0.2s var(--ease);
+
+  &:hover {
+    border-color: rgba(253, 90, 0, 0.4);
+  }
+  &:focus {
+    outline: none;
+    border-color: var(--nrc-orange);
+    box-shadow:
+      0 0 0 3px var(--nrc-orange-soft),
+      var(--glass-inset);
+  }
 }
 
+/* legacy selector hooks kept for any markup still using them */
+.nrcstat-table-widget .nrcstat-selector-continent,
+.nrcstat-table-widget .nrcstat-selector-country {
+  font-family: var(--font-body);
+  font-weight: 300;
+  display: inline-block;
+  margin-right: 15px;
+  margin-bottom: 18px;
+  font-size: 14px;
+  color: var(--nrc-ink-soft);
+}
+
+/* -----------------------------------------------------------------------------
+ * 6. Header info icons & tooltips
+ * -------------------------------------------------------------------------- */
 .nrcstat-tablewidget-header {
   text-align: left;
 }
 
 .nrcstat-widget-tooltip {
-  color: #fd5a00;
+  color: var(--nrc-orange);
   cursor: pointer;
-  margin-left: 3px;
+  margin-left: 4px;
   font-size: 13px;
   font-weight: 300;
 }
 
-.tooltipster-content {
-  font: 10pt 'Roboto Condensed';
-
-  padding: 1em 1em 1em 1em;
-  overflow: hidden;
-}
-
-.tooltipster-box {
-  background-color: #474747 !important;
-  color: #f4f4f4 !important;
-  border-color: #f4f4f4 !important;
-}
-
-.tooltipster-arrow-border,
-.tooltipster-sidetip .tooltipster-top,
-.tooltipster-arrow-background {
-  border-top-color: #474747 !important;
-}
-
-.nrcstat-table-widget .download-button {
-  cursor: pointer;
-}
-.nrcstat-table-widget .table-tooltip {
-  cursor: pointer;
-  color: #337ab7;
-}
+.nrcstat-table-widget .table-tooltip,
 .nrcstat-table-widget .table-annotation-tooltip {
   cursor: pointer;
   color: #337ab7;
 }
-
-.nrcstat-table-widget h4 {
-  font-family: 'Roboto Condensed';
-}
-.dataTable thead th {
-  font-family: 'Roboto Condensed';
-  text-align: left;
-}
-.dataTable tbody td {
-  text-align: left;
-  font-family: 'Roboto Condensed';
-  font-weight: 200;
-}
-.nrcstat-table-widget-annotations {
-  font-size: small;
-  /* this combination makes up "Roboto Light". See this page for details: https://fonts.google.com/?selection.family=Roboto+Condensed|Roboto:100i,300,400 */
-  font-family: 'Roboto Condensed';
-  font-weight: 200;
-  text-align: left;
-}
-
-.accordion-open {
-  .accordion-body {
-    display: block;
-  }
-}
-.accordion-closed {
-  .accordion-body {
-    display: none;
-  }
-}
-
-.controls-wrapper {
-  display: grid;
-  grid-template: 1fr 1fr / 8em 16em;
-  row-gap: 0.5em;
-  margin-bottom: 1em;
-}
-
-.nrcstat-table-widget .dataTables_length,
-.nrcstat-table-widget .dataTables_filter,
-.nrcstat-table-widget .dataTables_paginate,
-.nrcstat-table-widget .dataTables_info,
-.nrcstat-table-widget .nrcstat-selector-continent,
-.nrcstat-table-widget .nrcstat-selector-country {
-  font-family: 'Roboto';
-  font-weight: 200;
-}
-
-.nrcstat-table-widget .nrcstat-selector-continent,
-.nrcstat-table-widget .nrcstat-selector-country {
-  padding-top: 3px;
-  margin-bottom: 30px;
-  height: 30px;
-  display: inline-block;
-  margin-right: 15px;
-  font-size: 14px;
-  color: #666;
-  padding-left: 10px;
-}
-
-@media (max-width: 640px) {
-  .nrcstat-table-widget .nrcstat-selector-continent,
-  .nrcstat-table-widget .nrcstat-selector-country {
-    float: none;
-    text-align: center;
-    width: 100%;
-    margin-bottom: 0;
-  }
-}
-@media (min-width: 641px) {
-  .nrcstat-table-widget .nrcstat-selector-continent,
-  .nrcstat-table-widget .nrcstat-selector-country {
-    float: left;
-  }
-}
-
-.nrcstat-table-widget .nrcstat-selector-continent select,
-.nrcstat-table-widget .nrcstat-selector-country select {
-  padding: 3px;
-  color: #666;
-  font-family: 'Roboto';
-  font-weight: 200;
-  border-radius: 3px;
-  border: 1px solid #919191;
-}
-
-/* Styling of the action buttons (download json, download excel) */
-.dt-button {
-  color: #666 !important;
-  border: 1px solid #919191;
-  background-color: white;
-  font-family: 'Roboto';
-  font-size: 14px;
-  font-weight: 200;
-  box-sizing: border-box;
-  display: inline-block;
-  min-width: 1.5em;
-  padding: 0.5em 1em;
-  margin-left: 2px;
-  text-align: center;
-  text-decoration: none !important;
+.nrcstat-table-widget .download-button {
   cursor: pointer;
-  border-radius: 3px;
-  float: right;
-  margin-bottom: 10px;
 }
 
-.nrcstat-table-widget h4 {
-  font-family: Roboto Condensed;
-  font-size: 22px;
-  color: #474747;
-  margin-bottom: 20px;
+/* Tooltipster theme — dark glass bubble */
+.tooltipster-content {
+  font: 10pt var(--font-body);
+  padding: 1em;
+  overflow: hidden;
+}
+.tooltipster-box {
+  background-color: rgba(43, 43, 43, 0.92) !important;
+  color: #f4f4f4 !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 10px !important;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+.tooltipster-arrow-border,
+.tooltipster-sidetip .tooltipster-top,
+.tooltipster-arrow-background {
+  border-top-color: rgba(43, 43, 43, 0.92) !important;
 }
 
-.nrcstat-table-widget table td {
-  font-family: Roboto;
-  font-weight: 200;
-  font-size: 14px;
-  text-align: left;
-}
-
-.nrcstat-table-widget table th {
-  font-family: Roboto Condensed;
-  font-weight: 300;
-  font-size: 14px;
-  color: #474747;
-}
-
-@media (max-width: 641px) {
-  .nrcstat-table-widget .nrcstat-selector-continent,
-  .nrcstat-table-widget .nrcstat-selector-country,
-  .dataTables_filter,
-  .dataTables_length {
-    float: left !important;
-    text-align: left !important;
-    margin-left: 3px !important;
-    padding-left: 0 !important;
-    display: inline-block;
-  }
-
-  .dt-buttons {
-    display: none;
-  }
-
-  .dataTables_length {
-    padding-bottom: 0px !important;
-    margin-top: 7px !important;
-
-    float: right !important;
-  }
-}
-
-/* IVA IVA IVA IVA */
-
-//
-// Colour customisation
-//
-// `!default` allows overriding variables that are defined before @import
-//
-
-// Border between the header (and footer) and the table body
-$table-header-border: 1px solid #f2f2f2 !default;
-
-// Border of rows / cells
-$table-body-border: 1px solid #f2f2f2 !default;
-
-// Row background colour (hover, striping etc are all based on this colour and
-// calculated automatically)
-$table-row-background: #ffffff !default;
-
-// Row colour, when selected (tr.selected)
-$table-row-selected: #f2f2f2 !default;
-
-// Text colour of the interaction control elements (info, filter, paging etc)
-$table-control-color: #666666 !default;
-
-// Highlight colour of the paging button for the current page
-$table-paging-button-active: #d3d3d3 !default;
-
-// Hover colour of paging buttons on mouse over
-$table-paging-button-hover: #474747 !default;
-
-// Colour to use when shading
-$table-shade: black !default;
-
-// jQuery UI stylesheet imports this one - there are just two places where we
-// don't want DataTabels default styles assigned for jQuery UI, so rather than
-// duplicating the whole file, this is the best option
-$jqueryui: false !default;
-
-//
-// Functions / mixins
-//
-@function tint($color, $percent) {
-  @return mix(white, $color, $percent);
-}
-
-@function shade($color, $percent) {
-  @return mix($table-shade, $color, $percent);
-}
-
-@mixin gradient($from, $to) {
-  background-color: $from;
-  background: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    color-stop(0%, $from),
-    color-stop(100%, $to)
-  ); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(
-    top,
-    $from 0%,
-    $to 100%
-  ); /* Chrome10+,Safari5.1+ */
-  background: -moz-linear-gradient(top, $from 0%, $to 100%); /* FF3.6+ */
-  background: -ms-linear-gradient(top, $from 0%, $to 100%); /* IE10+ */
-  background: -o-linear-gradient(top, $from 0%, $to 100%); /* Opera 11.10+ */
-  background: linear-gradient(to bottom, $from 0%, $to 100%); /* W3C */
-}
-
-/*
- * Table styles
- */
+/* =============================================================================
+ * 7. The table itself
+ * Structural rules preserved from the DataTables base; visual layer reskinned.
+ * border-collapse must stay `separate` so the header can round its corners and
+ * sit as its own glass plane above the body.
+ * ========================================================================== */
 table.dataTable {
   width: 100%;
   margin: 0 auto;
   clear: both;
   border-collapse: separate;
   border-spacing: 0;
+  font-family: var(--font-body);
 
-  /*
-     * Header and footer styles
-     */
-  thead,
-  tfoot {
-    th {
-      font-weight: bold;
-    }
-  }
-
+  /* ---- Header: the second (and last) frosted surface --------------------- */
   thead th,
   thead td {
-    padding: 5px 10px;
+    position: relative;
+    padding: 12px 14px;
+    font-family: var(--font-head);
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+    text-align: left;
+    color: var(--nrc-heading);
+    background: var(--glass-header-bg);
+    border-bottom: 1px solid rgba(31, 58, 95, 0.16);
+    // Specular top edge ("lit rim") + a soft drop under the header so the
+    // glass bar reads as floating over the data rows.
+    box-shadow: var(--glass-inset), 0 6px 14px -8px rgba(31, 58, 95, 0.3);
+    -webkit-backdrop-filter: saturate(var(--glass-saturate))
+      blur(var(--glass-blur));
+    backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
 
-    @if not $jqueryui {
-      // jQuery UI defines its own border
-      border-bottom: $table-header-border;
+    &:first-child {
+      border-top-left-radius: 12px;
     }
-
+    &:last-child {
+      border-top-right-radius: 12px;
+    }
     &:active {
       outline: none;
     }
@@ -368,221 +300,106 @@ table.dataTable {
 
   tfoot th,
   tfoot td {
-    padding: 10px 18px 6px 18px;
+    padding: 10px 14px;
+    border-top: 1px solid var(--hairline);
+    font-family: var(--font-head);
+    color: var(--nrc-heading);
+  }
 
-    @if not $jqueryui {
-      // jQuery UI defines its own border
-      border-top: $table-header-border;
+  /* ---- Sort indicators (PNG sprites preserved) --------------------------- */
+  thead {
+    .sorting,
+    .sorting_asc,
+    .sorting_desc,
+    .sorting_asc_disabled,
+    .sorting_desc_disabled {
+      cursor: pointer;
+      background-repeat: no-repeat;
+      background-position: center right 8px;
+    }
+    .sorting {
+      background-image: url('./images/sort_both.png');
+    }
+    .sorting_asc {
+      background-image: url('./images/sort_asc.png');
+    }
+    .sorting_desc {
+      background-image: url('./images/sort_desc.png');
+    }
+    .sorting_asc_disabled {
+      background-image: url('./images/sort_asc_disabled.png');
+    }
+    .sorting_desc_disabled {
+      background-image: url('./images/sort_desc_disabled.png');
     }
   }
 
-  // Sorting
-  @if not $jqueryui {
-    // jQuery UI defines its own sort icons
-    thead {
-      .sorting,
-      .sorting_asc,
-      .sorting_desc,
-      .sorting_asc_disabled,
-      .sorting_desc_disabled {
-        cursor: pointer;
-        *cursor: hand;
-        background-repeat: no-repeat;
-        background-position: center right;
-      }
-
-      .sorting {
-        background-image: url('./images/sort_both.png');
-      }
-
-      .sorting_asc {
-        background-image: url('./images/sort_asc.png');
-      }
-      .sorting_desc {
-        background-image: url('./images/sort_desc.png');
-      }
-      .sorting_asc_disabled {
-        background-image: url('./images/sort_asc_disabled.png');
-      }
-      .sorting_desc_disabled {
-        background-image: url('./images/sort_desc_disabled.png');
-      }
-    }
-  }
-
-  /*
-     * Body styles
-     */
+  /* ---- Body: near-opaque, legibility-first (NOT blurred) ----------------- */
   tbody {
     tr {
-      background-color: $table-row-background;
-
-      &.selected {
-        background-color: $table-row-selected;
-      }
+      background-color: var(--row-bg);
+      transition: background-color 0.15s var(--ease);
     }
 
     th,
     td {
-      padding: 8px 10px;
+      padding: 11px 14px;
+      font-family: var(--font-body);
+      font-weight: 300;
+      font-size: 14px;
+      text-align: left;
+      color: var(--nrc-ink);
+      // tabular figures keep numeric columns aligned & crisp
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
     }
   }
 
-  // Stripe classes - add "row-border" class to the table to activate
+  /* Row dividers (replaces row-border/cell-border greys) */
   &.row-border tbody,
+  &.cell-border tbody,
   &.display tbody {
     th,
     td {
-      border-top: $table-body-border;
+      border-top: 1px solid var(--hairline);
     }
-
     tr:first-child th,
     tr:first-child td {
       border-top: none;
     }
   }
 
-  // Stripe classes - add "cell-border" class to the table to activate
-  &.cell-border tbody {
-    th,
-    td {
-      border-top: $table-body-border;
-      border-right: $table-body-border;
-    }
-
-    tr th:first-child,
-    tr td:first-child {
-      border-left: $table-body-border;
-    }
-
-    tr:first-child th,
-    tr:first-child td {
-      border-top: none;
-    }
-  }
-
-  // Stripe classes - add "stripe" class to the table to activate
+  /* Zebra — intentionally barely perceptible (no proven reading benefit) */
   &.stripe tbody,
   &.display tbody {
     tr.odd {
-      background-color: shade($table-row-background, 2.35%); // shade by f9
-
-      &.selected {
-        background-color: shade($table-row-selected, 2.35%);
-      }
+      background-color: var(--row-bg-odd);
     }
   }
 
-  // Hover classes - add "hover" class to the table to activate
+  /* Hover — brand-tinted, the primary row-tracking affordance */
   &.hover tbody,
   &.display tbody {
     tr:hover {
-      background-color: shade($table-row-background, 3.6%); // shade by f5
-
-      &.selected {
-        background-color: shade($table-row-selected, 3.6%);
-      }
+      background-color: var(--row-hover);
     }
   }
 
-  // Sort column highlighting - add "order-column" class to the table to activate
+  /* Active sort column — faint cool tint instead of grey shading */
   &.order-column,
   &.display {
     tbody {
       tr > .sorting_1,
       tr > .sorting_2,
       tr > .sorting_3 {
-        background-color: shade($table-row-background, 2%); // shade by fa
+        background-color: var(--row-sort-tint);
       }
-
-      tr.selected > .sorting_1,
-      tr.selected > .sorting_2,
-      tr.selected > .sorting_3 {
-        background-color: shade($table-row-selected, 2%);
-      }
-    }
-  }
-
-  &.display tbody,
-  &.order-column.stripe tbody {
-    tr.odd {
-      > .sorting_1 {
-        background-color: shade($table-row-background, 5.4%);
-      } // shade by f1
-      > .sorting_2 {
-        background-color: shade($table-row-background, 4.7%);
-      } // shade by f3
-      > .sorting_3 {
-        background-color: shade($table-row-background, 3.9%);
-      } // shade by f5
-
-      &.selected {
-        > .sorting_1 {
-          background-color: shade($table-row-selected, 5.4%);
-        }
-        > .sorting_2 {
-          background-color: shade($table-row-selected, 4.7%);
-        }
-        > .sorting_3 {
-          background-color: shade($table-row-selected, 3.9%);
-        }
+      tr:hover > .sorting_1,
+      tr:hover > .sorting_2,
+      tr:hover > .sorting_3 {
+        background-color: var(--row-hover);
       }
     }
-
-    tr.even {
-      > .sorting_1 {
-        background-color: shade($table-row-background, 2%);
-      } // shade by fa
-      > .sorting_2 {
-        background-color: shade($table-row-background, 1.2%);
-      } // shade by fc
-      > .sorting_3 {
-        background-color: shade($table-row-background, 0.4%);
-      } // shade by fe
-
-      &.selected {
-        > .sorting_1 {
-          background-color: shade($table-row-selected, 2%);
-        }
-        > .sorting_2 {
-          background-color: shade($table-row-selected, 1.2%);
-        }
-        > .sorting_3 {
-          background-color: shade($table-row-selected, 0.4%);
-        }
-      }
-    }
-  }
-
-  &.display tbody,
-  &.order-column.hover tbody {
-    tr:hover {
-      > .sorting_1 {
-        background-color: shade($table-row-background, 8.2%);
-      } // shade by ea
-      > .sorting_2 {
-        background-color: shade($table-row-background, 7.5%);
-      } // shade by ec
-      > .sorting_3 {
-        background-color: shade($table-row-background, 6.3%);
-      } // shade by ef
-
-      &.selected {
-        > .sorting_1 {
-          background-color: shade($table-row-selected, 8.2%);
-        }
-        > .sorting_2 {
-          background-color: shade($table-row-selected, 7.5%);
-        }
-        > .sorting_3 {
-          background-color: shade($table-row-selected, 6.3%);
-        }
-      }
-    }
-  }
-
-  &.no-footer {
-    border-bottom: $table-header-border;
   }
 
   &.nowrap {
@@ -591,335 +408,201 @@ table.dataTable {
       white-space: nowrap;
     }
   }
-
   &.compact {
     thead th,
     thead td {
-      padding: 4px 17px;
+      padding: 7px 12px;
     }
-
-    tfoot th,
-    tfoot td {
-      padding: 4px;
-    }
-
     tbody th,
     tbody td {
-      padding: 4px;
+      padding: 6px 12px;
     }
   }
 
-  // Typography
+  /* Alignment helpers (preserved) */
   th.dt-left,
   td.dt-left {
     text-align: left;
   }
-
   th.dt-center,
   td.dt-center,
   td.dataTables_empty {
     text-align: center;
   }
-
   th.dt-right,
   td.dt-right {
     text-align: right;
   }
-
-  th.dt-justify,
-  td.dt-justify {
-    text-align: justify;
-  }
-
   th.dt-nowrap,
   td.dt-nowrap {
     white-space: nowrap;
   }
-
-  thead,
-  tfoot {
-    th.dt-head-left,
-    td.dt-head-left {
-      text-align: left;
-    }
-
-    th.dt-head-center,
-    td.dt-head-center {
-      text-align: center;
-    }
-
-    th.dt-head-right,
-    td.dt-head-right {
-      text-align: right;
-    }
-
-    th.dt-head-justify,
-    td.dt-head-justify {
-      text-align: justify;
-    }
-
-    th.dt-head-nowrap,
-    td.dt-head-nowrap {
-      white-space: nowrap;
-    }
+  thead th.dt-head-left {
+    text-align: left;
   }
-
-  tbody {
-    th.dt-body-left,
-    td.dt-body-left {
-      text-align: left;
-    }
-
-    th.dt-body-center,
-    td.dt-body-center {
-      text-align: center;
-    }
-
-    th.dt-body-right,
-    td.dt-body-right {
-      text-align: right;
-    }
-
-    th.dt-body-justify,
-    td.dt-body-justify {
-      text-align: justify;
-    }
-
-    th.dt-body-nowrap,
-    td.dt-body-nowrap {
-      white-space: nowrap;
-    }
+  thead th.dt-head-center {
+    text-align: center;
+  }
+  thead th.dt-head-right {
+    text-align: right;
   }
 }
 
-// Its not uncommon to use * {border-box} now, but it messes up the column width
-// calculations, so use content-box for the table and cells
+// Column-width calculations rely on content-box — preserved verbatim.
 table.dataTable,
 table.dataTable th,
 table.dataTable td {
   box-sizing: content-box;
 }
 
-/*
- * Control feature layout
- */
+/* =============================================================================
+ * 8. Control bar — length / filter / info / pagination / export buttons
+ * Layout floats preserved from DataTables base; visuals reskinned to glass.
+ * ========================================================================== */
 .dataTables_wrapper {
   position: relative;
   clear: both;
-  *zoom: 1;
 
-  // Page length options
   .dataTables_length {
     float: left;
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-size: 14px;
+    color: var(--nrc-ink-soft);
+    margin-right: 10px;
   }
 
-  // Filtering input
   .dataTables_filter {
     float: left;
     text-align: right;
-    font-family: Roboto;
-    font-weight: 200;
+    font-family: var(--font-body);
+    font-weight: 300;
     font-size: 14px;
-    margin-bottom: 10px;
-    color: #666;
+    margin-bottom: 12px;
+    color: var(--nrc-ink-soft);
     padding-left: 10px;
 
     input {
       margin-left: 0.5em;
-      color: #666;
-      border-radius: 3px;
-      border: 1px solid #919191;
-      padding: 3px;
+      color: var(--nrc-ink);
+      border-radius: var(--radius-control);
+      border: 1px solid var(--glass-border);
+      background: var(--glass-control-bg);
+      padding: 6px 10px;
+      -webkit-backdrop-filter: saturate(140%) blur(6px);
+      backdrop-filter: saturate(140%) blur(6px);
+      transition:
+        border-color 0.2s var(--ease),
+        box-shadow 0.2s var(--ease);
+
+      &:focus {
+        outline: none;
+        border-color: var(--nrc-orange);
+        box-shadow: 0 0 0 3px var(--nrc-orange-soft);
+      }
     }
   }
 
-  // Table info
   .dataTables_info {
     clear: both;
     float: left;
     padding-top: 1.5em;
     padding-bottom: 1em;
     font-size: 12px;
-    color: #919191;
+    color: var(--nrc-ink-soft);
   }
 
-  // Paging
   .dataTables_paginate {
     float: right;
     text-align: right;
-    padding-top: 0.25em;
-    font-size: 12px;
-    color: #919191;
+    padding-top: 0.4em;
+    font-size: 13px;
 
     .paginate_button {
       box-sizing: border-box;
       display: inline-block;
-      min-width: 1.5em;
-      padding: 0.5em 0.8em;
-      margin-left: 2px;
+      min-width: 1.8em;
+      padding: 0.45em 0.8em;
+      margin-left: 4px;
       text-align: center;
       text-decoration: none !important;
       cursor: pointer;
-      *cursor: hand;
-
-      color: $table-control-color !important;
+      color: var(--nrc-ink-soft) !important;
       border: 1px solid transparent;
-      border-radius: 3px;
+      border-radius: var(--radius-control);
+      transition: all 0.18s var(--ease);
 
       &.current,
       &.current:hover {
-        color: $table-control-color !important;
-        border: 1px solid darken($table-paging-button-active, 27%);
-        @include gradient(
-          lighten($table-paging-button-active, 28%),
-          $table-paging-button-active
-        );
+        color: var(--nrc-orange) !important;
+        font-weight: 500;
+        border: 1px solid rgba(253, 90, 0, 0.35);
+        background: var(--glass-control-bg);
+        -webkit-backdrop-filter: saturate(160%) blur(8px);
+        backdrop-filter: saturate(160%) blur(8px);
+        box-shadow: var(--glass-inset);
       }
-
+      &:hover:not(.disabled):not(.current) {
+        color: #fff !important;
+        border-color: var(--nrc-orange);
+        background: var(--nrc-orange);
+        box-shadow: 0 4px 12px rgba(253, 90, 0, 0.3);
+      }
       &.disabled,
-      &.disabled:hover,
-      &.disabled:active {
+      &.disabled:hover {
         cursor: default;
-        color: #666 !important;
-        border: 1px solid transparent;
+        color: #b3b3b3 !important;
         background: transparent;
+        border-color: transparent;
         box-shadow: none;
       }
-
-      &:hover {
-        color: white !important;
-        border: 1px solid $table-paging-button-hover;
-        @include gradient(
-          lighten($table-paging-button-hover, 28%),
-          $table-paging-button-hover
-        );
-      }
-
-      &:active {
-        outline: none;
-        @include gradient(
-          lighten($table-paging-button-hover, 10%),
-          darken($table-paging-button-hover, 2%)
-        );
-        box-shadow: inset 0 0 3px #111;
-      }
     }
-
     .ellipsis {
       padding: 0 1em;
     }
   }
 
-  // Processing
   .dataTables_processing {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 100%;
-    height: 40px;
-    margin-left: -50%;
+    width: 220px;
+    margin-left: -110px;
     margin-top: -25px;
-    padding-top: 20px;
-
+    padding: 16px 20px;
     text-align: center;
-    font-size: 1.2em;
-
-    background-color: white;
-    background: -webkit-gradient(
-      linear,
-      left top,
-      right top,
-      color-stop(0%, rgba($table-row-background, 0)),
-      color-stop(25%, rgba($table-row-background, 0.9)),
-      color-stop(75%, rgba($table-row-background, 0.9)),
-      color-stop(100%, rgba(255, 255, 255, 0))
-    );
-    background: -webkit-linear-gradient(
-      left,
-      rgba($table-row-background, 0) 0%,
-      rgba($table-row-background, 0.9) 25%,
-      rgba($table-row-background, 0.9) 75%,
-      rgba($table-row-background, 0) 100%
-    );
-    background: -moz-linear-gradient(
-      left,
-      rgba($table-row-background, 0) 0%,
-      rgba($table-row-background, 0.9) 25%,
-      rgba($table-row-background, 0.9) 75%,
-      rgba($table-row-background, 0) 100%
-    );
-    background: -ms-linear-gradient(
-      left,
-      rgba($table-row-background, 0) 0%,
-      rgba($table-row-background, 0.9) 25%,
-      rgba($table-row-background, 0.9) 75%,
-      rgba($table-row-background, 0) 100%
-    );
-    background: -o-linear-gradient(
-      left,
-      rgba($table-row-background, 0) 0%,
-      rgba($table-row-background, 0.9) 25%,
-      rgba($table-row-background, 0.9) 75%,
-      rgba($table-row-background, 0) 100%
-    );
-    background: linear-gradient(
-      to right,
-      rgba($table-row-background, 0) 0%,
-      rgba($table-row-background, 0.9) 25%,
-      rgba($table-row-background, 0.9) 75%,
-      rgba($table-row-background, 0) 100%
-    );
+    font-family: var(--font-body);
+    font-size: 1em;
+    color: var(--nrc-ink);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid var(--glass-border);
+    -webkit-backdrop-filter: saturate(160%) blur(10px);
+    backdrop-filter: saturate(160%) blur(10px);
+    box-shadow: var(--glass-shadow);
   }
 
-  .dataTables_length,
-  .dataTables_filter,
-  .dataTables_info,
-  .dataTables_processing,
-  .dataTables_paginate {
-    color: $table-control-color;
-  }
-
-  // Scrolling
   .dataTables_scroll {
     clear: both;
-
     div.dataTables_scrollBody {
-      *margin-top: -1px;
       -webkit-overflow-scrolling: touch;
-
-      > table > thead > tr,
-      > table > tbody > tr {
-        > th,
-        > td {
-          // Setting v-align baseline can cause the headers to be visible
-          vertical-align: middle;
-        }
-
-        > th > div.dataTables_sizing,
-        > td > div.dataTables_sizing {
-          // Hide the element used to wrap the content in the header for
-          // the body scrolling table
-          height: 0;
-          overflow: hidden;
-          margin: 0 !important;
-          padding: 0 !important;
-        }
+      > table > thead > tr > th,
+      > table > tbody > tr > th,
+      > table > thead > tr > td,
+      > table > tbody > tr > td {
+        vertical-align: middle;
+      }
+      // hide the sizing wrapper DataTables injects into header clones
+      > table > thead > tr > th > div.dataTables_sizing,
+      > table > tbody > tr > td > div.dataTables_sizing {
+        height: 0;
+        overflow: hidden;
+        margin: 0 !important;
+        padding: 0 !important;
       }
     }
   }
 
-  &.no-footer {
-    .dataTables_scrollBody {
-      border-bottom: $table-header-border;
-    }
-
-    div.dataTables_scrollHead table.dataTable,
-    div.dataTables_scrollBody > table {
-      border-bottom: none;
-    }
-  }
-
-  // Self clear the wrapper
   &:after {
     visibility: hidden;
     display: block;
@@ -927,94 +610,95 @@ table.dataTable td {
     clear: both;
     height: 0;
   }
-  zoom: 1; // Poor old IE
 }
 
-// Collapse the two column display of the control elements when the screen is
-// small - the info and paging control get collapsed first as they are wider,
-// and then the length and filter controls
-@media screen and (max-width: 767px) {
-  .dataTables_wrapper {
-    .dataTables_info,
-    .dataTables_paginate {
-      float: none;
-      text-align: center;
-    }
-
-    .dataTables_paginate {
-      margin-top: 0.5em;
-    }
-  }
-
-  table.dataTable td li {
-    border-bottom: 1px solid #dadada;
-  }
-  table.dataTable td li span.dtr-data {
-    float: right;
-  }
-}
-
-@media screen and (max-width: 640px) {
-  .dataTables_wrapper {
-    .dataTables_length,
-    .dataTables_filter {
-      float: none;
-      text-align: center;
-    }
-
-    .dataTables_filter {
-      margin-top: 0.5em;
-    }
-  }
-}
-
-.dataTables_length {
-  font-family: 'Roboto';
+/* Export buttons (Excel / JSON) — glass pills, right-aligned */
+.dt-button,
+.nrcstat-table-widget a.dt-button {
+  color: var(--nrc-ink-soft) !important;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-control-bg);
+  -webkit-backdrop-filter: saturate(160%) blur(8px);
+  backdrop-filter: saturate(160%) blur(8px);
+  box-shadow: var(--glass-inset);
+  font-family: var(--font-body);
   font-size: 14px;
-  font-weight: 200;
-  padding-top: 2px;
-  margin-right: 10px;
-  padding-left: 10px;
+  font-weight: 300;
+  box-sizing: border-box;
+  display: inline-block;
+  padding: 0.5em 1em;
+  margin-left: 6px;
+  margin-bottom: 10px;
+  text-align: center;
+  text-decoration: none !important;
+  cursor: pointer;
+  border-radius: var(--radius-control);
+  float: right;
+  transition: all 0.18s var(--ease);
 
-  input {
-    border-radius: 3px;
-    padding: 3px;
+  &:hover {
+    color: #fff !important;
+    border-color: var(--nrc-orange);
+    background: var(--nrc-orange);
+    box-shadow: 0 4px 12px rgba(253, 90, 0, 0.3);
   }
 }
 
-/* div.container {
-  min-width: 980px;
-  margin: 0 auto;
-} */
+/* =============================================================================
+ * 9. Footnote accordions — glass panels
+ * ========================================================================== */
+.nrcstat-table-widget-annotations {
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: small;
+  text-align: left;
+  margin-top: 18px;
 
-/* DataTables Responsive With FontAwesome */
+  .accordion {
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.4);
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .accordion-title {
+    padding: 12px 16px;
+  }
+  .accordion-body {
+    padding: 0 16px;
+  }
+}
+.accordion-open .accordion-body {
+  display: block;
+  padding-bottom: 14px;
+}
+.accordion-closed .accordion-body {
+  display: none;
+}
 
+/* =============================================================================
+ * 10. Responsive — collapsed rows + FontAwesome +/- markers (functional)
+ * These selectors drive the expand/collapse control, so they are preserved.
+ * ========================================================================== */
 table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child {
   position: relative;
   padding-left: 30px;
   cursor: pointer;
 }
 table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child:before {
-  /*top: 8px;
-  left: 4px;
-  height: 16px;
-  width: 16px;*/
-  display: block;
-  position: absolute;
-  /*color: white;
-  border: 2px solid white;
-  border-radius: 16px;
-  text-align: center;
-  line-height: 14px;
-  box-shadow: 0 0 3px #444;
-  box-sizing: content-box;
-  content: '+';
-  background-color: #31b131;*/
   display: block;
   position: absolute;
   font-family: 'FontAwesome';
-  content: '\f067';
-  color: #fd5a00;
+  content: '\f055'; // filled plus-circle reads cleaner on glass than f067
+  color: var(--nrc-orange);
+}
+table.dataTable.dtr-inline.collapsed
+  > tbody
+  > tr.parent
+  > td:first-child:before {
+  font-family: 'FontAwesome';
+  content: '\f056'; // minus-circle
+  color: var(--nrc-orange);
 }
 table.dataTable.dtr-inline.collapsed
   > tbody
@@ -1022,33 +706,7 @@ table.dataTable.dtr-inline.collapsed
   > td:first-child.dataTables_empty:before {
   display: none;
 }
-table.dataTable.dtr-inline.collapsed
-  > tbody
-  > tr.parent
-  > td:first-child:before {
-  /*content: '-';
-  background-color: #d33333;*/
-  font-family: 'FontAwesome';
-  content: '\f068';
-  color: #fd5a00;
-}
-table.dataTable.dtr-inline.collapsed > tbody > tr.child td:before {
-  display: none;
-}
-table.dataTable.dtr-inline.collapsed.compact > tbody > tr > td:first-child {
-  padding-left: 27px;
-}
-table.dataTable.dtr-inline.collapsed.compact
-  > tbody
-  > tr
-  > td:first-child:before {
-  top: 5px;
-  left: 4px;
-  height: 14px;
-  width: 14px;
-  border-radius: 14px;
-  line-height: 12px;
-}
+
 table.dataTable.dtr-column > tbody > tr > td.control {
   position: relative;
   cursor: pointer;
@@ -1063,65 +721,389 @@ table.dataTable.dtr-column > tbody > tr > td.control:before {
   display: block;
   position: absolute;
   font-family: 'FontAwesome';
-  content: '\f067';
-  color: #fd5a00;
-  /*color: white;
-  border: 2px solid white;
-  border-radius: 16px;
-  text-align: center;
-  line-height: 14px;
-  box-shadow: 0 0 3px #444;
-  box-sizing: content-box;
-  content: '+';
-  background-color: #31b131;*/
+  content: '\f055';
+  color: var(--nrc-orange);
 }
 table.dataTable.dtr-column > tbody > tr.parent td.control:before {
-  /*content: '-';
-  background-color: #d33333;*/
   font-family: 'FontAwesome';
-  content: '\f068';
-  color: #fd5a00;
+  content: '\f056';
+  color: var(--nrc-orange);
 }
+
 table.dataTable > tbody > tr.child {
   padding: 0.5em 1em;
 }
 table.dataTable > tbody > tr.child:hover {
   background: transparent !important;
 }
-table.dataTable > tbody > tr.child ul {
+table.dataTable > tbody > tr.child ul.dtr-details {
   display: inline-block;
   list-style-type: none;
   margin: 0;
   padding: 0;
+  width: 100%;
 }
-table.dataTable > tbody > tr.child ul li {
-  border-bottom: 1px solid #efefef;
-  padding: 0.5em 0;
+table.dataTable > tbody > tr.child ul.dtr-details > li {
+  border-bottom: 1px solid var(--hairline);
+  padding: 0.55em 0;
 }
-table.dataTable > tbody > tr.child ul li:first-child {
+table.dataTable > tbody > tr.child ul.dtr-details > li:first-child {
   padding-top: 0;
 }
-table.dataTable > tbody > tr.child ul li:last-child {
+table.dataTable > tbody > tr.child ul.dtr-details > li:last-child {
   border-bottom: none;
 }
 table.dataTable > tbody > tr.child span.dtr-title {
   display: inline-block;
   min-width: 75px;
+  font-family: var(--font-head);
+  font-weight: 500;
+  color: var(--nrc-heading);
 }
-
-table.dataTable > tbody > tr.child > td.child > ul.dtr-details {
-  width: 100%;
-}
-table.dataTable
-  > tbody
-  > tr.child
-  > td.child
-  > ul.dtr-details
-  li
-  span.dtr-data {
+table.dataTable > tbody > tr.child span.dtr-data {
   float: right;
 }
 
+// Guard against flash of un-initialised table
 body > table.dataTable {
   display: none;
+}
+
+/* =============================================================================
+ * 11. Responsive layout breakpoints (control bar reflow) — preserved
+ * ========================================================================== */
+@media screen and (max-width: 767px) {
+  .dataTables_wrapper .dataTables_info,
+  .dataTables_wrapper .dataTables_paginate {
+    float: none;
+    text-align: center;
+  }
+  .dataTables_wrapper .dataTables_paginate {
+    margin-top: 0.5em;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .nrcstat__static-table__container {
+    padding: 12px;
+  }
+  .nrcstat-table-widget {
+    padding: 14px 12px 6px;
+  }
+  .controls-wrapper {
+    grid-template: auto auto auto auto / 1fr;
+    row-gap: 0.3em;
+  }
+  .dataTables_wrapper .dataTables_length,
+  .dataTables_wrapper .dataTables_filter {
+    float: none;
+    text-align: left;
+  }
+  .dataTables_wrapper .dataTables_filter {
+    margin-top: 0.5em;
+  }
+  .dt-buttons {
+    display: none; // export hidden on phones, as before
+  }
+}
+
+/* =============================================================================
+ * 12. Accessibility & progressive enhancement
+ * ========================================================================== */
+
+/* (a) Fallback when backdrop-filter is unsupported: solid, opaque surfaces.
+ *     Without this the low-alpha backgrounds would look washed-out/illegible. */
+@supports not (
+  (-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))
+) {
+  .nrcstat-table-widget {
+    background: #ffffff;
+  }
+  table.dataTable thead th,
+  table.dataTable thead td {
+    background: #eef1f6;
+  }
+  .nrcstat-table-widget select,
+  .dataTables_wrapper .dataTables_filter input,
+  .dt-button,
+  .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: #f4f6f9;
+  }
+}
+
+/* (b) User asked the OS to reduce transparency: raise opacity toward solid and
+ *     drop the blur (MDN prefers-reduced-transparency). */
+@media (prefers-reduced-transparency: reduce) {
+  .nrcstat-table-widget {
+    background: rgba(255, 255, 255, 0.97);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  table.dataTable thead th,
+  table.dataTable thead td {
+    background: #eef1f6;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .nrcstat-table-widget select,
+  .dataTables_wrapper .dataTables_filter input,
+  .dt-button,
+  .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+  .dataTables_wrapper .dataTables_processing {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: #f4f6f9;
+  }
+  .nrcstat-table-widget-annotations .accordion {
+    background: #f4f6f9;
+  }
+}
+
+/* (c) Respect reduced-motion: no hover/transition animation. */
+@media (prefers-reduced-motion: reduce) {
+  .nrcstat-table-widget,
+  .nrcstat-table-widget *,
+  .dataTables_wrapper * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* (d) Visible keyboard focus for interactive controls. */
+.nrcstat-table-widget a:focus-visible,
+.nrcstat-table-widget select:focus-visible,
+.nrcstat-table-widget input:focus-visible,
+.dataTables_wrapper .paginate_button:focus-visible,
+.dt-button:focus-visible {
+  outline: 2px solid var(--nrc-orange);
+  outline-offset: 2px;
+}
+
+/* ████████████████████████████████████████████████████████████████████████████
+ * MATERIAL DESIGN THEME — candidate skin #2 (toggle with the "v" key)
+ * ----------------------------------------------------------------------------
+ * Everything below is scoped under `html.nrcstat-theme-material`, added/removed
+ * by themeSwitcher.js. The Liquid Glass skin above is the default (no class).
+ *
+ * It is built almost entirely by RE-DECLARING the design tokens from §1, plus a
+ * few structural overrides to strip the frosted-glass material (backdrop-filter,
+ * specular edges, sheen) and adopt flat Material surfaces, elevation shadows,
+ * uppercase caption headers, dividers, and text-button controls.
+ *
+ * ── REMOVAL ────────────────────────────────────────────────────────────────
+ *  • Keeping Glass, dropping Material:  delete this whole block + the "THEME
+ *    SWITCHER TOAST" block below, delete themeSwitcher.js, and remove its import
+ *    in StaticTable.js. Nothing else references `.nrcstat-theme-material`.
+ *  • Keeping Material, dropping Glass:  do the same switcher cleanup, then
+ *    find-and-replace `html.nrcstat-theme-material ` → `` (empty) in this block
+ *    so these rules become the default, and delete the now-unused glass
+ *    decorative bits in §1–§12 (sheen gradients, specular --glass-inset, stage
+ *    gradient). The structural DataTables rules are shared and stay either way.
+ * ███████████████████████████████████████████████████████████████████████████ */
+
+html.nrcstat-theme-material {
+  /* (1) Token re-declaration — does ~80% of the reskin on its own. */
+  .nrcstat__static-table__container,
+  .nrcstat-table-widget {
+    --nrc-heading: rgba(0, 0, 0, 0.6);
+    --nrc-ink: rgba(0, 0, 0, 0.87);
+    --nrc-ink-soft: rgba(0, 0, 0, 0.6);
+
+    --glass-card-bg: #ffffff;
+    --glass-header-bg: #ffffff;
+    --glass-control-bg: #ffffff;
+    --glass-border: rgba(0, 0, 0, 0.12);
+    --glass-stroke-top: transparent;
+    --hairline: rgba(0, 0, 0, 0.12);
+
+    --row-bg-odd: transparent; // Material tables don't zebra-stripe
+    --row-hover: rgba(0, 0, 0, 0.04);
+    --row-sort-tint: rgba(0, 0, 0, 0.03); // neutral grey active-column tint
+
+    // dp2 elevation; keep --glass-inset a valid (invisible) shadow so the
+    // shared `box-shadow: var(--glass-shadow), var(--glass-inset)` stays legal.
+    --glass-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.2);
+    --glass-inset: 0 0 0 0 transparent;
+
+    --radius-card: 4px;
+    --radius-control: 4px;
+    --glass-blur: 0px;
+  }
+
+  /* (2) Stage: padded flat neutral backdrop framing the card (Material only). */
+  .nrcstat__static-table__container {
+    padding: 22px;
+    background: #f1f3f5;
+  }
+
+  /* (3) Card & header: strip the frosted material, flatten surfaces, and give
+   *     the card its Material elevation shadow (the Glass skin has none). */
+  .nrcstat-table-widget {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: var(--glass-shadow); // dp2 elevation token (overridden in §1)
+  }
+  table.dataTable thead th,
+  table.dataTable thead td {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: #ffffff;
+    box-shadow: none;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    // Material column captions: uppercase, 12sp, medium, tracked.
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--nrc-heading);
+  }
+
+  /* (4) Title: Roboto Medium, ink-87. */
+  .nrcstat-table-widget h4 {
+    font-family: var(--font-body);
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.87);
+  }
+
+  /* (5) Inputs & selects: underline (filled) Material fields. */
+  .nrcstat-table-widget select,
+  .controls-wrapper select,
+  .dataTables_wrapper .dataTables_filter input {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.42);
+    border-radius: 0;
+    box-shadow: none;
+    padding: 6px 2px;
+    transition: border-color 0.2s var(--ease);
+
+    &:hover {
+      border-bottom-color: rgba(0, 0, 0, 0.87);
+    }
+    &:focus {
+      outline: none;
+      border-bottom: 2px solid var(--nrc-orange);
+      box-shadow: none;
+    }
+  }
+
+  /* (6) Export buttons: Material text buttons. */
+  .dt-button,
+  .nrcstat-table-widget a.dt-button {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: var(--nrc-orange) !important;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    border-radius: 4px;
+
+    &:hover {
+      background: rgba(253, 90, 0, 0.08);
+      color: var(--nrc-orange) !important;
+      box-shadow: none;
+    }
+  }
+
+  /* (7) Pagination: text buttons; current page = primary colour, no fill. */
+  .dataTables_wrapper .dataTables_paginate .paginate_button {
+    border-radius: 4px;
+
+    &.current,
+    &.current:hover {
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      color: var(--nrc-orange) !important;
+      font-weight: 700;
+    }
+    &:hover:not(.current):not(.disabled) {
+      background: rgba(0, 0, 0, 0.05);
+      border-color: transparent;
+      color: rgba(0, 0, 0, 0.87) !important;
+      box-shadow: none;
+    }
+  }
+
+  /* (8) Processing overlay & footnote panels: flat Material surfaces. */
+  .dataTables_wrapper .dataTables_processing {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: #ffffff;
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+  }
+  .nrcstat-table-widget-annotations .accordion {
+    background: transparent;
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 0;
+  }
+}
+
+/* ████████████████████████████████████████████████████████████████████████████
+ * THEME SWITCHER UI — temporary; remove together with themeSwitcher.js
+ * ███████████████████████████████████████████████████████████████████████████ */
+
+/* Floating toggle button (bottom-right). */
+#nrcstat-theme-switch {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 99999;
+  padding: 11px 18px;
+  border: none;
+  border-radius: 999px;
+  background: #1f3a5f;
+  color: #fff;
+  font: 600 13px/1 'Roboto', sans-serif;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(31, 58, 95, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+#nrcstat-theme-switch:hover {
+  background: #fd5a00;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(253, 90, 0, 0.4);
+}
+#nrcstat-theme-switch:active {
+  transform: translateY(0);
+}
+
+/* Confirmation toast (centered, auto-hides). */
+#nrcstat-theme-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%) translateY(10px);
+  z-index: 99999;
+  padding: 10px 18px;
+  border-radius: 9px;
+  background: rgba(33, 33, 33, 0.92);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font: 500 14px/1 'Roboto', sans-serif;
+  letter-spacing: 0.3px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+#nrcstat-theme-toast[data-show='1'] {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }

@@ -1,7 +1,8 @@
 import React, { useRef, useContext, useCallback } from 'react'
 import { map as _map } from 'lodash'
 
-import c from './StaticTable.scss'
+import './StaticTable.scss'
+import './themeSwitcher' // TEMP: press "v" to switch Glass/Material — see themeSwitcher.js
 import { FixedLocaleContext } from '../../services/i18n'
 import { WidgetParamsContext } from '../Widget'
 import { isClient, isServer } from '../../util/utils'
@@ -50,8 +51,8 @@ export default function StaticTable(props) {
     renderFn(fakeWidgetObject, preloadedWidgetData, element, languageObject, t)
   })
   return (
-    <div className={c['nrcstat__static-table__container']}>
-      <div className={c['nrcstat-table-widget']} ref={onReady} />
+    <div className="nrcstat__static-table__container">
+      <div className="nrcstat-table-widget" ref={onReady} />
     </div>
   )
 }
