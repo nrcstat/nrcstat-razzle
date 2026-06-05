@@ -69,19 +69,19 @@ server
       const dataLoader = dataPreLoaders[widgetType.type]
       if (dataLoader) {
         let data = await dataLoader(enrichedWidget)
-        // Uncomment to restore the password-based data embargo mechanism.
-        // const isAuthFor2024 = req.headers.bypass === 'vS!i@Z#No7Fa$SJ!GXN2'
-        // if (data) {
-        //   data = data.map((x) => {
-        //     const newX = { ...x }
-        //     if (x.year === 2024) {
-        //       if (!isAuthFor2024) {
-        //         newX.data = 0
-        //       }
-        //     }
-        //     return newX
-        //   })
-        // }
+
+        const isAuthFor2025 = req.headers.bypass === 'vS!i@Z#No7Fa$SJ!GXN2'
+        if (data) {
+          data = data.map((x) => {
+            const newX = { ...x }
+            if (x.year === 2025) {
+              if (!isAuthFor2025) {
+                newX.data = 0
+              }
+            }
+            return newX
+          })
+        }
 
         enrichedWidget.preloadedWidgetData = data
 

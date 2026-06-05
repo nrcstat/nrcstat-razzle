@@ -43,13 +43,17 @@ export const determineWidgetType = async (widget) => {
     widgetIdParam === 'global-displacement-radial-bar-chart-map-2025-0.1'
   ) {
     return { locale, type: 'GlobalMap', periodYear: 2024 }
+  } else if (
+    widgetIdParam === 'global-displacement-radial-bar-chart-map-2026-0.1'
+  ) {
+    return { locale, type: 'GlobalMap', periodYear: 2025 }
   } else if (/static/.test(widgetIdParam)) {
-    const [, periodYearString = '2024'] = widgetIdParam.match(/^(\d*)-.+/) || []
+    const [, periodYearString = '2025'] = widgetIdParam.match(/^(\d*)-.+/) || []
     let periodYear
     try {
       periodYear = parseInt(periodYearString)
     } catch (error) {
-      periodYear = 2024
+      periodYear = 2025
     }
     const [, tableType] = widgetIdParam.match(/static-(.+)/)
     return { locale, type: 'StaticTable', periodYear, tableType }
