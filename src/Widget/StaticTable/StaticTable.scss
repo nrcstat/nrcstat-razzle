@@ -81,7 +81,10 @@
   // Rows (kept near-opaque for legibility — NOT blurred)
   --row-bg: rgba(255, 255, 255, 0); // even rows: let card glass show
   --row-bg-odd: rgba(255, 255, 255, 0.38); // odd rows: barely-there zebra
-  --row-hover: var(--nrc-orange-soft);
+  // Unified row hover: a cohesive cool tint + an orange leading-edge accent bar
+  // (see §7). Replaces the flat orange row wash, which clashed with the table.
+  --row-hover: rgba(31, 58, 95, 0.07);
+  --row-hover-accent: var(--nrc-orange);
   --row-sort-tint: rgba(31, 58, 95, 0.04); // active sort column
 
   // Depth (layered glass shadow + inset specular)
@@ -123,10 +126,7 @@
   position: relative;
   padding: 18px 18px 8px;
   border-radius: var(--radius-card);
-  border: 1px solid var(--glass-border);
   background: var(--glass-card-bg);
-  // Border only — no surrounding drop shadow (kept a faint inner top edge).
-  box-shadow: var(--glass-inset);
   color: var(--nrc-ink);
   font-family: var(--font-body);
 
@@ -134,6 +134,14 @@
   -webkit-backdrop-filter: saturate(var(--glass-saturate))
     blur(var(--glass-blur));
   backdrop-filter: saturate(var(--glass-saturate)) blur(var(--glass-blur));
+}
+
+/* The frame (border + inner edge) is reserved for the main table only; every
+ * other table is frameless. Theme blocks below add their own main-only stage
+ * padding/background and elevation. */
+.nrcstat__static-table__container--main .nrcstat-table-widget {
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-inset);
 }
 
 /* -----------------------------------------------------------------------------
@@ -222,6 +230,11 @@
   font-size: 13px;
   font-weight: 300;
 }
+/* The column-header info ("eye") icon is dark grey, not orange (footnote
+ * superscripts keep the orange above). Reuses the --nrc-ink-soft token. */
+.nrcstat-widget-tooltip .fa-info-circle {
+  color: var(--nrc-ink-soft);
+}
 
 .nrcstat-table-widget .table-tooltip,
 .nrcstat-table-widget .table-annotation-tooltip {
@@ -232,10 +245,14 @@
   cursor: pointer;
 }
 
-/* Tooltipster theme — dark glass bubble */
+/* Tooltipster theme — dark glass bubble. NB: the bubble is appended to <body>,
+ * outside the widget, so widget-scoped tokens don't resolve here — use literals.
+ * Smaller type than before for a lighter tooltip. */
 .tooltipster-content {
-  font: 10pt var(--font-body);
-  padding: 1em;
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
+  line-height: 1.45;
+  padding: 0.85em 1em;
   overflow: hidden;
 }
 .tooltipster-box {
@@ -316,6 +333,9 @@ table.dataTable {
       cursor: pointer;
       background-repeat: no-repeat;
       background-position: center right 8px;
+      // Reserve room for the arrow (sits at right 8px, ~9px wide) so it never
+      // crowds the column label, however narrow the column gets.
+      padding-right: 26px;
     }
     .sorting {
       background-image: url('./images/sort_both.png');
@@ -377,11 +397,16 @@ table.dataTable {
     }
   }
 
-  /* Hover — brand-tinted, the primary row-tracking affordance */
+  /* Hover — cohesive cool tint + crisp orange leading-edge accent bar.
+   * The accent sits on the first visible data cell (column 0 is the always-
+   * hidden responsive "control" cell, so :nth-child(2) is the row's left edge). */
   &.hover tbody,
   &.display tbody {
     tr:hover {
       background-color: var(--row-hover);
+    }
+    tr:hover > td:nth-child(2) {
+      box-shadow: inset 3px 0 0 var(--row-hover-accent);
     }
   }
 
@@ -880,25 +905,26 @@ body > table.dataTable {
 }
 
 /* ████████████████████████████████████████████████████████████████████████████
- * MATERIAL DESIGN THEME — candidate skin #2 (toggle with the "v" key)
+ * MATERIAL DESIGN THEME — candidate skin #2 (cycle with the "v" key / button)
  * ----------------------------------------------------------------------------
- * Everything below is scoped under `html.nrcstat-theme-material`, added/removed
- * by themeSwitcher.js. The Liquid Glass skin above is the default (no class).
+ * Scoped under `html.nrcstat-theme-material`, added/removed by themeSwitcher.js.
+ * The Liquid Glass skin above is the default (no class); the Hybrid skin below
+ * is a copy of this one. Three candidate skins total.
  *
- * It is built almost entirely by RE-DECLARING the design tokens from §1, plus a
- * few structural overrides to strip the frosted-glass material (backdrop-filter,
+ * Built almost entirely by RE-DECLARING the design tokens from §1, plus a few
+ * structural overrides to strip the frosted-glass material (backdrop-filter,
  * specular edges, sheen) and adopt flat Material surfaces, elevation shadows,
  * uppercase caption headers, dividers, and text-button controls.
  *
  * ── REMOVAL ────────────────────────────────────────────────────────────────
- *  • Keeping Glass, dropping Material:  delete this whole block + the "THEME
- *    SWITCHER TOAST" block below, delete themeSwitcher.js, and remove its import
- *    in StaticTable.js. Nothing else references `.nrcstat-theme-material`.
- *  • Keeping Material, dropping Glass:  do the same switcher cleanup, then
- *    find-and-replace `html.nrcstat-theme-material ` → `` (empty) in this block
- *    so these rules become the default, and delete the now-unused glass
- *    decorative bits in §1–§12 (sheen gradients, specular --glass-inset, stage
- *    gradient). The structural DataTables rules are shared and stay either way.
+ *  • Dropping a candidate skin:  delete its block (this one, and/or the HYBRID
+ *    block below). Once only one skin remains, also delete the "THEME SWITCHER
+ *    UI" block, themeSwitcher.js, and its import in StaticTable.js.
+ *  • Promoting a non-default skin to be THE design:  do the switcher cleanup,
+ *    then find-and-replace its `html.nrcstat-theme-… ` selector prefix → ``
+ *    (empty) so its rules become the default, and delete the now-unused Glass
+ *    decorative bits in §1–§12 (sheen gradients, specular --glass-inset, etc.).
+ *    The structural DataTables rules are shared and stay either way.
  * ███████████████████████████████████████████████████████████████████████████ */
 
 html.nrcstat-theme-material {
@@ -917,7 +943,7 @@ html.nrcstat-theme-material {
     --hairline: rgba(0, 0, 0, 0.12);
 
     --row-bg-odd: transparent; // Material tables don't zebra-stripe
-    --row-hover: rgba(0, 0, 0, 0.04);
+    // --row-hover / --row-hover-accent inherit the unified hover from §1
     --row-sort-tint: rgba(0, 0, 0, 0.03); // neutral grey active-column tint
 
     // dp2 elevation; keep --glass-inset a valid (invisible) shadow so the
@@ -931,24 +957,28 @@ html.nrcstat-theme-material {
     --glass-blur: 0px;
   }
 
-  /* (2) Stage: padded flat neutral backdrop framing the card (Material only). */
-  .nrcstat__static-table__container {
+  /* (2) Stage: padded grey backdrop — MAIN table only (others are frameless). */
+  .nrcstat__static-table__container--main {
     padding: 22px;
     background: #f1f3f5;
   }
 
-  /* (3) Card & header: strip the frosted material, flatten surfaces, and give
-   *     the card its Material elevation shadow (the Glass skin has none). */
+  /* (3) Card & header: strip the frosted material on every card; the Material
+   *     elevation shadow is reserved for the MAIN table's framed card. */
   .nrcstat-table-widget {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
+  }
+  .nrcstat__static-table__container--main .nrcstat-table-widget {
     box-shadow: var(--glass-shadow); // dp2 elevation token (overridden in §1)
   }
   table.dataTable thead th,
   table.dataTable thead td {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
-    background: #ffffff;
+    // background-color (not the `background` shorthand) so it doesn't wipe the
+    // base `.sorting` sort-icon background-image (higher theme specificity).
+    background-color: #ffffff;
     box-shadow: none;
     border-radius: 0;
     border-bottom: 1px solid rgba(0, 0, 0, 0.12);
@@ -1037,6 +1067,174 @@ html.nrcstat-theme-material {
   }
 
   /* (8) Processing overlay & footnote panels: flat Material surfaces. */
+  .dataTables_wrapper .dataTables_processing {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: #ffffff;
+    border: none;
+    border-radius: 4px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+  }
+  .nrcstat-table-widget-annotations .accordion {
+    background: transparent;
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 0;
+  }
+}
+
+/* ████████████████████████████████████████████████████████████████████████████
+ * HYBRID THEME — candidate skin #3 ("best of both worlds")
+ * ----------------------------------------------------------------------------
+ * = a COPY of the Material skin above (its layout, spacing, white-space, flat
+ *   elevated card, uppercase captions, text buttons) with three deliberate
+ *   swaps back to the Liquid Glass behaviour:
+ *     (A) row / sort-column HOVER → Liquid's orange tint
+ *     (B) export-button + pagination HOVER → Liquid's orange fill
+ *     (C) continent / country / search / length controls → Liquid glass pills
+ *
+ * Kept self-contained (a copy rather than shared rules) so any of the three
+ * candidate skins can be deleted independently once a winner is chosen.
+ * Remove together with themeSwitcher.js — see notes there.
+ * ███████████████████████████████████████████████████████████████████████████ */
+
+html.nrcstat-theme-hybrid {
+  /* (1) Tokens — identical to Material EXCEPT --row-hover (swap A). */
+  .nrcstat__static-table__container,
+  .nrcstat-table-widget {
+    --nrc-heading: rgba(0, 0, 0, 0.6);
+    --nrc-ink: rgba(0, 0, 0, 0.87);
+    --nrc-ink-soft: rgba(0, 0, 0, 0.6);
+
+    --glass-card-bg: #ffffff;
+    --glass-header-bg: #ffffff;
+    --glass-control-bg: #ffffff;
+    --glass-border: rgba(0, 0, 0, 0.12);
+    --glass-stroke-top: transparent;
+    --hairline: rgba(0, 0, 0, 0.12);
+
+    --row-bg-odd: transparent;
+    // (A) row hover inherits the unified hover from §1 (cool tint + orange bar)
+    --row-sort-tint: rgba(0, 0, 0, 0.03);
+
+    --glass-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.2);
+    --glass-inset: 0 0 0 0 transparent;
+
+    --radius-card: 4px;
+    --radius-control: 4px;
+    --glass-blur: 0px;
+  }
+
+  /* (2) Stage + (3) flat card & uppercase header — same as Material.
+   *     Stage padding/background + elevation are MAIN-table only (frameless
+   *     elsewhere); the frosted material is stripped on every card. */
+  .nrcstat__static-table__container--main {
+    padding: 22px;
+    background: #f1f3f5;
+  }
+  .nrcstat-table-widget {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .nrcstat__static-table__container--main .nrcstat-table-widget {
+    box-shadow: var(--glass-shadow);
+  }
+  table.dataTable thead th,
+  table.dataTable thead td {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    // background-color (not the `background` shorthand) so it doesn't wipe the
+    // base `.sorting` sort-icon background-image (higher theme specificity).
+    background-color: #ffffff;
+    box-shadow: none;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--nrc-heading);
+  }
+
+  /* (4) Title — same as Material. */
+  .nrcstat-table-widget h4 {
+    font-family: var(--font-body);
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.87);
+  }
+
+  /* (5) Controls: Material underline fields (continent / country / search /
+   *     length) — matches the Material reference, not the Liquid pills. */
+  .nrcstat-table-widget select,
+  .controls-wrapper select,
+  .dataTables_wrapper .dataTables_filter input {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.42);
+    border-radius: 0;
+    box-shadow: none;
+    padding: 6px 2px;
+    transition: border-color 0.2s var(--ease);
+
+    &:hover {
+      border-bottom-color: rgba(0, 0, 0, 0.87);
+    }
+    &:focus {
+      outline: none;
+      border-bottom: 2px solid var(--nrc-orange);
+      box-shadow: none;
+    }
+  }
+
+  /* (6) Export buttons: Material text-button look, (B) Liquid orange-fill hover. */
+  .dt-button,
+  .nrcstat-table-widget a.dt-button {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: var(--nrc-orange) !important;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    border-radius: 4px;
+
+    &:hover {
+      background: var(--nrc-orange);
+      color: #fff !important;
+      box-shadow: 0 4px 12px rgba(253, 90, 0, 0.3);
+    }
+  }
+
+  /* (7) Pagination: Material base + current style, (B) Liquid orange-fill hover. */
+  .dataTables_wrapper .dataTables_paginate .paginate_button {
+    border-radius: 4px;
+
+    &.current,
+    &.current:hover {
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      color: var(--nrc-orange) !important;
+      font-weight: 700;
+    }
+    &:hover:not(.current):not(.disabled) {
+      color: #fff !important;
+      border-color: var(--nrc-orange);
+      background: var(--nrc-orange);
+      box-shadow: 0 4px 12px rgba(253, 90, 0, 0.3);
+    }
+  }
+
+  /* (8) Processing overlay & footnote panels — same as Material. */
   .dataTables_wrapper .dataTables_processing {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;

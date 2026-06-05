@@ -44,6 +44,9 @@ export default function StaticTable(props) {
     t,
   }).render
 
+  // Only the main table keeps a framed card; all other tables are frameless.
+  const isMainTable = tableType === 'main-table'
+
   const elementRef = useRef(null)
   const onReady = useCallback((element) => {
     elementRef.current = element
@@ -51,7 +54,12 @@ export default function StaticTable(props) {
     renderFn(fakeWidgetObject, preloadedWidgetData, element, languageObject, t)
   })
   return (
-    <div className="nrcstat__static-table__container">
+    <div
+      className={
+        'nrcstat__static-table__container' +
+        (isMainTable ? ' nrcstat__static-table__container--main' : '')
+      }
+    >
       <div className="nrcstat-table-widget" ref={onReady} />
     </div>
   )
