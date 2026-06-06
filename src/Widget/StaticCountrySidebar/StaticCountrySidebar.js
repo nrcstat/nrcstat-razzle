@@ -175,7 +175,7 @@ function makeDataPointToDataMap(dataPoints, preloadedWidgetData) {
   dataPoints.forEach((dataPoint) => {
     dataMap[dataPoint] = preloadedWidgetData.find(
       (d) => d.dataPoint === dataPoint,
-    ).data
+    )?.data ?? null
   })
   return dataMap
 }

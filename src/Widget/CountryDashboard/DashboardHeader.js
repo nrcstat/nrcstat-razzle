@@ -20,7 +20,7 @@ export function DashboardHeader() {
     countryCode,
     'population',
     parseInt(year)
-  ).data
+  )?.data ?? null
 
   return (
     <div className={c['dashboard-header']}>

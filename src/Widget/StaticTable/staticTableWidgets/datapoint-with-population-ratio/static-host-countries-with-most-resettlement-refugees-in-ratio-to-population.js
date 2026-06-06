@@ -49,11 +49,11 @@ export default function (widgetParams) {
           const data = _.find(
             countryDataPoints,
             (dp) => dp.dataPoint == 'resettlementRefugeesToXInYear'
-          ).data
+          )?.data ?? null
           const population = _.find(
             countryDataPoints,
             (dp) => dp.dataPoint == 'population'
-          ).data
+          )?.data ?? null
           return { countryCode, data, population }
         })
         // Calculate dataPoint-to-population ratio. Population is stored in millions, convert to integer in calculation

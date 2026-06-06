@@ -655,7 +655,8 @@ function GlobalMap({ mapboxgl }) {
         `NRC.Web.StaticTextDictionary.Contries.${selectedCountryIso2}`,
       )
 
-      const population = getCountryStat(selectedCountryIso2, 'population').data
+      const population =
+        getCountryStat(selectedCountryIso2, 'population')?.data ?? null
 
       const statsTable = countryInfo__statsTable(selectedCountryIso2)
 
@@ -919,7 +920,8 @@ function GlobalMap({ mapboxgl }) {
         }
       }
 
-      const population = getCountryStat(selectedCountryIso2, 'population').data
+      const population =
+        getCountryStat(selectedCountryIso2, 'population')?.data ?? null
       const populationHtml = `<p class="population">${t(
         'countryInfoPopup.population',
         { populationInMillions: population },
@@ -991,7 +993,8 @@ function GlobalMap({ mapboxgl }) {
       ]
       sections = sections.map((section) => {
         section.dataPoints = section.dataPoints.map((dp) => {
-          let dataPointValue = getCountryStat(iso2, dp.dataPointKey).data
+          let dataPointValue =
+            getCountryStat(iso2, dp.dataPointKey)?.data ?? null
 
           if (
             includes(
@@ -1520,9 +1523,10 @@ function GlobalMap({ mapboxgl }) {
       function getMaxSet3FigureFromData(iso) {
         const maxFigure = Math.max(
           ...[
-            getCountryStat(iso, 'totalRefugeesFromX').data,
-            getCountryStat(iso, 'refugeesInXFromOtherCountriesInYear').data,
-            getCountryStat(iso, 'idpsInXInYear').data,
+            getCountryStat(iso, 'totalRefugeesFromX')?.data ?? null,
+            getCountryStat(iso, 'refugeesInXFromOtherCountriesInYear')?.data ??
+              null,
+            getCountryStat(iso, 'idpsInXInYear')?.data ?? null,
           ],
         )
         return maxFigure
@@ -1724,18 +1728,19 @@ function GlobalMap({ mapboxgl }) {
         const dataHtml = [
           {
             color: '#ffc6a6',
-            data: getCountryStat(countryCode, 'idpsInXInYear').data,
+            data: getCountryStat(countryCode, 'idpsInXInYear')?.data ?? null,
           },
           {
             color: '#fd9459',
-            data: getCountryStat(countryCode, 'totalRefugeesFromX').data,
+            data: getCountryStat(countryCode, 'totalRefugeesFromX')?.data ?? null,
           },
           {
             color: '#949494',
-            data: getCountryStat(
-              countryCode,
-              'refugeesInXFromOtherCountriesInYear',
-            ).data,
+            data:
+              getCountryStat(
+                countryCode,
+                'refugeesInXFromOtherCountriesInYear',
+              )?.data ?? null,
           },
         ]
           .sort((a, b) => b.data - a.data)

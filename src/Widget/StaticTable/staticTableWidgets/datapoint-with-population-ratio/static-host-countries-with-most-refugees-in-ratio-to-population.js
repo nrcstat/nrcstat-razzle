@@ -26,8 +26,8 @@ export default function (widgetParams) {
     // Create array of countries, each element like this:
     // { countryCode, newRefugeesInXFromOtherCountriesInYear, population }
       .map((countryDataPoints, countryCode) => {
-        const data = _.find(countryDataPoints, dp => dp.dataPoint == 'refugeesInXFromOtherCountriesInYear').data
-        const population = _.find(countryDataPoints, dp => dp.dataPoint == 'population').data
+        const data = _.find(countryDataPoints, dp => dp.dataPoint == 'refugeesInXFromOtherCountriesInYear')?.data ?? null
+        const population = _.find(countryDataPoints, dp => dp.dataPoint == 'population')?.data ?? null
         return { countryCode, data, population }
       })
     // Calculate dataPoint-to-population ratio. Population is stored in millions, convert to integer in calculation

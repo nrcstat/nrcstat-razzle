@@ -32,6 +32,7 @@ export class RadialBarChart extends React.Component {
   }
 
   data() {
+    if (!this.props.data) return []
     const maxFigure = Math.max(...this.props.data.map((v) => v.figure))
     return this.props.data
       .sort((a, b) => a.figure - b.figure)

@@ -35,7 +35,7 @@ function Donut({ dataPoint }) {
     countryCode,
     dataPoint,
     parseInt(year)
-  ).data
+  )?.data ?? null
   const remainder = 1 - data
 
   const donutData = [
