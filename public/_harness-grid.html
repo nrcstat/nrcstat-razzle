@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Grid-embedding harness (reproduces flyktninghjelpen.no CMS layout)</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Roboto:wght@300;400;700&display=swap"
+    />
+    <style>
+      html {
+        font-family: Roboto;
+      }
+      body {
+        margin: 0;
+      }
+      /* Faithfully reproduce the NRC CMS article layout that overflowed.
+         Live CSS (observed on flyktninghjelpen.no):
+           .news-article__main-content { display: grid;
+             grid-template-columns: [main-content] 651px [side-content] 358px; }
+           .bottom-content { grid-column: bottom-content; min-width: 100%; }
+         Because `bottom-content` is NOT a defined grid line, the item is placed
+         in an AUTO implicit column. An auto track sizes to max-content, and the
+         item's `min-width:100%` resolves against that track, so the track blows
+         out to the table's intrinsic min-content width — wider than the grid
+         container (which is itself constrained to the viewport / 1400px). The
+         widget then overflows its column unless it bounds itself. */
+      .news-article__main-content {
+        display: grid;
+        grid-template-columns: 651px 358px;
+        grid-template-areas:
+          'content aside-top'
+          'content aside-bottom'
+          'bottom-content bottom-content';
+      }
+      .bottom-content {
+        grid-area: bottom-content;
+        min-width: 100%;
+      }
+      /* Live site collapses the grid to a single column below the desktop
+         breakpoint (observed: grid-template-columns:1fr, single-column areas).
+         Without this the fixed 651+358 tracks would spuriously overflow narrow
+         viewports independently of the widget. */
+      @media (max-width: 1009px) {
+        .news-article__main-content {
+          grid-template-columns: 1fr;
+          grid-template-areas:
+            'aside-top'
+            'content'
+            'bottom-content'
+            'aside-bottom';
+        }
+      }
+    </style>
+    <script src="/widgetLib.js"></script>
+  </head>
+  <body>
+    <main class="page page_container news-article">
+      <article class="article-page article-default" style="max-width: 1400px">
+        <div class="news-article__main-content">
+          <div class="bottom-content">
+            <div class="block-padding nrcstat-block">
+              <div class="nrcstat-block-widget">
+                <div class="col-xs-12" id="grid-main-table"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </main>
+    <script>
+      NrcStatWidgetLibrary.getInstance().generateWidget({
+        widgetId: '2024-static-main-table',
+        targetSelector: '#grid-main-table',
+      })
+    </script>
+  </body>
+</html>

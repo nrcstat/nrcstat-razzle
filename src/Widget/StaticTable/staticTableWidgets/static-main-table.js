@@ -6,6 +6,7 @@ import {
 import { API_URL } from '@/config.js'
 import { map, groupBy, find, findIndex, includes, each } from 'lodash'
 import { isServer } from '../../../util/utils'
+import fitWidgetToViewport from './fitWidgetToViewport'
 const continentColorMap = require('./continentColorMap.json')
 const async = require('async')
 import { dataCache } from '../../../services/DataCache'
@@ -542,6 +543,9 @@ export default function (widgetParams) {
         ft.on('responsive-display', () => initTooltipster())
         ft.rows.add(tableData).draw(false)
         ft.order([2, 'asc']).draw()
+        // Keep the widget within the viewport even inside grid/flex CMS layouts
+        // (and re-collapse columns on resize).
+        fitWidgetToViewport(targetSelector, ft)
         cb()
       },
       function setupTooltips(cb) {

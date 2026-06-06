@@ -2,6 +2,7 @@ import nodeFetch from 'node-fetch'
 import { thousandsFormatter } from '@/util/tableWidgetFormatters.js'
 import { API_URL } from '@/config.js'
 import { isServer } from '../../../../util/utils'
+import fitWidgetToViewport from '../fitWidgetToViewport'
 import { dataCache } from '../../../../services/DataCache'
 const async = require('async')
 
@@ -213,6 +214,8 @@ export default function (
         if (orderingEnabled) {
           ft.order([2, 'desc']).draw()
         }
+        // Keep the widget within the viewport even inside grid/flex CMS layouts.
+        fitWidgetToViewport(targetSelector, ft)
         cb()
       },
       function setupTooltips(cb) {

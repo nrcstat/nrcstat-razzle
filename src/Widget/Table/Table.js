@@ -3,6 +3,7 @@ import React, { useContext, useRef } from 'react'
 import { isClient, isServer } from '../../util/utils'
 import '../StaticTable/StaticTable.scss'
 import { WidgetParamsContext } from '../Widget'
+import fitWidgetToViewport from '../StaticTable/staticTableWidgets/fitWidgetToViewport'
 import c2 from './Table.module.scss'
 const $ = require('jquery')
 
@@ -42,6 +43,8 @@ function Table() {
       searching: false,
       autoWidth: false,
     })
+    // Keep the widget within the viewport even inside grid/flex CMS layouts.
+    fitWidgetToViewport(element, table)
   }
 
   const colIdsAndType = customData?.columns?.map((column) => [
