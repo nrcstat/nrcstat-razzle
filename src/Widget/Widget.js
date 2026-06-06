@@ -28,9 +28,6 @@ const CountryDashboard = loadable(() =>
     /* webpackChunkName: "CountryDashboard" */ './CountryDashboard/CountryDashboard'
   )
 )
-const CustomTable = loadable(() =>
-  import(/* webpackChunkName: "CustomTable" */ './CustomTable/CustomTable')
-)
 const Pictogram = loadable(() =>
   import(/* webpackChunkName: "Pictogram" */ './Pictogram/Pictogram')
 )
@@ -57,7 +54,6 @@ const widgetMap = {
   Column: Bar,
   StaticTable: StaticTable,
   CountryDashboard: CountryDashboard,
-  CustomTable: CustomTable,
   Pictogram: Pictogram,
   StaticCountrySidebar: StaticCountrySidebar,
   Timeline: Timeline,

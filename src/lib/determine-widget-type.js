@@ -91,8 +91,6 @@ export const determineWidgetType = async (widget) => {
       return { locale, type: 'Column', widgetObject }
     } else if (type === 'line') {
       return { locale, type: 'Line', widgetObject }
-    } else if (type === 'custom-table') {
-      return { locale, type: 'CustomTable', widgetObject }
     } else if (type === 'pictogram') {
       return { locale, type: 'Pictogram', widgetObject }
     } else if (type === 'timeline') {
