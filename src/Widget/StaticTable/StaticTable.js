@@ -2,7 +2,6 @@ import React, { useRef, useContext, useCallback } from 'react'
 import { map as _map } from 'lodash'
 
 import './StaticTable.scss'
-import './themeSwitcher' // TEMP: press "v" to switch Glass/Material — see themeSwitcher.js
 import { FixedLocaleContext } from '../../services/i18n'
 import { WidgetParamsContext } from '../Widget'
 import { isClient, isServer } from '../../util/utils'

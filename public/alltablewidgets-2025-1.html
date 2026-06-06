@@ -31,6 +31,13 @@
         font-weight: 300;
         font-style: normal;
       }
+      /* Page-level breathing room around the main table frame (kept here, not
+         in the widget styling). Attribute selector because the id starts with a
+         digit, which is invalid in a CSS #id selector. */
+      [id='2025-static-main-table'] {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
     </style>
 
     <script src="/widgetLib.js"></script>
