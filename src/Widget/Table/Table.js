@@ -75,7 +75,7 @@ function Table() {
             {customData?.data?.map((row) => (
               <tr key={row.id}>
                 {colIdsAndType.map(([colId, colType]) => (
-                  <DataCell data={row[colId]} type={colType} />
+                  <DataCell key={colId} data={row[colId]} type={colType} />
                 ))}
               </tr>
             ))}
