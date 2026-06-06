@@ -77,7 +77,13 @@
  * -------------------------------------------------------------------------- */
 .nrcstat__static-table__container {
   position: relative;
-  width: fit-content;
+  // `width: auto` (block default) makes the container fill the available width
+  // WITHOUT expanding to the table's intrinsic content width. `fit-content`
+  // expanded to content, which (a) overflowed the viewport on mobile and (b)
+  // defeated DataTables' responsive width detection in shrink-to-fit parents
+  // (inline-block / table-cell / floated), so columns never collapsed and the
+  // expand control showed only one hidden datapoint. `auto` breaks that loop.
+  width: auto;
   max-width: 100%;
 }
 

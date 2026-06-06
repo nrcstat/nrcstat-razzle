@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Table widget harness</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&family=Roboto:wght@300;400;700&display=swap"
+    />
+    <style>
+      /*
+        The widget self-styles only the datatable part of itself, not the
+        header/footer. These rules (copied from the NRC website) take care of
+        the header and footer.
+      */
+      html {
+        font-family: Roboto;
+        position: relative;
+      }
+      body {
+        font-size: 18px;
+        line-height: 1.444444444444;
+      }
+      h4 {
+        font-size: 1.25em;
+        margin: 0 0 10px;
+        line-height: 1.2em;
+        font-family: Roboto, sans-serif;
+        font-weight: 300;
+        font-style: normal;
+      }
+    </style>
+
+    <script src="/widgetLib.js"></script>
+  </head>
+
+  <body style="margin: 30px 0">
+    <div class="container">
+      <h1>Table widget harness</h1>
+      <pre>widgetId: widget-wizard-table-demo (no-DB widget-wizard path, inline widgetObject)</pre>
+      <div class="row">
+        <div class="col-xs-12" id="harness-table"></div>
+      </div>
+    </div>
+
+    <script>
+      // Mirrors the bootstrap pattern from alltablewidgets-2024-1.html, but
+      // instead of passing only a saved widgetId (which would be loaded from
+      // the API/DB), we pass an inline `widgetObject` together with a
+      // `widget-wizard`-matching widgetId. determine-widget-type.js detects
+      // the `widget-wizard` substring and uses our inline widgetObject
+      // directly (type: 'table') => no DB needed.
+      var widgets = [
+        {
+          widgetId: 'widget-wizard-table-demo',
+          targetSelector: '#harness-table',
+          locale: 'nb-NO',
+          widgetObject: {
+            type: 'table',
+            dataType: 'custom',
+            title: { 'nb-NO': 'Eksempeltabell' },
+            config: {
+              subtitle: { 'nb-NO': 'En enkel demotabell' },
+              source: { 'nb-NO': 'Kilde: NRC' },
+              linkToSource: 'https://www.nrc.no',
+            },
+            customData: {
+              columns: [
+                {
+                  data: 'country',
+                  columnLabel: { 'nb-NO': 'Land' },
+                  renderer: 'text',
+                },
+                {
+                  data: 'refugees',
+                  columnLabel: { 'nb-NO': 'Flyktninger' },
+                  renderer: 'numeric',
+                },
+              ],
+              data: [
+                {
+                  id: 1,
+                  country: 'Syria',
+                  refugees: 6500000,
+                  label: { 'nb-NO': 'Syria' },
+                },
+                {
+                  id: 2,
+                  country: 'Ukraina',
+                  refugees: 5900000,
+                  label: { 'nb-NO': 'Ukraina' },
+                },
+                {
+                  id: 3,
+                  country: 'Afghanistan',
+                  refugees: 5700000,
+                  label: { 'nb-NO': 'Afghanistan' },
+                },
+              ],
+            },
+          },
+        },
+      ]
+
+      for (var i = 0; i < widgets.length; i++) {
+        NrcStatWidgetLibrary.getInstance().generateWidget(widgets[i])
+      }
+    </script>
+  </body>
+</html>

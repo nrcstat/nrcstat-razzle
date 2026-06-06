@@ -581,12 +581,34 @@ export default function (widgetParams) {
     ])
 
     function initTooltipster() {
-      target.find('.nrcstat-widget-tooltip').tooltipster({
+      // On touch devices the header info "i" icon lives inside a sortable <th>,
+      // so a tap both (a) triggers the column sort and (b) never shows the
+      // hover-only tooltip. Fix: trigger the tooltip on tap/click for touch, and
+      // stop the tap from bubbling to DataTables' sort handler on the <th>.
+      const isTouch =
+        !isServer() &&
+        ('ontouchstart' in window || navigator.maxTouchPoints > 0)
+
+      const $tooltips = target.find('.nrcstat-widget-tooltip')
+
+      $tooltips.tooltipster({
         interactive: true,
         delay: 100,
         animation: 'fade',
         maxWidth: 300,
+        trigger: isTouch ? 'click' : 'hover',
       })
+
+      // Keep taps/clicks on the info icon from reaching DataTables' sort handler,
+      // which is bound directly on the parent <th>. The handler must be bound on
+      // the icon itself (target phase) — a delegated handler on the widget root
+      // fires only after the event has already bubbled through (and triggered)
+      // the <th>. Namespaced + re-bound each initTooltipster() so it never stacks.
+      $tooltips
+        .off('click.nrcInfoIcon mousedown.nrcInfoIcon touchstart.nrcInfoIcon')
+        .on('click.nrcInfoIcon mousedown.nrcInfoIcon touchstart.nrcInfoIcon', function (e) {
+          e.stopPropagation()
+        })
     }
 
     function drawWidgetTableFilterData() {

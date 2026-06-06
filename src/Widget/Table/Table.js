@@ -1,7 +1,7 @@
 import { isNaN, isNull, isUndefined } from 'lodash'
 import React, { useContext, useRef } from 'react'
 import { isClient, isServer } from '../../util/utils'
-import c from '../StaticTable/StaticTable.scss'
+import '../StaticTable/StaticTable.scss'
 import { WidgetParamsContext } from '../Widget'
 import c2 from './Table.module.scss'
 const $ = require('jquery')
@@ -53,8 +53,8 @@ function Table() {
   // nrcstat-monorepo/libs/widget-social-media-sharing/src/lib/index.ts:useRenderWidgetThumbnailBlob
   // can accurately target the container to render into a thumbnail image.
   return (
-    <div className={`container ${c['nrcstat__static-table__container']}}`}>
-      <div className={c['nrcstat-table-widget']}>
+    <div className="container nrcstat__static-table__container">
+      <div className="nrcstat-table-widget">
         <span className={c2.title}>{title}</span>
         <span className={c2.subtitle}>{subtitle}</span>
         <table
