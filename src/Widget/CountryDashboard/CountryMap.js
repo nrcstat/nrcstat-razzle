@@ -17,7 +17,7 @@ import { DashboardHeader } from './DashboardHeader'
 middleResolutionCountriesGeoJson.features.push(gazaGeoJson.features[0])
 
 mapboxgl.accessToken =
-  'pk.eyJ1IjoibnJjbWFwcyIsImEiOiJjaW5hNTM4MXMwMDB4d2tseWZhbmFxdWphIn0._w6LWU9OWnXak36BkzopcQ'
+  'pk.eyJ1IjoibnJjbWFwcyIsImEiOiJjbXE1aWl2Z2IwNGNzMnNyNDVvNHBod2pzIn0.Ecxdm1aT6ODBS58MRQJ1jg'
 
 export function CountryMap({ selectedYear }) {
   if (isServer()) return null
@@ -63,7 +63,7 @@ export function CountryMap({ selectedYear }) {
 
       // Move the mapbox logo
       const mapboxLogo = mapContainer.current.querySelector(
-        '.mapboxgl-ctrl-bottom-left'
+        '.mapboxgl-ctrl-bottom-left',
       )
       mapboxLogo.classList.remove('mapboxgl-ctrl-bottom-left')
       mapboxLogo.classList.add('mapboxgl-ctrl-bottom-right')
@@ -73,7 +73,7 @@ export function CountryMap({ selectedYear }) {
 
       somethingWonderful.current = map.current.cameraForBounds(
         fitBounds_bounds,
-        fitBounds_config
+        fitBounds_config,
       )
 
       new mapboxgl.Marker(markerContainerRef.current)
@@ -92,7 +92,7 @@ export function CountryMap({ selectedYear }) {
       (c) =>
         c.properties &&
         c.properties.iso_a2 &&
-        c.properties.iso_a2.toUpperCase() === countryCode.toUpperCase()
+        c.properties.iso_a2.toUpperCase() === countryCode.toUpperCase(),
     )
 
     map.current.addSource('highlight-individual-country', {
@@ -127,7 +127,7 @@ export function CountryMap({ selectedYear }) {
       <RadialBarChart
         data={Object.values(dataTransformer(t, locale)(data))[0]}
       />,
-      markerContainerRef.current
+      markerContainerRef.current,
     )
 
     const singleCountry = clone(middleResolutionCountriesGeoJson)
@@ -135,7 +135,7 @@ export function CountryMap({ selectedYear }) {
       (c) =>
         c.properties &&
         c.properties.iso_a2 &&
-        c.properties.iso_a2.toUpperCase() === countryCode.toUpperCase()
+        c.properties.iso_a2.toUpperCase() === countryCode.toUpperCase(),
     )
 
     map.current.addSource('radial-chart-title-src', {
@@ -236,15 +236,15 @@ const dataTransformer = (t, locale) => (data) => {
         'totalRefugeesFromX',
         'refugeesInXFromOtherCountriesInYear',
       ],
-      v.dataPoint
-    )
+      v.dataPoint,
+    ),
   )
   const countries = groupBy(filtered, 'countryCode')
   const mapped = mapValues(countries, (countryDatas) =>
     countryDatas.map((countryData) => {
       const label = dataPointToLabel(t)[countryData.dataPoint].replace(
         'XXX',
-        isNull(countryData.data) ? '' : ''
+        isNull(countryData.data) ? '' : '',
       )
       const dataLabel = isNull(countryData.data)
         ? '-'
@@ -333,7 +333,7 @@ const dataTransformer = (t, locale) => (data) => {
         iso: countryData.countryCode,
         colour: dataPointToColour[countryData.dataPoint],
       }
-    })
+    }),
   )
   return mapped
 }

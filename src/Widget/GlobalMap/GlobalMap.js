@@ -1288,7 +1288,7 @@ function GlobalMap({ mapboxgl }) {
 
     mapboxElementRef.current = ref
     mapboxgl.accessToken =
-      'pk.eyJ1IjoibnJjbWFwcyIsImEiOiJjaW5hNTM4MXMwMDB4d2tseWZhbmFxdWphIn0._w6LWU9OWnXak36BkzopcQ'
+      'pk.eyJ1IjoibnJjbWFwcyIsImEiOiJjbXE1aWl2Z2IwNGNzMnNyNDVvNHBod2pzIn0.Ecxdm1aT6ODBS58MRQJ1jg'
     var map = new mapboxgl.Map({
       container: ref,
       center: initialCenter,
@@ -1732,15 +1732,14 @@ function GlobalMap({ mapboxgl }) {
           },
           {
             color: '#fd9459',
-            data: getCountryStat(countryCode, 'totalRefugeesFromX')?.data ?? null,
+            data:
+              getCountryStat(countryCode, 'totalRefugeesFromX')?.data ?? null,
           },
           {
             color: '#949494',
             data:
-              getCountryStat(
-                countryCode,
-                'refugeesInXFromOtherCountriesInYear',
-              )?.data ?? null,
+              getCountryStat(countryCode, 'refugeesInXFromOtherCountriesInYear')
+                ?.data ?? null,
           },
         ]
           .sort((a, b) => b.data - a.data)
