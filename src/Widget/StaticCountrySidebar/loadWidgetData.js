@@ -7,7 +7,7 @@ export function loadWidgetData(context, headers = {}) {
     where: {
       dataPoint: { inq: dataPoints },
       countryCode: countryCode,
-      year: year,
+      year: Number(year),
     },
   }
 

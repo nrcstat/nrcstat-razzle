@@ -38,7 +38,7 @@ function GlobalDisplacementVariant() {
   const { countryCode, locale, dataPoints, year, preloadedWidgetData } =
     widgetParams
 
-  const dataMap = makeDataPointToDataMap(dataPoints, preloadedWidgetData)
+  const dataMap = makeDataPointToDataMap(dataPoints, preloadedWidgetData, year)
 
   const { getNsFixedT } = useContext(FixedLocaleContext)
   const t = getNsFixedT([
@@ -106,7 +106,7 @@ function GorsVariant() {
   const { countryCode, locale, dataPoints, year, preloadedWidgetData } =
     widgetParams
 
-  const dataMap = makeDataPointToDataMap(dataPoints, preloadedWidgetData)
+  const dataMap = makeDataPointToDataMap(dataPoints, preloadedWidgetData, year)
 
   const { getNsFixedT } = useContext(FixedLocaleContext)
   const t = getNsFixedT([
@@ -170,11 +170,12 @@ function GorsVariant() {
   )
 }
 
-function makeDataPointToDataMap(dataPoints, preloadedWidgetData) {
+function makeDataPointToDataMap(dataPoints, preloadedWidgetData, year) {
   const dataMap = {}
+  const targetYear = Number(year)
   dataPoints.forEach((dataPoint) => {
     dataMap[dataPoint] = preloadedWidgetData.find(
-      (d) => d.dataPoint === dataPoint,
+      (d) => d.dataPoint === dataPoint && Number(d.year) === targetYear,
     )?.data ?? null
   })
   return dataMap
@@ -219,7 +220,7 @@ const gorsDataPoints = [
   'gors_lfs',
   'gors_shelter',
   'gors_wash',
-  'gors_wash',
+  'gors_mpc',
   'gors_total_beneficiaries',
 ]
 
@@ -230,5 +231,6 @@ const gorsDataPointToIconMap = {
   gors_lfs: FoodIcon,
   gors_shelter: ShelterIcon,
   gors_wash: WASHIcon,
+  gors_mpc: null,
   gors_total_beneficiaries: null,
 }
