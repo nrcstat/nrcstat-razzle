@@ -40,6 +40,8 @@ export default function (widgetParams) {
         return buildCountrySpecificFootnotes2023(t)
       case 2024:
         return buildCountrySpecificFootnotes2024(t)
+      case 2025:
+        return buildCountrySpecificFootnotes2025(t)
     }
   })()
 
@@ -610,9 +612,12 @@ export default function (widgetParams) {
       // the <th>. Namespaced + re-bound each initTooltipster() so it never stacks.
       $tooltips
         .off('click.nrcInfoIcon mousedown.nrcInfoIcon touchstart.nrcInfoIcon')
-        .on('click.nrcInfoIcon mousedown.nrcInfoIcon touchstart.nrcInfoIcon', function (e) {
-          e.stopPropagation()
-        })
+        .on(
+          'click.nrcInfoIcon mousedown.nrcInfoIcon touchstart.nrcInfoIcon',
+          function (e) {
+            e.stopPropagation()
+          },
+        )
     }
 
     function drawWidgetTableFilterData() {
@@ -1119,6 +1124,103 @@ export function buildCountrySpecificFootnotes2024(t) {
       annotation: t(
         'RefugeeReport2025.CountrySpecificFootnote.ArgentinaBoliviaBrazilColombiaCostaRicaDominicanRepublicGuyanaMexicoPeruUruguayVenezuela',
       ),
+    },
+  ]
+}
+
+export function buildCountrySpecificFootnotes2025(t) {
+  return [
+    {
+      countryCode: ['AF'],
+      annotation: t('RefugeeReport2026.CountrySpecificFootnote.Afghanistan'),
+    },
+    {
+      countryCode: ['DZ', 'EH'],
+      annotation: t(
+        'RefugeeReport2026.CountrySpecificFootnote.AlgeriaWesternSahara',
+      ),
+    },
+    {
+      countryCode: [
+        'AR',
+        'BO',
+        'BR',
+        'CO',
+        'CR',
+        'DO',
+        'GY',
+        'MX',
+        'PE',
+        'UY',
+        'VE',
+      ],
+      annotation: t(
+        'RefugeeReport2026.CountrySpecificFootnote.ArgentinaBoliviaBrazilColombiaCostaRicaDominicanRepublicGuyanaMexicoPeruUruguayVenezuela',
+      ),
+    },
+    {
+      countryCode: ['AZ'],
+      annotation: t('RefugeeReport2026.CountrySpecificFootnote.Azerbaijan'),
+    },
+    {
+      countryCode: ['BH'],
+      annotation: t('RefugeeReport2026.CountrySpecificFootnote.Bahrain'),
+    },
+    {
+      countryCode: ['BD', 'MM'],
+      annotation: t(
+        'RefugeeReport2026.CountrySpecificFootnote.BangladeshMyanmar',
+      ),
+    },
+    {
+      countryCode: ['BG'],
+      annotation: t('RefugeeReport2026.CountrySpecificFootnote.Bulgaria'),
+    },
+    {
+      countryCode: ['EG', 'SD'],
+      annotation: t('RefugeeReport2026.CountrySpecificFootnote.EgyptSudan'),
+    },
+    {
+      countryCode: ['DE', 'UA'],
+      annotation: t('RefugeeReport2026.CountrySpecificFootnote.GermanyUkraine'),
+    },
+    {
+      countryCode: ['IQ', 'JO'],
+      annotation: t('RefugeeReport2026.CountrySpecificFootnote.IraqJordan'),
+    },
+    {
+      countryCode: ['KO', 'RS'],
+      annotation: t('RefugeeReport2026.CountrySpecificFootnote.KosovoSerbia'),
+    },
+    {
+      countryCode: ['LB'],
+      annotation: t(
+        'RefugeeReport2026.CountrySpecificFootnote.LebanonPalestinians',
+      ),
+    },
+    {
+      countryCode: ['PS'],
+      annotation: t('RefugeeReport2026.CountrySpecificFootnote.Palestine'),
+    },
+    {
+      countryCode: ['RU', 'UA'],
+      annotation: t('RefugeeReport2026.CountrySpecificFootnote.RussiaUkraine'),
+    },
+    {
+      countryCode: ['LK'],
+      annotation: t('RefugeeReport2026.CountrySpecificFootnote.SriLanka'),
+    },
+    {
+      countryCode: ['TR'],
+      annotation: t('RefugeeReport2026.CountrySpecificFootnote.Turkey'),
+    },
+    {
+      countryCode: ['UA'],
+      annotation: t('RefugeeReport2026.CountrySpecificFootnote.Ukraine'),
+    },
+    {
+      countryCode: ['US'],
+      annotation: t('RefugeeReport2026.CountrySpecificFootnote.UnitedStates'),
     },
   ]
 }
