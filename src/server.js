@@ -75,14 +75,19 @@ server
       if (dataLoader) {
         let data = await dataLoader(enrichedWidget)
 
+        // Embargo: zero out 2025 data until 11 June 2026, 08:00 Norwegian time
+        // (CEST, UTC+2), then let it through automatically. Mirrors the
+        // time-based embargo in the monorepo lambda
+        // serverless-lambdas/src/handlers/global-displacement.ts so both lift
+        // together; until then the `bypass` header reveals 2025 (e.g. previews).
+        const embargoLiftTime = new Date('2026-06-11T08:00:00+02:00')
+        const embargoActive = new Date() < embargoLiftTime
         const isAuthFor2025 = req.headers.bypass === 'vS!i@Z#No7Fa$SJ!GXN2'
-        if (data) {
+        if (data && embargoActive && !isAuthFor2025) {
           data = data.map((x) => {
             const newX = { ...x }
             if (x.year === 2025) {
-              if (!isAuthFor2025) {
-                newX.data = 0
-              }
+              newX.data = 0
             }
             return newX
           })
