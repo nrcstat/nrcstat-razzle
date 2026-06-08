@@ -34,9 +34,13 @@ const dataPreLoaders = {
       ...widget,
       t: () => '',
     }
-    return tableTypeToTableWidgetMap[widget.tableType](
-      widgetParams,
-    ).loadWidgetData(widget)
+    const tableWidgetFactory = tableTypeToTableWidgetMap[widget.tableType]
+    if (!tableWidgetFactory) {
+      throw new Error(
+        `Unknown StaticTable tableType: "${widget.tableType}" (widgetId: "${widget.widgetId}")`,
+      )
+    }
+    return tableWidgetFactory(widgetParams).loadWidgetData(widget)
   },
   Donut: loadDonutData,
   Bar: loadBarData,
@@ -61,6 +65,7 @@ server
   .disable('x-powered-by')
   .use(express.static(process.env.RAZZLE_PUBLIC_DIR))
   .get('/render-widgets', async (req, res) => {
+    try {
     let queue = JSON.parse(req.query.queue)
     const processedQueue = []
     for (const widget of queue) {
@@ -163,6 +168,12 @@ server
     extractor = null
 
     return
+    } catch (error) {
+      console.error('Error handling /render-widgets:', error)
+      if (!res.headersSent) {
+        res.status(500).send(`Error rendering widgets: ${error.message}`)
+      }
+    }
   })
 
 export default server
