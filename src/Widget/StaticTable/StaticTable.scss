@@ -123,7 +123,16 @@
  * -------------------------------------------------------------------------- */
 .controls-wrapper {
   display: grid;
-  grid-template: 1fr 1fr / 7em 15em;
+  // Align the continent/country select column's left edge with the "Søk:" search
+  // label that DataTables renders on the row below (in .dataTables_filter).
+  // That label's x = card padding + width(.dataTables_length) + its 10px margin +
+  // the filter's 10px padding-left. The length menu is pinned to a locale-constant
+  // width (see .dataTables_length min-width in §8), so "Søk:" lands at the same x
+  // in every locale; the select column is therefore a fixed track that matches it.
+  // Geometry (verified live @18px grid base, 9px column-gap): card-origin 19 +
+  // length min-width 146 + 10 + 10 = 185 → select left = 19 + 157 + 9 = 185.
+  // The max-width:640px breakpoint (in §11) collapses this to a single column.
+  grid-template: 1fr 1fr / 157px 15em;
   align-items: center;
   row-gap: 0.6em;
   column-gap: 0.5em;
@@ -154,9 +163,12 @@
   &:hover {
     border-bottom-color: rgba(0, 0, 0, 0.87);
   }
+  // No orange accent on select focus (client request). Mouse focus just darkens
+  // the underline (kept at 1px to avoid a layout jump); keyboard users still get
+  // a visible indicator via the native focus ring, so we intentionally do NOT
+  // set `outline: none` here and select is excluded from the §12b orange ring.
   &:focus {
-    outline: none;
-    border-bottom: 2px solid var(--nrc-orange);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.87);
     box-shadow: none;
   }
 }
@@ -442,6 +454,15 @@ table.dataTable td {
     font-size: 14px;
     color: var(--nrc-ink-soft);
     margin-right: 10px;
+    // Pin the length menu to a locale-constant width so the "Søk:" filter label
+    // that floats after it lands at the same x in every locale. The widest
+    // shipped phrase is en-GB "Show _MENU_ countries" (de-* falls back to it),
+    // measured ≈146px; nb "Vis _MENU_ linjer" (102) and sv "Visa _MENU_-rader"
+    // (113) clamp up to it. This is what lets the fixed select-column track in §5
+    // align with "Søk:" across all locales. (Cost: a little whitespace after the
+    // menu in the narrower locales.) box-sizing:content-box (set globally) means
+    // min-width applies to the content box; the div has no padding so it == width.
+    min-width: 146px;
   }
 
   .dataTables_filter {
@@ -789,9 +810,12 @@ body > table.dataTable {
   }
 }
 
-/* (b) Visible keyboard focus for interactive controls. */
+/* (b) Visible keyboard focus for interactive controls.
+ * NB: `select` is deliberately omitted (client request — no orange accent on the
+ * dropdowns). Selects instead show the browser's native focus ring (§5 keeps
+ * `outline` unset on select:focus), which keeps them keyboard-discoverable
+ * without the orange box. */
 .nrcstat-table-widget a:focus-visible,
-.nrcstat-table-widget select:focus-visible,
 .nrcstat-table-widget input:focus-visible,
 .dataTables_wrapper .paginate_button:focus-visible,
 .dt-button:focus-visible {
