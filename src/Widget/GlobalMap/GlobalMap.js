@@ -313,6 +313,49 @@ const radialBarChartsMapSvSe2024 = chain(
   .mapValues('file')
   .value()
 
+// 2025
+const reqNbNo2025 = require.context(
+  './assets/pre-rendered-radial-bar-charts-2025/nb-NO',
+  false,
+)
+const radialBarChartsMapNbNo2025 = chain(
+  reqNbNo2025.keys().map((file) => ({
+    file: reqNbNo2025(file),
+    countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
+  })),
+)
+  .keyBy('countryCode')
+  .mapValues('file')
+  .value()
+
+const reqEnGb2025 = require.context(
+  './assets/pre-rendered-radial-bar-charts-2025/en-GB',
+  false,
+)
+const radialBarChartsMapEnGb2025 = chain(
+  reqEnGb2025.keys().map((file) => ({
+    file: reqEnGb2025(file),
+    countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
+  })),
+)
+  .keyBy('countryCode')
+  .mapValues('file')
+  .value()
+
+const reqSvSe2025 = require.context(
+  './assets/pre-rendered-radial-bar-charts-2025/sv-SE',
+  false,
+)
+const radialBarChartsMapSvSe2025 = chain(
+  reqSvSe2025.keys().map((file) => ({
+    file: reqSvSe2025(file),
+    countryCode: last(file.split('/')).split('.')[0].toUpperCase(),
+  })),
+)
+  .keyBy('countryCode')
+  .mapValues('file')
+  .value()
+
 const radialBarChartsMap = {
   'en-GB': radialBarChartsMapEnGb,
   'nb-NO': radialBarChartsMapNbNo,
@@ -342,6 +385,11 @@ const radialBarChartsMap2024 = {
   'en-GB': radialBarChartsMapEnGb2024,
   'nb-NO': radialBarChartsMapNbNo2024,
   'sv-SE': radialBarChartsMapSvSe2024,
+}
+const radialBarChartsMap2025 = {
+  'en-GB': radialBarChartsMapEnGb2025,
+  'nb-NO': radialBarChartsMapNbNo2025,
+  'sv-SE': radialBarChartsMapSvSe2025,
 }
 
 let countryStatsCache = null
@@ -1791,6 +1839,8 @@ function GlobalMap({ mapboxgl }) {
             return radialBarChartsMap2023
           case 2024:
             return radialBarChartsMap2024
+          case 2025:
+            return radialBarChartsMap2025
           default:
             throw new Error('Invalid year passed to GlobalMap')
         }
