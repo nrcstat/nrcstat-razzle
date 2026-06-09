@@ -563,14 +563,21 @@ export default function (widgetParams) {
             )}</option>`,
           )
         })
+        // Sort the country pick-list alphabetically by its localized name,
+        // including program countries (the raw data order put program
+        // countries first, then continent-grouped by English name, which read
+        // as random — especially in Norwegian). Collate with the active locale
+        // so æ/ø/å order correctly, and sort on the same t() value we display.
+        const countryCollator = new Intl.Collator(locale)
         tableData
           .map((d) => d.countryCode)
-          .forEach((iso2) => {
-            countrySelector.append(
-              `<option value="${iso2}">${t(
-                `NRC.Web.StaticTextDictionary.Contries.${iso2}`,
-              )}</option>`,
-            )
+          .map((iso2) => ({
+            iso2,
+            name: t(`NRC.Web.StaticTextDictionary.Contries.${iso2}`),
+          }))
+          .sort((a, b) => countryCollator.compare(a.name, b.name))
+          .forEach(({ iso2, name }) => {
+            countrySelector.append(`<option value="${iso2}">${name}</option>`)
           })
 
         continentSelector.on('change', (e) => {
