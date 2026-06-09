@@ -23,7 +23,6 @@ export default function (widgetParams) {
       dataPoint: {
         inq: ['idpsInXInYear', 'refugeesInXFromOtherCountriesInYear'],
       },
-      regionCodeNRC: { nin: ['MISC_AND_STATELESS'] },
       continentCode: { nin: ['WORLD'] },
     },
   }
@@ -83,7 +82,10 @@ export default function (widgetParams) {
       return Object.assign(d, { data: d.data })
     })
 
-    data = _.sortBy(data, 'place')
+    data = _.sortBy(data, (d) => {
+      if (d.regionCodeNRC === 'MISC_AND_STATELESS') return 'ZZZZZZZZZZZ'
+      else return d.place
+    })
 
     const totalFormatted = thousandsFormatter(locale)(total)
     data.push({
